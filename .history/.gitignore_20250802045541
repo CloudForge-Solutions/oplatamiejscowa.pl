@@ -1,0 +1,243 @@
+# Tourist Tax Payment System - Git Ignore Rules
+# Project: Opłata Miejscowa Online
+
+#===================================================================================================
+#=== Dependencies and Package Managers
+#===================================================================================================
+
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Package manager lock files (keep package-lock.json for consistency)
+# yarn.lock
+# pnpm-lock.yaml
+
+#===================================================================================================
+#=== Build Outputs and Distribution
+#===================================================================================================
+
+# Vite build outputs
+dist/
+dist-ssr/
+*.local
+
+# Build artifacts
+build/
+out/
+.output/
+.vite/
+.webpack-cache/
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+#===================================================================================================
+#=== Environment and Configuration
+#===================================================================================================
+
+# Environment variables (keep .env.example)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker Compose environment
+.env.dc
+
+# Configuration backups
+backups/
+
+#===================================================================================================
+#=== Development Tools and IDEs
+#===================================================================================================
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.swp
+*.swo
+
+# Vim
+*~
+*.swp
+*.swo
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+#===================================================================================================
+#=== Operating System Files
+#===================================================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+#===================================================================================================
+#=== Logs and Temporary Files
+#===================================================================================================
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
+
+#===================================================================================================
+#=== Testing and Quality Assurance
+#===================================================================================================
+
+# Test results
+test-results/
+playwright-report/
+test-results.xml
+junit.xml
+
+# Quality reports
+.eslintcache
+.stylelintcache
+.jscpd/
+
+#===================================================================================================
+#=== Security and Sensitive Data
+#===================================================================================================
+
+# API keys and secrets (should be in .env files anyway)
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+#===================================================================================================
+#=== Project Specific
+#===================================================================================================
+
+# Tourist tax specific temporary files
+receipts/
+transactions/
+payment-logs/
+
+# imoje payment gateway test files
+imoje-test-*
+payment-test-*
+
+# GDPR compliance exports
+gdpr-exports/
+user-data-exports/
+
+#===================================================================================================
+#=== Optional: Uncomment if using these tools
+#===================================================================================================
+
+# Storybook build outputs
+# storybook-static/
+
+# Chromatic
+# chromatic-*
+
+# Sentry
+# .sentryclirc
+
+# Vercel
+# .vercel
+
+# Netlify
+# .netlify/
+
+# Firebase
+# .firebase/
+# firebase-debug.log
+# firestore-debug.log
+
+# Azure
+# .azure/
+
+#===================================================================================================
+#=== Keep These Files (Explicit Inclusions)
+#===================================================================================================
+
+# Keep important configuration files
+!.env.example
+!.gitignore
+!.eslintrc.cjs
+!.prettierrc
+!Makefile
+!VERSION
+!README.md
+!CHANGELOG.md
+!LICENSE

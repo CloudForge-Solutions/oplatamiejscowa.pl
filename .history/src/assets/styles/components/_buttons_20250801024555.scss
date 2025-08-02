@@ -1,0 +1,11 @@
+// Button component styles
+
+.btn {
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.25);
+  }
+}

@@ -1,0 +1,281 @@
+// Main SCSS entry point for Tourist Tax Payment System
+// Opłata Miejscowa Online - Polish Tourist Tax Payment Application
+
+// ===== EXTERNAL DEPENDENCIES =====
+// Bootstrap CSS (from node_modules)
+@import 'vendors/bootstrap';
+
+// Bootstrap Icons (from node_modules)
+@import 'vendors/bootstrap-icons';
+
+// ===== CUSTOM STYLES =====
+// Base styles and variables
+@import 'base/variables';
+@import 'base/reset';
+@import 'base/typography';
+
+// Layout components
+@import 'layout/navbar';
+@import 'layout/main-content';
+
+// Component styles
+@import 'components/buttons';
+@import 'components/forms';
+@import 'components/cards';
+@import 'components/modals';
+@import 'components/payment';
+@import 'components/fab';
+
+// Tourist Tax Payment Modal Styles
+.payment-modal {
+  z-index: 1055 !important;
+
+  .modal-dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
+    z-index: 1056 !important;
+  }
+
+  .modal-content {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: none;
+    background-color: #ffffff;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+
+    .modal-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+
+    .btn-close {
+      filter: invert(1);
+    }
+  }
+
+  .modal-body {
+    padding: 2rem;
+    background-color: #f8f9fa;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 0 0 12px 12px;
+  }
+}
+
+// City Selection Styles
+.city-selector {
+  .dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f8f9fa;
+
+      &:hover {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// Payment Form Styles
+.payment-form {
+  .form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h5 {
+      color: #495057;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e9ecef;
+    }
+  }
+
+  .form-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    &.is-invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    &:disabled {
+      background: #6c757d;
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// Tax Summary Styles
+.tax-summary {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1rem 0;
+
+  .summary-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .summary-details {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+}
+
+// Receipt Styles
+.receipt-container {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+
+  .receipt-header {
+    text-align: center;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+
+    h3 {
+      color: #495057;
+      font-weight: 700;
+    }
+
+    .receipt-number {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  }
+
+  .receipt-details {
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f8f9fa;
+
+      &:last-child {
+        border-bottom: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #28a745;
+      }
+    }
+  }
+}
+
+// Page-specific styles
+@import 'pages/tourist-tax';
+
+// Utility classes
+@import 'utilities/spacing';
+@import 'utilities/colors';
+@import 'utilities/display';
+
+// Theme and responsive
+@import 'themes/light';
+@import 'responsive/mobile';
+@import 'responsive/desktop';
+
+// Fix for modal backdrop issues
+.modal-backdrop {
+  z-index: 1050 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+// Global improvements
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container-fluid {
+  padding: 2rem;
+}
+
+// Loading spinner styles
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #007bff;
+  }
+}
+
+// Error message styles
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  margin: 1rem 0;
+}
+
+// Success message styles
+.success-message {
+  background-color: #d1edff;
+  color: #0c5460;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #bee5eb;
+  margin: 1rem 0;
+}

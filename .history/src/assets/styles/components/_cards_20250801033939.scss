@@ -1,0 +1,132 @@
+// Card component styles - Adapted from mVAT patterns
+
+.card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  background: white;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--space-4);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+
+    .card-title {
+      margin-bottom: 0;
+      font-size: var(--font-size-lg);
+    }
+  }
+
+  .card-body {
+    padding: var(--space-6);
+  }
+
+  .card-footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: var(--space-4);
+  }
+}
+
+// Tourist Tax specific card variants
+.card-tourist {
+  border-left: 4px solid var(--primary-color);
+
+  .card-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+  }
+}
+
+.card-landlord {
+  border-left: 4px solid var(--success-color);
+
+  .card-header {
+    background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+    color: white;
+  }
+}
+
+.card-payment {
+  border-left: 4px solid var(--tax-color);
+
+  .card-header {
+    background: linear-gradient(135deg, var(--tax-color) 0%, #20c997 100%);
+    color: white;
+  }
+}
+
+// Reservation card
+.reservation-card {
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-4);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+  }
+
+  .reservation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .reservation-status {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+
+    &.status-confirmed {
+      background: #d1edff;
+      color: #0c5460;
+    }
+
+    &.status-cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    &.status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+  }
+}
+
+// Payment summary card
+.payment-summary-card {
+  background: linear-gradient(135deg, var(--tax-color) 0%, #20c997 100%);
+  color: white;
+  border: none;
+
+  .card-body {
+    text-align: center;
+    padding: var(--space-8);
+  }
+
+  .amount-display {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-2);
+  }
+
+  .amount-details {
+    opacity: 0.9;
+    font-size: var(--font-size-sm);
+  }
+}

@@ -1,0 +1,150 @@
+// mVAT Professional Navbar - Clean Design System
+.navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 60px !important;
+  padding: 0.75rem 0 !important;
+  z-index: 1020;
+
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  // Brand styling - mVAT style
+  .navbar-brand {
+    display: flex !important;
+    align-items: center;
+    margin-right: 1.5rem !important;
+    font-weight: 600;
+    color: #212529 !important;
+    text-decoration: none;
+    padding: 0.25rem 0 !important;
+
+    &:hover {
+      color: #212529 !important;
+      text-decoration: none;
+    }
+
+    .app-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px !important;
+      height: 32px !important;
+      margin-right: 0.5rem;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 12px;
+      background-color: #0d6efd;
+      color: white;
+    }
+
+    .brand-text {
+      font-weight: bold;
+      color: #212529 !important;
+      font-size: 1rem;
+    }
+  }
+
+  // Navigation links - mVAT style
+  .navbar-nav {
+    margin-right: auto;
+
+    .nav-link {
+      padding: 0.5rem 0.75rem !important;
+      color: #6c757d !important;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-radius: 0.375rem;
+      margin: 0 0.25rem;
+      font-size: 0.875rem !important;
+
+      &:hover {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+        color: #0d6efd !important;
+      }
+
+      &.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+        font-weight: 600;
+      }
+
+      i {
+        opacity: 0.8;
+        margin-right: 0.25rem;
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+// mVAT button styling in navbar
+.navbar .btn {
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &.btn-sm {
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+
+  &.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+
+    &:hover {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    }
+  }
+
+  &.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+
+    &:hover {
+      background-color: #157347;
+      border-color: #146c43;
+      transform: translateY(-1px);
+    }
+  }
+
+  &.btn-outline-primary {
+    border-color: #0d6efd;
+    color: #0d6efd;
+
+    &:hover {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: white;
+    }
+  }
+}
+
+// mVAT language switcher styling
+.language-switcher {
+  .dropdown-toggle {
+    border: 1px solid #6c757d;
+    background: #ffffff;
+    color: #6c757d;
+
+    &:hover {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    }
+  }
+}

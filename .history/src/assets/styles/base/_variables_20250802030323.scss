@@ -1,0 +1,217 @@
+// SCSS Variables for Tourist Tax Payment System
+// Opłata Miejscowa Online
+
+// ===== COLORS =====
+:root {
+  // Primary brand colors - Friendly approach
+  --primary-color: #4fc3f7;
+  --primary-hover: #29b6f6;
+  --primary-active: #0288d1;
+
+  // Friendly color palette
+  --friendly-blue: #4fc3f7;
+  --friendly-green: #66bb6a;
+  --friendly-orange: #ffb74d;
+  --warm-gray: #78909c;
+  --soft-background: #fafafa;
+
+  // Secondary colors
+  --secondary-color: #6c757d;
+  --secondary-hover: #5c636a;
+
+  // Success, warning, danger
+  --success-color: #198754;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --info-color: #0dcaf0;
+
+  // Tourist tax specific colors
+  --tax-color: #28a745;
+  --payment-color: #007bff;
+  --receipt-color: #17a2b8;
+
+  // Neutral colors
+  --white: #ffffff;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --muted: #6c757d;
+
+  // Background colors
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-payment: #e3f2fd;
+
+  // Text colors
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+
+  // Border colors
+  --border-color: #dee2e6;
+  --border-light: #e9ecef;
+  --border-dark: #adb5bd;
+}
+
+// ===== TYPOGRAPHY =====
+:root {
+  // Font families
+  --font-family-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  // Font sizes
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  // Line heights
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  // Font weights
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
+
+// ===== SPACING ===== (mVAT Professional System)
+:root {
+  // Complete spacing scale (mVAT standard)
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem;  // 2px
+  --space-1: 0.25rem;     // 4px
+  --space-1-5: 0.375rem;  // 6px
+  --space-2: 0.5rem;      // 8px
+  --space-2-5: 0.625rem;  // 10px
+  --space-3: 0.75rem;     // 12px
+  --space-3-5: 0.875rem;  // 14px
+  --space-4: 1rem;        // 16px
+  --space-5: 1.25rem;     // 20px
+  --space-6: 1.5rem;      // 24px
+  --space-7: 1.75rem;     // 28px
+  --space-8: 2rem;        // 32px
+  --space-9: 2.25rem;     // 36px
+  --space-10: 2.5rem;     // 40px
+  --space-11: 2.75rem;    // 44px
+  --space-12: 3rem;       // 48px
+  --space-14: 3.5rem;     // 56px
+  --space-16: 4rem;       // 64px
+  --space-20: 5rem;       // 80px
+  --space-24: 6rem;       // 96px
+  --space-28: 7rem;       // 112px
+  --space-32: 8rem;       // 128px
+}
+
+// ===== LAYOUT =====
+:root {
+  // Container widths
+  --container-sm: 540px;
+  --container-md: 720px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+  --container-xxl: 1320px;
+
+  // Navbar
+  --navbar-height: 60px;
+
+  // Border radius
+  --border-radius-sm: 0.125rem;
+  --border-radius: 0.25rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 1rem;
+
+  // Professional shadow system (mVAT precision)
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+// ===== TRANSITIONS =====
+:root {
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+}
+
+// ===== Z-INDEX SCALE =====
+:root {
+  --z-base: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  --z-fab: 1090;
+}
+
+// ===== BREAKPOINTS =====
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+// ===== COMPONENT SPECIFIC =====
+:root {
+  // Tables
+  --table-cell-padding: 0.75rem;
+  --table-border-color: var(--border-color);
+
+  // Forms
+  --input-padding-y: 0.5rem;
+  --input-padding-x: 0.75rem;
+  --input-border-color: var(--border-color);
+  --input-focus-border-color: var(--primary-color);
+
+  // Buttons
+  --btn-padding-y: 0.5rem;
+  --btn-padding-x: 1rem;
+  --btn-border-radius: var(--border-radius);
+
+  // Cards
+  --card-padding: 1.5rem;
+  --card-border-color: var(--border-color);
+  --card-border-radius: var(--border-radius-lg);
+
+  // Payment specific
+  --payment-form-padding: 2rem;
+  --payment-modal-width: 800px;
+  --receipt-padding: 2rem;
+}
+
+// ===== TOURIST TAX SPECIFIC =====
+:root {
+  // Tax calculation colors
+  --tax-rate-color: #28a745;
+  --tax-amount-color: #007bff;
+  --payment-success-color: #20c997;
+  --payment-error-color: #dc3545;
+
+  // City selection
+  --city-selector-height: 300px;
+  --city-item-padding: 0.75rem 1rem;
+
+  // Payment steps
+  --step-indicator-size: 2rem;
+  --step-connector-width: 2px;
+}

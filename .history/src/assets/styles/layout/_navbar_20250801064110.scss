@@ -1,0 +1,109 @@
+// Clean Navbar Styles for Tourist Tax Payment System
+// Minimal, modern design that works with our new navbar components
+
+.navbar {
+  // Match preview.html exactly
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 60px !important;
+  padding: 0.75rem 0 !important;
+  z-index: 1020;
+
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  // Brand styling - match preview.html exactly
+  .navbar-brand {
+    display: flex !important;
+    align-items: center;
+    margin-right: 1.5rem !important;
+    font-weight: 600;
+    color: #212529 !important;
+    text-decoration: none;
+    padding: 0.25rem 0 !important;
+
+    &:hover {
+      color: #212529 !important;
+      text-decoration: none;
+    }
+  }
+
+  .app-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 12px;
+    background-color: #0d6efd;
+    color: white;
+  }
+
+  // Navigation links - match preview.html exactly
+  .navbar-nav {
+    margin-right: auto;
+
+    .nav-link {
+      padding: 0.5rem 0.75rem !important;
+      color: #6c757d !important;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-radius: 0.375rem;
+      margin: 0 0.25rem;
+      font-size: 0.875rem !important;
+
+      &:hover {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+        color: #0d6efd !important;
+      }
+
+      &.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+        font-weight: 600;
+      }
+
+      i {
+        opacity: 0.8;
+        margin-right: 0.25rem;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  // Button styling in navbar
+  .btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &.btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Language switcher clean styling
+.language-switcher {
+  .dropdown-toggle {
+    border: 1px solid #dee2e6;
+    background: #ffffff;
+    color: #6c757d;
+
+    &:hover {
+      background-color: #f8f9fa;
+      border-color: #adb5bd;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+  }
+}

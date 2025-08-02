@@ -1,0 +1,374 @@
+{
+  "title": "Opłata miejscowa",
+  "subtitle": "Zapłać opłatę miejscową online - szybko i bezpiecznie",
+
+  "sections": {
+    "personalInfo": "Dane osobowe",
+    "destination": "Miejsce pobytu",
+    "stayDetails": "Szczegóły pobytu",
+    "paymentSummary": "Podsumowanie płatności",
+    "receipt": "Potwierdzenie płatności"
+  },
+
+  "fields": {
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "email": "Adres e-mail",
+    "phone": "Telefon",
+    "city": "Miasto",
+    "checkInDate": "Data zameldowania",
+    "checkOutDate": "Data wymeldowania",
+    "numberOfPersons": "Liczba osób",
+    "accommodationType": "Typ zakwaterowania",
+    "accommodationName": "Nazwa obiektu",
+    "accommodationAddress": "Adres obiektu",
+    "guestName": "Imię i nazwisko gościa",
+    "guestEmail": "Email gościa",
+    "guestPhone": "Telefon gościa",
+    "guestNationality": "Narodowość gościa",
+    "numberOfNights": "Liczba nocy",
+    "cityName": "Miasto",
+    "taxRatePerNight": "Stawka za noc (PLN)",
+    "totalAmount": "Łączna kwota (PLN)",
+    "billLanguage": "Język rachunku",
+    "includeQRCode": "Dołącz kod QR",
+    "includeInstructions": "Dołącz instrukcje płatności",
+    "status": "Status",
+    "taxStatus": "Status opłaty"
+  },
+
+  "placeholders": {
+    "firstName": "Wprowadź imię",
+    "lastName": "Wprowadź nazwisko",
+    "email": "np. jan.kowalski@email.com",
+    "phone": "np. +48 123 456 789",
+    "accommodationName": "Nazwa hotelu/apartamentu",
+    "accommodationAddress": "Adres zakwaterowania"
+  },
+
+  "accommodationTypes": {
+    "hotel": "Hotel",
+    "apartment": "Apartament",
+    "hostel": "Hostel",
+    "camping": "Kemping",
+    "other": "Inne"
+  },
+
+  "buttons": {
+    "calculateTax": "Oblicz opłatę",
+    "calculating": "Obliczanie...",
+    "confirmPayment": "Potwierdź płatność",
+    "processing": "Przetwarzanie...",
+    "payNow": "Zapłać teraz",
+    "backToForm": "Powrót do formularza",
+    "newPayment": "Nowa płatność",
+    "downloadReceipt": "Pobierz potwierdzenie"
+  },
+
+  "steps": {
+    "form": "Formularz",
+    "summary": "Podsumowanie",
+    "payment": "Płatność",
+    "receipt": "Potwierdzenie"
+  },
+
+  "validation": {
+    "required": "Pole {{field}} jest wymagane",
+    "invalidEmail": "Nieprawidłowy adres e-mail",
+    "pastDate": "Data nie może być z przeszłości",
+    "checkOutAfterCheckIn": "Data wymeldowania musi być późniejsza niż zameldowania",
+    "minPersons": "Liczba osób musi być większa niż 0",
+    "gdprRequired": "Wymagana jest zgoda na przetwarzanie danych osobowych",
+    "formErrors": "Formularz zawiera błędy:"
+  },
+
+  "summary": {
+    "stayPeriod": "Okres pobytu",
+    "numberOfNights": "Liczba nocy",
+    "numberOfPersons": "Liczba osób",
+    "taxRatePerNight": "Stawka za noc",
+    "totalAmount": "Łączna kwota",
+    "paymentMethod": "Metoda płatności",
+    "breakdown": "Szczegóły kalkulacji"
+  },
+
+  "payment": {
+    "redirectingToPayment": "Przekierowywanie do bramki płatniczej...",
+    "securePayment": "Bezpieczna płatność przez Tpay",
+    "acceptedMethods": "Akceptowane metody płatności",
+    "processing": "Przetwarzanie płatności..."
+  },
+
+  "receipt": {
+    "paymentSuccessful": "Płatność zakończona pomyślnie",
+    "paymentFailed": "Płatność nieudana",
+    "transactionId": "Numer transakcji",
+    "paymentDate": "Data płatności",
+    "confirmationSent": "Potwierdzenie zostało wysłane na adres e-mail",
+    "keepReceipt": "Zachowaj to potwierdzenie na potrzeby ewentualnej kontroli"
+  },
+
+  "gdpr": {
+    "dataProcessing": "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji płatności opłaty miejscowej",
+    "emailMarketing": "Wyrażam zgodę na otrzymywanie informacji marketingowych na podany adres e-mail",
+    "required": "Zgoda wymagana",
+    "optional": "Zgoda opcjonalna",
+    "privacyPolicy": "Polityka prywatności",
+    "termsOfService": "Regulamin usługi"
+  },
+
+  "cities": {
+    "selectCity": "Wybierz miasto",
+    "searchPlaceholder": "Wyszukaj miasto...",
+    "noResults": "Brak wyników",
+    "taxRate": "Stawka opłaty miejscowej",
+    "popularCities": "Najpopularniejsze miasta:"
+  },
+
+  "stats": {
+    "confirmed": "Potwierdzone",
+    "pending": "Oczekujące",
+    "totalTaxAmount": "Łączna kwota opłaty"
+  },
+
+  "errors": {
+    "cityNotFound": "Nie znaleziono miasta lub opłata miejscowa nie obowiązuje",
+    "calculationError": "Błąd podczas obliczania opłaty",
+    "paymentError": "Błąd podczas przetwarzania płatności",
+    "networkError": "Błąd połączenia z serwerem",
+    "unknownError": "Wystąpił nieznany błąd"
+  },
+
+  "info": {
+    "whatIsTouristTax": "Czym jest opłata miejscowa?",
+    "touristTaxDescription": "Opłata miejscowa to podatek lokalny pobierany od turystów przebywających w danym mieście. Środki z opłaty są przeznaczane na rozwój infrastruktury turystycznej i promocję miasta.",
+    "whyPayOnline": "Dlaczego warto płacić online?",
+    "onlinePaymentBenefits": "Płacąc online omijasz prowizję hotelu (do 10%) i masz pewność, że opłata trafi bezpośrednio do gminy.",
+    "securePayment": "Bezpieczna płatność",
+    "securePaymentDescription": "Wszystkie płatności są przetwarzane przez licencjonowanego operatora płatności z najwyższymi standardami bezpieczeństwa."
+  },
+
+  "landlord": {
+    "dashboard": {
+      "title": "Panel właściciela",
+      "subtitle": "Przegląd aktywności i statystyk",
+      "recentActivity": "Ostatnia aktywność",
+      "noActivity": "Brak ostatniej aktywności. Rozpocznij od importu rezerwacji lub dodania nowego pobytu.",
+      "quickActions": "Szybkie akcje",
+      "getStarted": "Użyj menu nawigacji aby rozpocząć zarządzanie pobytami"
+    },
+    "stats": {
+      "totalReservations": "Rezerwacje",
+      "pendingPayments": "Oczekujące płatności",
+      "completedPayments": "Opłacone",
+      "totalRevenue": "Łączny dochód"
+    },
+    "reservations": {
+      "title": "Pobyty",
+      "subtitle": "Zarządzaj pobytami i rezerwacjami"
+    },
+    "payments": {
+      "title": "Płatności",
+      "subtitle": "Śledzenie płatności opłaty miejscowej",
+      "totalPaid": "Łącznie opłacone",
+      "totalPending": "Oczekujące",
+      "thisMonth": "W tym miesiącu",
+      "totalRevenue": "Łączny dochód",
+      "searchPlaceholder": "Szukaj po nazwisku gościa...",
+      "filter": {
+        "all": "Wszystkie",
+        "paid": "Opłacone",
+        "pending": "Oczekujące",
+        "overdue": "Przeterminowane"
+      },
+      "export": "Eksportuj",
+      "table": {
+        "guest": "Gość",
+        "dates": "Daty pobytu",
+        "amount": "Kwota",
+        "status": "Status",
+        "paymentDate": "Data płatności",
+        "actions": "Akcje"
+      },
+      "status": {
+        "paid": "Opłacone",
+        "pending": "Oczekujące"
+      }
+    },
+    "reports": {
+      "title": "Raporty",
+      "subtitle": "Analizy i raporty dla celów podatkowych",
+      "configuration": "Konfiguracja raportu",
+      "type": "Typ raportu",
+      "types": {
+        "monthly": "Miesięczny",
+        "quarterly": "Kwartalny",
+        "yearly": "Roczny",
+        "custom": "Niestandardowy"
+      },
+      "period": "Okres",
+      "generate": "Generuj raport",
+      "quickStats": "Szybkie statystyki",
+      "totalStays": "Łączne pobyty",
+      "totalRevenue": "Łączny dochód",
+      "totalTax": "Łączny podatek",
+      "avgStayLength": "Średnia długość",
+      "results": "Wyniki raportu",
+      "table": {
+        "month": "Miesiąc",
+        "stays": "Pobyty",
+        "revenue": "Dochód",
+        "tax": "Podatek",
+        "actions": "Akcje"
+      },
+      "viewDetails": "Szczegóły",
+      "compliance": {
+        "title": "Informacja o zgodności podatkowej",
+        "description": "Raporty są generowane zgodnie z polskimi przepisami dotyczącymi opłaty miejscowej. Zalecamy regularne składanie raportów do odpowiednich urzędów."
+      }
+    }
+  },
+
+  "landlord": {
+    "dashboard": "Panel Właściciela",
+    "dashboardSubtitle": "Zarządzaj płatnościami opłaty miejscowej dla swojej nieruchomości",
+    "generateBill": "Generuj Rachunek QR",
+    "importReservations": "Importuj Rezerwacje",
+    "overview": "Przegląd",
+    "stays": "Pobyty",
+    "reports": "Raporty",
+    "import": "Import",
+    "quickActions": "Szybkie Akcje",
+    "recentReservations": "Ostatnie Rezerwacje",
+    "allReservations": "Wszystkie Rezerwacje",
+    "noReservations": "Nie zaimportowano jeszcze żadnych rezerwacji. Użyj zakładki Import, aby rozpocząć.",
+    "noReservationsYet": "Brak dostępnych rezerwacji. Zaimportuj dane z Booking.com, aby rozpocząć.",
+    "viewReports": "Zobacz Raporty",
+    "paymentsInfo": "Funkcje śledzenia i zarządzania płatnościami będą wkrótce dostępne.",
+    "reportsInfo": "Szczegółowe funkcje raportowania i analityki będą wkrótce dostępne."
+  },
+
+  "import": {
+    "selectFile": "Wybierz plik Excel z Booking.com",
+    "fileFormat": "Obsługiwane formaty: .xlsx, .xls (format eksportu Booking.com)",
+    "selectedFile": "Wybrany plik:",
+    "fileSize": "Rozmiar",
+    "processing": "Przetwarzanie...",
+    "process": "Przetwórz Plik",
+    "processingFile": "Przetwarzanie pliku i parsowanie rezerwacji...",
+    "importStats": "Statystyki Importu",
+    "totalRows": "Łączne Wiersze",
+    "confirmed": "Potwierdzone",
+    "skipped": "Pominięte",
+    "errors": "Błędy",
+    "parseErrors": "Błędy Parsowania",
+    "instructions": "Instrukcje",
+    "step1": "Wyeksportuj swoje rezerwacje z Booking.com jako plik Excel",
+    "step2": "Wybierz wyeksportowany plik używając selektora plików powyżej",
+    "step3": "Kliknij \"Przetwórz Plik\", aby sparsować rezerwacje",
+    "step4": "Przejrzyj i wybierz, które rezerwacje zaimportować",
+    "step5": "Opłata miejscowa zostanie automatycznie obliczona dla każdego gościa",
+    "previewTitle": "Podgląd Rezerwacji",
+    "previewReservations": "Podgląd Rezerwacji",
+    "selectAll": "Zaznacz Wszystkie",
+    "selectNone": "Odznacz Wszystkie",
+    "status": "Status",
+    "taxAmount": "Kwota Opłaty",
+    "importSelected": "Importuj Zaznaczone",
+    "bulkActions": "Akcje grupowe",
+    "changeTaxRate": "Zmień stawkę opłaty",
+    "customTaxRate": "Niestandardowa stawka",
+    "resetToCity": "Przywróć stawkę miasta",
+    "reservationsSelected": "rezerwacji zaznaczonych",
+    "newTaxRate": "Nowa stawka opłaty (PLN za noc)",
+    "taxRateHelp": "Ta stawka zostanie zastosowana do wszystkich zaznaczonych rezerwacji",
+    "selectedReservations": "Zaznaczone rezerwacje",
+    "currentCityRate": "Aktualna stawka miasta",
+    "applyRate": "Zastosuj stawkę",
+    "taxRate": "Stawka opłaty",
+    "instructions": "Prześlij plik eksportu rezerwacji z Booking.com (.xlsx lub .xls) aby zaimportować pobyty i automatycznie obliczyć kwoty opłaty miejscowej.",
+    "dropFile": "Upuść plik Excel tutaj",
+    "supportedFormats": "Obsługiwane formaty: .xlsx, .xls",
+    "noCitySelected": "Proszę wybrać miasto przed importem",
+    "dragOrClick": "Przeciągnij i upuść plik Excel tutaj",
+    "browseFiles": "Przeglądaj pliki",
+    "invalidFileType": "Proszę wybrać plik Excel (.xlsx lub .xls)",
+    "previewReservations": "Podgląd rezerwacji",
+    "selectCity": "Wybierz miasto",
+    "selectCityDescription": "Wybierz miasto, w którym znajdują się te rezerwacje, aby obliczyć prawidłowe stawki opłaty.",
+    "selectCityPlaceholder": "Wybierz miasto...",
+    "quickSelect": "Szybki wybór:",
+    "reservationsToImport": "Rezerwacje do importu"
+  },
+
+  "reservations": {
+    "searchPlaceholder": "Szukaj po nazwisku gościa, numerze rezerwacji...",
+    "noMatchingReservations": "Brak rezerwacji pasujących do aktualnych filtrów"
+  },
+
+  "taxStatus": {
+    "pending": "Oczekująca",
+    "paid": "Opłacona",
+    "exempted": "Zwolniona"
+  },
+
+  "status": {
+    "confirmed": "Potwierdzona",
+    "pending": "Oczekująca",
+    "cancelled": "Anulowana",
+    "noShow": "Niestawienie się"
+  },
+
+  "stays": {
+    "title": "Pobyty według miast",
+    "searchPlaceholder": "Szukaj po nazwisku gościa, numerze rezerwacji...",
+    "selection": "Wybór",
+    "selectAll": "Zaznacz wszystkie",
+    "clearSelection": "Wyczyść",
+    "selectedStays": "pobytów zaznaczonych",
+    "deleteSelected": "Usuń zaznaczone",
+    "confirmBulkDelete": "Czy na pewno chcesz usunąć {count} zaznaczonych pobytów? Ta akcja nie może być cofnięta.",
+    "noStaysYet": "Brak pobytów. Zaimportuj dane z Booking.com, aby rozpocząć.",
+    "noMatchingStays": "Brak pobytów pasujących do aktualnych filtrów."
+  },
+
+  "stats": {
+    "totalReservations": "Łączne Rezerwacje",
+    "pendingPayments": "Oczekujące Płatności",
+    "completedPayments": "Zakończone Płatności",
+    "totalTaxCollected": "Łączna Zebrana Opłata",
+    "thisMonth": "Ten Miesiąc",
+    "taxRevenue": "Przychód z Opłaty",
+    "taxAmount": "Kwota Opłaty",
+    "status": "Status"
+  },
+
+  "mode": {
+    "tourist": "Turysta",
+    "landlord": "Właściciel"
+  },
+
+  "steps": {
+    "destination": "Wybierz miejsce docelowe"
+  },
+
+  "actions": {
+    "newPayment": "Nowa płatność",
+    "preview": "Podgląd rachunku",
+    "downloadPDF": "Pobierz PDF",
+    "sendEmail": "Wyślij email"
+  },
+
+  "sections": {
+    "guestInfo": "Informacje o gościu",
+    "accommodationDetails": "Szczegóły zakwaterowania",
+    "taxCalculation": "Obliczenie opłaty",
+    "billSettings": "Ustawienia rachunku"
+  },
+
+
+
+  "modal": {
+    "billPreview": "Podgląd rachunku"
+  }
+}

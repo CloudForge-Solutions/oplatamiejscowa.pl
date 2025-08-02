@@ -1,0 +1,352 @@
+{
+  "title": "Tourist Tax",
+  "subtitle": "Pay tourist tax online - fast and secure",
+
+  "sections": {
+    "personalInfo": "Personal Information",
+    "destination": "Destination",
+    "stayDetails": "Stay Details",
+    "paymentSummary": "Payment Summary",
+    "receipt": "Payment Receipt"
+  },
+
+  "fields": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "phone": "Phone",
+    "city": "City",
+    "checkInDate": "Check-in Date",
+    "checkOutDate": "Check-out Date",
+    "numberOfPersons": "Number of Persons",
+    "accommodationType": "Accommodation Type",
+    "accommodationName": "Accommodation Name",
+    "accommodationAddress": "Accommodation Address",
+    "guestName": "Guest Name",
+    "guestEmail": "Guest Email",
+    "guestPhone": "Guest Phone",
+    "guestNationality": "Guest Nationality",
+    "numberOfNights": "Number of Nights",
+    "cityName": "City",
+    "taxRatePerNight": "Rate per Night (PLN)",
+    "totalAmount": "Total Amount (PLN)",
+    "billLanguage": "Bill Language",
+    "includeQRCode": "Include QR Code",
+    "includeInstructions": "Include Payment Instructions",
+    "status": "Status",
+    "taxStatus": "Tax Status",
+    "estimatedTax": "Estimated Tax",
+    "taxAmount": "Tax Amount"
+  },
+
+  "placeholders": {
+    "firstName": "Enter first name",
+    "lastName": "Enter last name",
+    "email": "e.g. john.doe@email.com",
+    "phone": "e.g. +48 123 456 789",
+    "accommodationName": "Hotel/apartment name",
+    "accommodationAddress": "Accommodation address"
+  },
+
+  "accommodationTypes": {
+    "hotel": "Hotel",
+    "apartment": "Apartment",
+    "hostel": "Hostel",
+    "camping": "Camping",
+    "other": "Other"
+  },
+
+  "buttons": {
+    "calculateTax": "Calculate Tax",
+    "calculating": "Calculating...",
+    "confirmPayment": "Confirm Payment",
+    "processing": "Processing...",
+    "payNow": "Pay Now",
+    "backToForm": "Back to Form",
+    "newPayment": "New Payment",
+    "downloadReceipt": "Download Receipt"
+  },
+
+  "steps": {
+    "form": "Form",
+    "summary": "Summary",
+    "payment": "Payment",
+    "receipt": "Receipt"
+  },
+
+  "validation": {
+    "required": "Field {{field}} is required",
+    "invalidEmail": "Invalid email address",
+    "pastDate": "Date cannot be in the past",
+    "checkOutAfterCheckIn": "Check-out date must be after check-in date",
+    "minPersons": "Number of persons must be greater than 0",
+    "gdprRequired": "Consent for data processing is required",
+    "formErrors": "Form contains errors:"
+  },
+
+  "summary": {
+    "stayPeriod": "Stay Period",
+    "numberOfNights": "Number of Nights",
+    "numberOfPersons": "Number of Persons",
+    "taxRatePerNight": "Rate per Night",
+    "totalAmount": "Total Amount",
+    "paymentMethod": "Payment Method",
+    "breakdown": "Calculation Details"
+  },
+
+  "payment": {
+    "redirectingToPayment": "Redirecting to payment gateway...",
+    "securePayment": "Secure payment via Tpay",
+    "acceptedMethods": "Accepted payment methods",
+    "processing": "Processing payment..."
+  },
+
+  "receipt": {
+    "paymentSuccessful": "Payment completed successfully",
+    "paymentFailed": "Payment failed",
+    "transactionId": "Transaction ID",
+    "paymentDate": "Payment Date",
+    "confirmationSent": "Confirmation has been sent to your email address",
+    "keepReceipt": "Keep this receipt for potential inspection purposes"
+  },
+
+  "gdpr": {
+    "dataProcessing": "I consent to the processing of my personal data for tourist tax payment purposes",
+    "emailMarketing": "I consent to receiving marketing information at the provided email address",
+    "required": "Required consent",
+    "optional": "Optional consent",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+
+  "cities": {
+    "selectCity": "Select City",
+    "searchPlaceholder": "Search city...",
+    "noResults": "No results",
+    "taxRate": "Tourist tax rate",
+    "popularCities": "Most popular cities:"
+  },
+
+  "stats": {
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "totalTaxAmount": "Total Tax Amount"
+  },
+
+  "errors": {
+    "cityNotFound": "City not found or tourist tax does not apply",
+    "calculationError": "Error calculating tax",
+    "paymentError": "Error processing payment",
+    "networkError": "Network connection error",
+    "unknownError": "An unknown error occurred"
+  },
+
+  "info": {
+    "whatIsTouristTax": "What is tourist tax?",
+    "touristTaxDescription": "Tourist tax is a local tax collected from tourists staying in a given city. The funds from the tax are used for tourism infrastructure development and city promotion.",
+    "whyPayOnline": "Why pay online?",
+    "onlinePaymentBenefits": "By paying online you avoid hotel commission (up to 10%) and ensure the tax goes directly to the municipality.",
+    "securePayment": "Secure Payment",
+    "securePaymentDescription": "All payments are processed by a licensed payment operator with the highest security standards."
+  },
+
+  "landlord": {
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Overview of activity and statistics",
+      "recentActivity": "Recent Activity",
+      "noActivity": "No recent activity. Start by importing reservations or adding a new stay.",
+      "quickActions": "Quick Actions",
+      "getStarted": "Use the navigation menu to start managing stays"
+    },
+    "stats": {
+      "totalReservations": "Reservations",
+      "pendingPayments": "Pending Payments",
+      "completedPayments": "Completed",
+      "totalRevenue": "Total Revenue"
+    },
+    "reservations": {
+      "title": "Stays",
+      "subtitle": "Manage stays and reservations"
+    },
+    "payments": {
+      "title": "Payments",
+      "subtitle": "Tourist tax payment tracking",
+      "totalPaid": "Total Paid",
+      "totalPending": "Pending",
+      "thisMonth": "This Month",
+      "totalRevenue": "Total Revenue",
+      "searchPlaceholder": "Search by guest name...",
+      "filter": {
+        "all": "All",
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      },
+      "export": "Export",
+      "table": {
+        "guest": "Guest",
+        "dates": "Stay Dates",
+        "amount": "Amount",
+        "status": "Status",
+        "paymentDate": "Payment Date",
+        "actions": "Actions"
+      },
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending"
+      }
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Analytics and reports for tax purposes",
+      "configuration": "Report Configuration",
+      "type": "Report Type",
+      "types": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly",
+        "custom": "Custom"
+      },
+      "period": "Period",
+      "generate": "Generate Report",
+      "quickStats": "Quick Statistics",
+      "totalStays": "Total Stays",
+      "totalRevenue": "Total Revenue",
+      "totalTax": "Total Tax",
+      "avgStayLength": "Average Length",
+      "results": "Report Results",
+      "table": {
+        "month": "Month",
+        "stays": "Stays",
+        "revenue": "Revenue",
+        "tax": "Tax",
+        "actions": "Actions"
+      },
+      "viewDetails": "Details",
+      "compliance": {
+        "title": "Tax Compliance Information",
+        "description": "Reports are generated in accordance with Polish tourist tax regulations. We recommend regular submission of reports to relevant authorities."
+      }
+    }
+  },
+
+  "import": {
+    "selectFile": "Select Booking.com Excel File",
+    "fileFormat": "Supported formats: .xlsx, .xls (Booking.com export format)",
+    "selectedFile": "Selected File:",
+    "fileSize": "Size",
+    "processing": "Processing...",
+    "process": "Process File",
+    "processingFile": "Processing file and parsing reservations...",
+    "importStats": "Import Statistics",
+    "totalRows": "Total Rows",
+    "confirmed": "Confirmed",
+    "skipped": "Skipped",
+    "errors": "Errors",
+    "parseErrors": "Parse Errors",
+    "instructions": "Instructions",
+    "step1": "Export your reservations from Booking.com as Excel file",
+    "step2": "Select the exported file using the file picker above",
+    "step3": "Click \"Process File\" to parse the reservations",
+    "step4": "Review and select which reservations to import",
+    "step5": "Tourist tax will be automatically calculated for each guest",
+    "previewTitle": "Preview Reservations",
+    "previewReservations": "Preview Reservations",
+    "selectAll": "Select All",
+    "selectNone": "Select None",
+    "status": "Status",
+    "taxAmount": "Tax Amount",
+    "importSelected": "Import Selected",
+    "bulkActions": "Bulk Actions",
+    "changeTaxRate": "Change Tax Rate",
+    "customTaxRate": "Custom Tax Rate",
+    "resetToCity": "Reset to City Rate",
+    "reservationsSelected": "reservations selected",
+    "newTaxRate": "New Tax Rate (PLN per night)",
+    "taxRateHelp": "This rate will be applied to all selected reservations",
+    "selectedReservations": "Selected reservations",
+    "currentCityRate": "Current city rate",
+    "applyRate": "Apply Rate",
+    "taxRate": "Tax Rate",
+    "instructions": "Upload your Booking.com reservation export file (.xlsx or .xls) to import stays and automatically calculate tourist tax amounts.",
+    "dropFile": "Drop your Excel file here",
+    "supportedFormats": "Supported formats: .xlsx, .xls",
+    "noCitySelected": "Please select a city before importing",
+    "dragOrClick": "Drag & drop your Excel file here",
+    "browseFiles": "Browse Files",
+    "invalidFileType": "Please select an Excel file (.xlsx or .xls)",
+    "previewReservations": "Preview Reservations",
+    "selectCity": "Select City",
+    "selectCityDescription": "Choose the city where these reservations are located to calculate correct tax rates.",
+    "selectCityPlaceholder": "Select a city...",
+    "quickSelect": "Quick select:",
+    "reservationsToImport": "Reservations to Import"
+  },
+
+  "reservations": {
+    "searchPlaceholder": "Search by guest name, reservation number...",
+    "noMatchingReservations": "No reservations match your current filters"
+  },
+
+  "taxStatus": {
+    "pending": "Pending",
+    "paid": "Paid",
+    "exempted": "Exempted"
+  },
+
+  "status": {
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "noShow": "No Show"
+  },
+
+  "stays": {
+    "title": "Stays by City",
+    "searchPlaceholder": "Search by guest name, reservation number...",
+    "selection": "Selection",
+    "selectAll": "Select All",
+    "clearSelection": "Clear",
+    "selectedStays": "stays selected",
+    "deleteSelected": "Delete Selected",
+    "confirmBulkDelete": "Are you sure you want to delete {count} selected stays? This action cannot be undone.",
+    "noStaysYet": "No stays yet. Import data from Booking.com to get started.",
+    "noMatchingStays": "No stays match your current filters."
+  },
+
+  "stats": {
+    "totalReservations": "Total Reservations",
+    "pendingPayments": "Pending Payments",
+    "completedPayments": "Completed Payments",
+    "totalTaxCollected": "Total Tax Collected",
+    "thisMonth": "This Month",
+    "taxRevenue": "Tax Revenue",
+    "taxAmount": "Tax Amount",
+    "status": "Status"
+  },
+
+  "mode": {
+    "tourist": "Tourist",
+    "landlord": "Landlord"
+  },
+
+  "steps": {
+    "destination": "Select destination"
+  },
+
+  "tableActions": "Actions",
+
+  "sections": {
+    "guestInfo": "Guest Information",
+    "accommodationDetails": "Accommodation Details",
+    "taxCalculation": "Tax Calculation",
+    "billSettings": "Bill Settings"
+  },
+
+
+
+  "modal": {
+    "billPreview": "Bill Preview"
+  }
+}

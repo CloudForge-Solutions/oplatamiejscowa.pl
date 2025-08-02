@@ -1,0 +1,230 @@
+{
+  "title": "Opłata miejscowa",
+  "subtitle": "Zapłać opłatę miejscową online - szybko i bezpiecznie",
+
+  "sections": {
+    "personalInfo": "Dane osobowe",
+    "destination": "Miejsce pobytu",
+    "stayDetails": "Szczegóły pobytu",
+    "paymentSummary": "Podsumowanie płatności",
+    "receipt": "Potwierdzenie płatności"
+  },
+
+  "fields": {
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "email": "Adres e-mail",
+    "phone": "Telefon",
+    "city": "Miasto",
+    "checkInDate": "Data zameldowania",
+    "checkOutDate": "Data wymeldowania",
+    "numberOfPersons": "Liczba osób",
+    "accommodationType": "Typ zakwaterowania",
+    "accommodationName": "Nazwa obiektu",
+    "accommodationAddress": "Adres obiektu"
+  },
+
+  "placeholders": {
+    "firstName": "Wprowadź imię",
+    "lastName": "Wprowadź nazwisko",
+    "email": "np. jan.kowalski@email.com",
+    "phone": "np. +48 123 456 789",
+    "accommodationName": "Nazwa hotelu/apartamentu",
+    "accommodationAddress": "Adres zakwaterowania"
+  },
+
+  "accommodationTypes": {
+    "hotel": "Hotel",
+    "apartment": "Apartament",
+    "hostel": "Hostel",
+    "camping": "Kemping",
+    "other": "Inne"
+  },
+
+  "buttons": {
+    "calculateTax": "Oblicz opłatę",
+    "calculating": "Obliczanie...",
+    "confirmPayment": "Potwierdź płatność",
+    "processing": "Przetwarzanie...",
+    "payNow": "Zapłać teraz",
+    "backToForm": "Powrót do formularza",
+    "newPayment": "Nowa płatność",
+    "downloadReceipt": "Pobierz potwierdzenie"
+  },
+
+  "steps": {
+    "form": "Formularz",
+    "summary": "Podsumowanie",
+    "payment": "Płatność",
+    "receipt": "Potwierdzenie"
+  },
+
+  "validation": {
+    "required": "Pole {{field}} jest wymagane",
+    "invalidEmail": "Nieprawidłowy adres e-mail",
+    "pastDate": "Data nie może być z przeszłości",
+    "checkOutAfterCheckIn": "Data wymeldowania musi być późniejsza niż zameldowania",
+    "minPersons": "Liczba osób musi być większa niż 0",
+    "gdprRequired": "Wymagana jest zgoda na przetwarzanie danych osobowych",
+    "formErrors": "Formularz zawiera błędy:"
+  },
+
+  "summary": {
+    "stayPeriod": "Okres pobytu",
+    "numberOfNights": "Liczba nocy",
+    "numberOfPersons": "Liczba osób",
+    "taxRatePerNight": "Stawka za noc",
+    "totalAmount": "Łączna kwota",
+    "paymentMethod": "Metoda płatności",
+    "breakdown": "Szczegóły kalkulacji"
+  },
+
+  "payment": {
+    "redirectingToPayment": "Przekierowywanie do bramki płatniczej...",
+    "securePayment": "Bezpieczna płatność przez Tpay",
+    "acceptedMethods": "Akceptowane metody płatności",
+    "processing": "Przetwarzanie płatności..."
+  },
+
+  "receipt": {
+    "paymentSuccessful": "Płatność zakończona pomyślnie",
+    "paymentFailed": "Płatność nieudana",
+    "transactionId": "Numer transakcji",
+    "paymentDate": "Data płatności",
+    "confirmationSent": "Potwierdzenie zostało wysłane na adres e-mail",
+    "keepReceipt": "Zachowaj to potwierdzenie na potrzeby ewentualnej kontroli"
+  },
+
+  "gdpr": {
+    "dataProcessing": "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji płatności opłaty miejscowej",
+    "emailMarketing": "Wyrażam zgodę na otrzymywanie informacji marketingowych na podany adres e-mail",
+    "required": "Zgoda wymagana",
+    "optional": "Zgoda opcjonalna",
+    "privacyPolicy": "Polityka prywatności",
+    "termsOfService": "Regulamin usługi"
+  },
+
+  "cities": {
+    "selectCity": "Wybierz miasto",
+    "searchPlaceholder": "Wyszukaj miasto...",
+    "noResults": "Brak wyników",
+    "taxRate": "Stawka opłaty miejscowej"
+  },
+
+  "errors": {
+    "cityNotFound": "Nie znaleziono miasta lub opłata miejscowa nie obowiązuje",
+    "calculationError": "Błąd podczas obliczania opłaty",
+    "paymentError": "Błąd podczas przetwarzania płatności",
+    "networkError": "Błąd połączenia z serwerem",
+    "unknownError": "Wystąpił nieznany błąd"
+  },
+
+  "info": {
+    "whatIsTouristTax": "Czym jest opłata miejscowa?",
+    "touristTaxDescription": "Opłata miejscowa to podatek lokalny pobierany od turystów przebywających w danym mieście. Środki z opłaty są przeznaczane na rozwój infrastruktury turystycznej i promocję miasta.",
+    "whyPayOnline": "Dlaczego warto płacić online?",
+    "onlinePaymentBenefits": "Płacąc online omijasz prowizję hotelu (do 10%) i masz pewność, że opłata trafi bezpośrednio do gminy.",
+    "securePayment": "Bezpieczna płatność",
+    "securePaymentDescription": "Wszystkie płatności są przetwarzane przez licencjonowanego operatora płatności z najwyższymi standardami bezpieczeństwa."
+  },
+
+  "landlord": {
+    "dashboard": "Panel Właściciela",
+    "dashboardSubtitle": "Zarządzaj płatnościami opłaty miejscowej dla swojej nieruchomości",
+    "generateBill": "Generuj Rachunek QR",
+    "importReservations": "Importuj Rezerwacje",
+    "overview": "Przegląd",
+    "reservations": "Rezerwacje",
+    "payments": "Płatności",
+    "reports": "Raporty",
+    "import": "Import",
+    "quickActions": "Szybkie Akcje",
+    "recentReservations": "Ostatnie Rezerwacje",
+    "allReservations": "Wszystkie Rezerwacje",
+    "noReservations": "Nie zaimportowano jeszcze żadnych rezerwacji. Użyj zakładki Import, aby rozpocząć.",
+    "noReservationsYet": "Brak dostępnych rezerwacji. Zaimportuj dane z Booking.com, aby rozpocząć.",
+    "viewReports": "Zobacz Raporty",
+    "paymentsInfo": "Funkcje śledzenia i zarządzania płatnościami będą wkrótce dostępne.",
+    "reportsInfo": "Szczegółowe funkcje raportowania i analityki będą wkrótce dostępne."
+  },
+
+  "import": {
+    "selectFile": "Wybierz plik Excel z Booking.com",
+    "fileFormat": "Obsługiwane formaty: .xlsx, .xls (format eksportu Booking.com)",
+    "selectedFile": "Wybrany plik:",
+    "fileSize": "Rozmiar",
+    "processing": "Przetwarzanie...",
+    "process": "Przetwórz Plik",
+    "processingFile": "Przetwarzanie pliku i parsowanie rezerwacji...",
+    "importStats": "Statystyki Importu",
+    "totalRows": "Łączne Wiersze",
+    "confirmed": "Potwierdzone",
+    "skipped": "Pominięte",
+    "errors": "Błędy",
+    "parseErrors": "Błędy Parsowania",
+    "instructions": "Instrukcje",
+    "step1": "Wyeksportuj swoje rezerwacje z Booking.com jako plik Excel",
+    "step2": "Wybierz wyeksportowany plik używając selektora plików powyżej",
+    "step3": "Kliknij \"Przetwórz Plik\", aby sparsować rezerwacje",
+    "step4": "Przejrzyj i wybierz, które rezerwacje zaimportować",
+    "step5": "Opłata miejscowa zostanie automatycznie obliczona dla każdego gościa",
+    "previewTitle": "Podgląd Rezerwacji",
+    "selectAll": "Zaznacz Wszystkie",
+    "selectNone": "Odznacz Wszystkie",
+    "status": "Status",
+    "taxAmount": "Kwota Opłaty",
+    "importSelected": "Importuj Zaznaczone"
+  },
+
+  "stats": {
+    "totalReservations": "Łączne Rezerwacje",
+    "pendingPayments": "Oczekujące Płatności",
+    "completedPayments": "Zakończone Płatności",
+    "totalTaxCollected": "Łączna Zebrana Opłata",
+    "thisMonth": "Ten Miesiąc",
+    "taxRevenue": "Przychód z Opłaty",
+    "taxAmount": "Kwota Opłaty",
+    "status": "Status"
+  },
+
+  "mode": {
+    "tourist": "Turysta",
+    "landlord": "Właściciel"
+  },
+
+  "steps": {
+    "destination": "Wybierz miejsce docelowe"
+  },
+
+  "actions": {
+    "newPayment": "Nowa płatność",
+    "preview": "Podgląd rachunku",
+    "downloadPDF": "Pobierz PDF",
+    "sendEmail": "Wyślij email"
+  },
+
+  "sections": {
+    "guestInfo": "Informacje o gościu",
+    "accommodationDetails": "Szczegóły zakwaterowania",
+    "taxCalculation": "Obliczenie opłaty",
+    "billSettings": "Ustawienia rachunku"
+  },
+
+  "fields": {
+    "guestName": "Imię i nazwisko gościa",
+    "guestEmail": "Email gościa",
+    "guestPhone": "Telefon gościa",
+    "guestNationality": "Narodowość gościa",
+    "numberOfNights": "Liczba nocy",
+    "cityName": "Miasto",
+    "taxRatePerNight": "Stawka za noc (PLN)",
+    "totalAmount": "Łączna kwota (PLN)",
+    "billLanguage": "Język rachunku",
+    "includeQRCode": "Dołącz kod QR",
+    "includeInstructions": "Dołącz instrukcje płatności"
+  },
+
+  "modal": {
+    "billPreview": "Podgląd rachunku"
+  }
+}

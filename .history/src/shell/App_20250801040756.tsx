@@ -1,0 +1,54 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+// Import i18n configuration
+import './i18n/config';
+
+// Import components
+import ErrorBoundary from './components/ErrorBoundary';
+import Layout from './components/Layout';
+
+import NotFoundPage from './components/NotFoundPage';
+
+// Import tourist tax app
+import TouristTaxPage from '../apps/tourist-tax/TouristTaxPage';
+import TouristPaymentForm from '../apps/tourist-tax/components/TouristPaymentForm';
+import LandlordDashboard from '../apps/tourist-tax/components/LandlordDashboard';
+
+// Import context providers
+import { LanguageProvider } from './context/LanguageContext';
+
+const App: React.FC = () => {
+  return (
+    <ErrorBoundary>
+      <LanguageProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              {/* Tourist Mode Routes */}
+              <Route path='/' element={<TouristPaymentForm />} />
+              <Route path='/tourist' element={<TouristPaymentForm />} />
+              <Route path='/pay' element={<TouristPaymentForm />} />
+
+              {/* Landlord Mode Routes */}
+              <Route path='/landlord' element={<LandlordDashboard />} />
+              <Route path='/landlord/*' element={<LandlordDashboard />} />
+
+              {/* Legacy routes */}
+              <Route path='/tourist-tax' element={<TouristTaxPage />} />
+              <Route path='/payment' element={<Navigate to='/' replace />} />
+
+              {/* 404 page */}
+              <Route path='*' element={<NotFoundPage />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </LanguageProvider>
+    </ErrorBoundary>
+  );
+};
+
+export default App;

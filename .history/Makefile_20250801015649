@@ -1,0 +1,326 @@
+#===================================================================================================
+#=== Tourist Tax Payment System - Makefile
+#===================================================================================================
+# Project: Opłata Miejscowa Online
+# Description: Tourist tax payment system for Polish cities
+# Tech Stack: React + TypeScript + Vite + imoje Payment Gateway
+#===================================================================================================
+
+# Force specific make behavior for reliability
+.EXPORT_ALL_VARIABLES:
+MAKEFLAGS     += --no-builtin-rules
+MAKEFLAGS     += --no-print-directory
+MAKEFLAGS     += --warn-undefined-variables
+MAKEFLAGS     += -j1
+
+# Shell configuration for robust script execution
+.ONESHELL:
+.SHELL        := $(shell which bash)
+SHELL         := $(shell which bash)
+.SHELLFLAGS   := -eu -o pipefail -c
+SHELL_NAME    := $(notdir ${SHELL})
+SHELL_VERSION := $(shell echo $${BASH_VERSION%%[^0-9.]*})
+
+#===================================================================================================
+#=== Project Configuration
+#===================================================================================================
+
+# Load environment variables
+-include .env
+-include .env.local
+
+# Project metadata
+PROJECT_NAME        := oplata-miejscowa
+PROJECT_TITLE       := "Opłata Miejscowa Online"
+PROJECT_DESCRIPTION := "Tourist tax payment system for Polish cities"
+DOMAIN              ?= oplatamiejscowa.pl
+VERSION             := $(shell cat VERSION 2>/dev/null || echo "1.0.0")
+BUILD_ID            := $(shell date +%Y%m%d-%H%M%S)
+
+# System configuration
+UID                 := $(shell id -u)
+GID                 := $(shell id -g)
+USERNAME            := $(shell whoami)
+
+#===================================================================================================
+#=== Development Environment Configuration
+#===================================================================================================
+
+# Node.js configuration
+NVM_NODE_VERSION    ?= lts/jod
+NVM_DIR             := ${HOME}/.nvm
+NODE_ENV            ?= development
+
+# Development server configuration
+DEV_PORT            ?= 3040
+DEV_HOST            ?= localhost
+PREVIEW_PORT        ?= 3041
+
+# Build configuration
+BUILD_MODE          ?= production
+VITE_MODE           ?= $(BUILD_MODE)
+SOURCE_MAP          ?= true
+
+# Testing configuration
+TEST_TIMEOUT        ?= 30000
+TEST_COVERAGE       ?= true
+
+# Quality assurance configuration
+LINT_FIX            ?= false
+FORMAT_CHECK        ?= false
+
+#===================================================================================================
+#=== Makefile Targets
+#===================================================================================================
+
+.PHONY: help install build dev clean test lint lint-fix format format-check serve deploy docker-build docker-run lighthouse lighthouse-local jscpd jsinspect quality-check fix-all quality e2e dev-quality dev-quality-fix dev-quality-sequential dev-quality-fast dev-console
+
+# Default target
+help: ## Show this help message
+	@echo "📋 Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+# Install dependencies
+install: ## Install npm dependencies
+	@echo "📦 Installing dependencies..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION} || nvm install ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "📋 NPM version: $$(npm --version)"
+	@echo "🔧 Installing TypeScript for gradual migration..."
+	@npm install
+	@cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/workers/
+	@echo "✅ Dependencies installed successfully!"
+
+set_version:
+	@echo '{ "version" : "$(VERSION)-$(BUILD_ID)" }' > config/VERSION.json
+	echo VERSION=$(VERSION) > .env.dc
+	echo BUILD_ID=$(BUILD_ID) >> .env.dc
+
+dc_recreate:  set_version
+	@docker volume rm -f weviate_data || true
+	@docker compose --env-file .env.dc up -d --force-recreate --remove-orphans --renew-anon-volumes
+
+# Build the application for production
+build:   ## Build for production
+	@echo "🔨 Building for production..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "📋 NPM version: $$(npm --version)"
+	@echo "📋 Application version: $(VERSION)"
+	@echo "🧹 Cleaning previous build..."
+	@rm -rf dist/
+	@mkdir -p dist
+	@echo "🎨 Building templates..."
+	@NODE_ENV=production npm run build:templates
+	@echo "🔨 Building with webpack for production..."
+	@NODE_ENV=production npm run build
+	@echo "✅ Application built successfully!"
+	@echo "📁 Built files are in the dist/ directory"
+	@echo "🔍 Verifying build output..."
+	@ls -la dist/
+	@echo "🎉 Production build complete!"
+
+
+# React Development Commands - SIMPLIFIED ARCHITECTURE
+dev:   ## Start React development server (TAB parameter deprecated - React handles all routes)
+	@echo "🚀 Starting React application development server..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🌐 Checking if port $(DEV_PORT) is already in use..."
+	@if lsof -iTCP:$(DEV_PORT) -sTCP:LISTEN -t >/dev/null; then \
+		echo "✅ Server already running on http://$(DEV_HOST):$(DEV_PORT). Skipping start."; \
+	else \
+		echo "🌐 Starting server on http://$(DEV_HOST):$(DEV_PORT)"; \
+		npm run dev:react; \
+	fi
+
+
+preview:
+	@echo "🚀 ..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🌐 Starting server on http://$(DEV_HOST):3080"
+	@npm run preview
+
+# Clean build artifacts
+clean: ## Clean build artifacts and node_modules
+	@echo "🧹 Cleaning build artifacts..."
+	@rm -rf dist/
+	@rm -rf node_modules/
+	@rm -rf .webpack-cache/
+	@echo "✅ Clean complete!"
+
+# Run tests
+test:  ## Run tests
+	@echo "🧪 Running tests..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run test
+	@echo "✅ Tests completed!"
+
+
+# Lint code
+lint: ## Run ESLint
+	@echo "🔍 Running ESLint..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run lint
+	@echo "✅ Linting completed!"
+
+# Fix lint issues automatically
+lint-fix:  ## Fix ESLint issues automatically
+	@echo "🔧 Running ESLint with auto-fix..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	npm install --save-dev @stylistic/eslint-plugin
+
+	#@npm run lint:fix ./src
+	@echo "✅ Lint fixes applied!"
+
+
+# Format code
+format: ## Format code with Prettier
+	@echo "💅 Formatting code..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run format
+	@echo "✅ Code formatted!"
+
+# Check code formatting
+format-check: ## Check code formatting with Prettier
+	@echo "🔍 Checking code formatting..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run format:check
+	@echo "✅ Format check completed!"
+
+
+
+# Fix all issues automatically
+fix-all: ## Run lint-fix and format in sequence
+	@echo "🔧 Running comprehensive fixes..."
+	@$(MAKE) lint-fix
+	@$(MAKE) format
+	@echo "✅ All fixes applied!"
+
+# Serve built application
+serve: build ## Serve production build locally
+	@echo "🌐 Serving production build..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📁 Serving from dist/ directory"
+	@npx http-server dist -p $(DEV_PORT) -o
+	@echo "🌐 Application available at http://$(DEV_HOST):$(DEV_PORT)"
+
+# Development with watch mode
+watch: ## Start development with file watching
+	@echo "👀 Starting development with file watching..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run watch
+
+# Build for staging
+build-staging: ## Build for staging environment
+	@echo "🔨 Building for staging..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@NODE_ENV=staging npm run build
+	@echo "✅ Staging build complete!"
+
+# Security audit
+audit: ## Run npm security audit
+	@echo "🔒 Running security audit..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm audit
+	@echo "✅ Security audit completed!"
+
+# Update dependencies
+update: ## Update npm dependencies
+	@echo "📦 Updating dependencies..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm update
+	@echo "✅ Dependencies updated!"
+
+
+# Docker targets (if needed for containerization)
+compose-up: ## Start Docker Compose
+	@echo "🐳 Starting Docker Compose..."
+	@sudo docker compose up
+	@echo "✅ Docker Compose started!"
+
+# Show project info
+info: ## Show project information
+	@echo "📋 Project Information:"
+	@echo "  Name: $(PROJECT_NAME)"
+	@echo "  Version: $(VERSION)"
+	@echo "  Domain: $(DOMAIN)"
+	@echo "  Node Version: $(NVM_NODE_VERSION)"
+	@echo "  Build Mode: $(BUILD_MODE)"
+	@echo "  Dev Port: $(DEV_PORT)"
+
+
+# >>> jscpd --help
+# Usage: jscpd [options] <path ...>
+#
+# detector of copy/paste in files
+#
+# Options:
+#   -V, --version              output the version number
+#   -l, --min-lines [number]   min size of duplication in code lines (Default is 5)
+#   -k, --min-tokens [number]  min size of duplication in code tokens (Default is 50)
+#   -x, --max-lines [number]   max size of source in lines (Default is 1000)
+#   -z, --max-size [string]    max size of source in bytes, examples: 1kb, 1mb, 120kb (Default is 100kb)
+#   -t, --threshold [number]   threshold for duplication, in case duplications >= threshold jscpd will exit with error
+#   -c, --config [string]      path to config file (Default is .jscpd.json in <path>)
+#   -i, --ignore [string]      glob pattern for files what should be excluded from duplication detection
+#   --ignore-pattern [string]  Ignore code blocks matching the regexp patterns
+#   -r, --reporters [string]   reporters or list of reporters separated with comma to use (Default is time,console)
+#   -o, --output [string]      reporters to use (Default is ./report/)
+#   -m, --mode [string]        mode of quality of search, can be "strict", "mild" and "weak" (Default is "function mild(token) {
+#     return strict(token) && token.type !== "empty" && token.type !== "new_line";
+#   }")
+#   -f, --format [string]      format or formats separated by comma (Example php,javascript,python)
+#   -p, --pattern [string]     glob pattern to file search (Example **/*.txt)
+#   -b, --blame                blame authors of duplications (get information about authors from git)
+#   -s, --silent               do not write detection progress and result to a console
+#   --store [string]           use for define custom store (e.g. --store leveldb used for big codebase)
+#   -a, --absolute             use absolute path in reports
+#   -n, --noSymlinks           dont use symlinks for detection in files
+#   --ignoreCase               ignore case of symbols in code (experimental)
+#   -g, --gitignore            ignore all files from .gitignore file
+#   --formats-exts [string]    list of formats with file extensions (javascript:es,es6;dart:dt)
+#   -d, --debug                show debug information, not run detection process(options list and selected files)
+#   -v, --verbose              show full information during detection process
+#   --list                     show list of total supported formats
+#   --skipLocal                skip duplicates in local folders, just detect cross folders duplications
+#   --exitCode [number]        exit code to use when code duplications are detected
+#   -h, --help                 display help for command
+
+# >>> jsinspect --help
+# Usage: jsinspect [options] <paths ...>
+#
+#
+#   Detect copy-pasted and structurally similar JavaScript code
+#   Example use: jsinspect -I -L -t 20 --ignore "test" ./path/to/src
+#
+#
+# Options:
+#   -V, --version                      output the version number
+#   -t, --threshold <number>           number of nodes (default: 30)
+#   -m, --min-instances <number>       min instances for a match (default: 2)
+#   -c, --config [config]              path to config file (default: .jsinspectrc) (default: ".jsinspectrc")
+#   -r, --reporter [default|json|pmd]  specify the reporter to use
+#   -I, --no-identifiers               do not match identifiers
+#   -L, --no-literals                  do not match literals
+#   -C, --no-color                     disable colors
+#   --ignore <pattern>                 ignore paths matching a regex
+#   --truncate <number>                length to truncate lines (default: 100, off: 0)
+#   --debug                            print debug information
+#   -h, --help                         output usage information
+
+

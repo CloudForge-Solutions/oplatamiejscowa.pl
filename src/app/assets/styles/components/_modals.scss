@@ -1,0 +1,55 @@
+/**
+ * Modal Components Styles
+ * Tourist Tax Payment System
+ */
+
+// Import Preview Modal
+.import-preview-modal {
+  .import-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+  }
+
+  .import-table-checkbox-col {
+    width: 40px;
+    text-align: center;
+  }
+
+  .import-summary-card {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .import-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    margin-top: var(--space-4);
+  }
+}
+
+// General modal improvements
+.modal-content {
+  border-radius: var(--border-radius-lg);
+  border: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-5);
+}
+
+.modal-body {
+  padding: var(--space-5);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+  padding: var(--space-5);
+}

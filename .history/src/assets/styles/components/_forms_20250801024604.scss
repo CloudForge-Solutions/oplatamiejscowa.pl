@@ -1,0 +1,11 @@
+// Form component styles
+
+.form-control {
+  border-radius: var(--border-radius);
+  transition: all var(--transition-fast);
+  
+  &:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color), 0.25);
+  }
+}

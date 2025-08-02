@@ -1,0 +1,122 @@
+{
+  "app": {
+    "name": "Opłata Miejscowa Online",
+    "tagline": "Szybko i bezpiecznie",
+    "description": "System płatności opłaty miejscowej dla polskich miast",
+    "version": "1.0.0"
+  },
+  "actions": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "add": "Dodaj",
+    "submit": "Wyślij",
+    "confirm": "Potwierdź",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "close": "Zamknij",
+    "search": "Szukaj",
+    "filter": "Filtruj",
+    "reset": "Resetuj",
+    "refresh": "Odśwież",
+    "download": "Pobierz",
+    "upload": "Prześlij",
+    "print": "Drukuj",
+    "copy": "Kopiuj",
+    "select": "Wybierz",
+    "clear": "Wyczyść",
+    "selectAll": "Zaznacz wszystkie",
+    "generateBill": "Generuj rachunek z QR",
+    "importReservations": "Importuj rezerwacje",
+    "import": "Import"
+  },
+  "loading": "Ładowanie...",
+  "all": "Wszystkie",
+  "of": "z",
+  "cancel": "Anuluj",
+  "common": {
+    "loading": "Ładowanie...",
+    "search": "Szukaj",
+    "all": "Wszystkie",
+    "of": "z"
+  },
+  "status": {
+    "loading": "Ładowanie...",
+    "saving": "Zapisywanie...",
+    "saved": "Zapisano",
+    "error": "Błąd",
+    "success": "Sukces",
+    "warning": "Ostrzeżenie",
+    "info": "Informacja",
+    "processing": "Przetwarzanie...",
+    "completed": "Zakończono",
+    "pending": "Oczekuje",
+    "failed": "Niepowodzenie"
+  },
+  "validation": {
+    "required": "To pole jest wymagane",
+    "email": "Wprowadź prawidłowy adres email",
+    "phone": "Wprowadź prawidłowy numer telefonu",
+    "date": "Wprowadź prawidłową datę",
+    "number": "Wprowadź prawidłową liczbę",
+    "min": "Minimalna wartość: {{min}}",
+    "max": "Maksymalna wartość: {{max}}",
+    "minLength": "Minimalna długość: {{min}} znaków",
+    "maxLength": "Maksymalna długość: {{max}} znaków"
+  },
+  "messages": {
+    "noData": "Brak danych",
+    "noResults": "Brak wyników",
+    "confirmDelete": "Czy na pewno chcesz usunąć?",
+    "unsavedChanges": "Masz niezapisane zmiany. Czy chcesz kontynuować?",
+    "operationSuccess": "Operacja zakończona pomyślnie",
+    "operationFailed": "Operacja nie powiodła się",
+    "connectionError": "Błąd połączenia",
+    "sessionExpired": "Sesja wygasła",
+    "accessDenied": "Brak dostępu"
+  },
+  "time": {
+    "now": "teraz",
+    "today": "dzisiaj",
+    "yesterday": "wczoraj",
+    "tomorrow": "jutro",
+    "thisWeek": "w tym tygodniu",
+    "lastWeek": "w zeszłym tygodniu",
+    "thisMonth": "w tym miesiącu",
+    "lastMonth": "w zeszłym miesiącu",
+    "thisYear": "w tym roku",
+    "lastYear": "w zeszłym roku"
+  },
+  "currency": {
+    "pln": "PLN",
+    "symbol": "zł",
+    "format": "{{amount}} zł"
+  },
+  "units": {
+    "days": "dni",
+    "nights": "nocy",
+    "persons": "osób",
+    "adults": "dorosłych",
+    "children": "dzieci"
+  },
+  "mode": {
+    "tourist": "Turysta",
+    "landlord": "Właściciel"
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "reservations": "Pobyty i płatności",
+    "payments": "Płatności",
+    "reports": "Raporty",
+    "help": "Pomoc",
+    "navbar": {
+      "language": "Język"
+    }
+  },
+  "help": {
+    "guide": "Przewodnik",
+    "contact": "Kontakt",
+    "about": "O aplikacji"
+  }
+}

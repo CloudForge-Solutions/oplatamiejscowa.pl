@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Meta Tags -->
+  <title>Opłata Miejscowa Online - Bezpieczna płatność dla turystów</title>
+  <meta name="description" content="Zapłać opłatę miejscową online bez prowizji hotelu. Bezpieczne płatności przez Tpay dla turystów odwiedzających polskie miasta." />
+  <meta name="keywords" content="opłata miejscowa, tourist tax, płatność online, Tpay, turystyka, Polska" />
+  <meta name="author" content="Opłata Miejscowa" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://oplatamiejscowa.pl/" />
+  <meta property="og:title" content="Opłata Miejscowa Online - Bezpieczna płatność dla turystów" />
+  <meta property="og:description" content="Zapłać opłatę miejscową online bez prowizji hotelu. Bezpieczne płatności przez Tpay." />
+  <meta property="og:image" content="/assets/images/og-image.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://oplatamiejscowa.pl/" />
+  <meta property="twitter:title" content="Opłata Miejscowa Online" />
+  <meta property="twitter:description" content="Zapłać opłatę miejscową online bez prowizji hotelu." />
+  <meta property="twitter:image" content="/assets/images/og-image.jpg" />
+
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://secure.tpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.tpay.com https://*.azure.com;" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://secure.tpay.com" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Opłata Miejscowa Online",
+    "description": "Aplikacja do płatności opłaty miejscowej dla turystów w Polsce",
+    "url": "https://oplatamiejscowa.pl",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "PLN"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "Opłata Miejscowa"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/shell/main.tsx"></script>
+    <!-- Tourist Mode Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+        <div class="container-fluid">
+            <!-- Brand Logo -->
+            <a class="navbar-brand d-flex align-items-center me-4" href="#" style="cursor: pointer;">
+                <div class="app-logo me-2">T</div>
+                <span class="fw-bold text-dark">Tourist Tax Online</span>
+            </a>
+
+            <!-- Right Side Controls -->
+            <div class="d-flex align-items-center gap-2">
+                <!-- Switch to Landlord Mode -->
+                <button class="btn btn-outline-primary btn-sm d-flex align-items-center" title="Właściciel">
+                    <i class="bi bi-building me-1"></i>
+                    <span class="d-none d-md-inline">Właściciel</span>
+                </button>
+
+                <!-- Language Switcher -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-globe me-1"></i>
+                        <span class="d-none d-md-inline">PL</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Polski</a></li>
+                        <li><a class="dropdown-item" href="#">English</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landlord Mode Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm mt-4">
+        <div class="container-fluid">
+            <!-- Brand Logo -->
+            <a class="navbar-brand d-flex align-items-center me-4" href="#" style="cursor: pointer;">
+                <div class="app-logo me-2">T</div>
+                <span class="fw-bold text-dark">Tourist Tax Online</span>
+            </a>
+
+            <!-- Main Navigation -->
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" style="cursor: pointer;">
+                        <i class="bi bi-speedometer2 me-1"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="cursor: pointer;">
+                        <i class="bi bi-calendar-check me-1"></i>
+                        Reservations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="cursor: pointer;">
+                        <i class="bi bi-credit-card me-1"></i>
+                        Payments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="cursor: pointer;">
+                        <i class="bi bi-graph-up me-1"></i>
+                        Reports
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Right Side Controls -->
+            <div class="d-flex align-items-center gap-2">
+                <!-- Switch to Tourist Mode -->
+                <button class="btn btn-outline-secondary btn-sm d-flex align-items-center" title="Turysta">
+                    <i class="bi bi-person me-1"></i>
+                    <span class="d-none d-md-inline">Turysta</span>
+                </button>
+
+                <!-- Language Switcher -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-globe me-1"></i>
+                        <span class="d-none d-md-inline">PL</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Polski</a></li>
+                        <li><a class="dropdown-item" href="#">English</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+  <!-- Loading fallback -->
+  <noscript>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h1>Opłata Miejscowa Online</h1>
+      <p>Ta aplikacja wymaga włączonego JavaScript.</p>
+      <p>Prosimy o włączenie JavaScript w przeglądarce i odświeżenie strony.</p>
+    </div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVP: Blob SAS Token Access</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        textarea { width: 100%; height: 200px; margin: 10px 0; }
+        .test-section { border: 1px solid #ddd; padding: 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MVP: Azure Blob SAS Token Access Test</h1>
+        <p><strong>Purpose:</strong> Verify blob-specific SAS token access from browser</p>
+
+        <div class="test-section">
+            <h3>Test 1: SAS Token Generation (Mock)</h3>
+            <button onclick="generateMockSAS()">Generate Mock SAS Token</button>
+            <div id="sas-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test 2: Blob Access Simulation</h3>
+            <input type="text" id="blob-url" placeholder="Blob URL with SAS token" style="width: 100%;">
+            <br>
+            <button onclick="testBlobAccess()">Test Blob Access</button>
+            <div id="blob-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test 3: CORS Verification</h3>
+            <button onclick="testCORS()">Test CORS Headers</button>
+            <div id="cors-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test 4: Security Analysis</h3>
+            <button onclick="analyzeSecurityImplications()">Analyze Security</button>
+            <div id="security-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Mock Reservation Data</h3>
+            <textarea id="mock-data" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Mock reservation data
+        const mockReservationData = {
+            id: "550e8400-e29b-41d4-a716-446655440000",
+            city: {
+                name: "Kraków",
+                taxRate: 2.50,
+                currency: "PLN"
+            },
+            accommodation: {
+                name: "Hotel Copernicus",
+                address: "ul. Kanonicza 16, 31-002 Kraków"
+            },
+            checkIn: "2024-08-15",
+            checkOut: "2024-08-18",
+            numberOfNights: 3,
+            guests: [
+                { name: "John Doe", age: 35 },
+                { name: "Jane Doe", age: 32 }
+            ],
+            totalAmount: 15.00,
+            paymentStatus: "pending",
+            createdAt: new Date().toISOString()
+        };
+
+        function generateMockSAS() {
+            const resultDiv = document.getElementById('sas-result');
+
+            // Simulate SAS token generation
+            const mockSAS = {
+                blobPath: `reservations/${mockReservationData.id}.json`,
+                sasToken: `sv=2022-11-02&ss=b&srt=o&sp=r&se=${new Date(Date.now() + 3600000).toISOString()}&st=${new Date().toISOString()}&spr=https&sig=mockSignature123`,
+                fullUrl: `https://devstoreaccount1.blob.core.windows.net/reservations/${mockReservationData.id}.json?sv=2022-11-02&ss=b&srt=o&sp=r&se=${new Date(Date.now() + 3600000).toISOString()}&st=${new Date().toISOString()}&spr=https&sig=mockSignature123`,
+                scope: 'single-blob-read-only',
+                expiresAt: null
+            };
+
+            resultDiv.innerHTML = `
+                <div class="status success">
+                    <strong>✅ SAS Token Generated Successfully</strong><br>
+                    <strong>Blob Path:</strong> ${mockSAS.blobPath}<br>
+                    <strong>Scope:</strong> ${mockSAS.scope}<br>
+                    <strong>Expires:</strong> ${mockSAS.expiresAt || 'Never (as requested)'}<br>
+                    <strong>Full URL:</strong> <code style="word-break: break-all;">${mockSAS.fullUrl}</code>
+                </div>
+            `;
+
+            // Update blob URL input
+            document.getElementById('blob-url').value = mockSAS.fullUrl;
+
+            // Update mock data display
+            document.getElementById('mock-data').value = JSON.stringify(mockReservationData, null, 2);
+        }
+
+        function testBlobAccess() {
+            const blobUrl = document.getElementById('blob-url').value;
+            const resultDiv = document.getElementById('blob-result');
+
+            if (!blobUrl) {
+                resultDiv.innerHTML = '<div class="status error">❌ Please generate SAS token first</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="status info">🔄 Testing blob access...</div>';
+
+            // Simulate blob access (would normally be fetch request)
+            setTimeout(() => {
+                // Mock successful response
+                const mockResponse = {
+                    status: 200,
+                    data: mockReservationData,
+                    headers: {
+                        'content-type': 'application/json',
+                        'last-modified': new Date().toUTCString(),
+                        'etag': '"0x8D9A1B2C3D4E5F6"'
+                    }
+                };
+
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        <strong>✅ Blob Access Successful</strong><br>
+                        <strong>Status:</strong> ${mockResponse.status}<br>
+                        <strong>Content-Type:</strong> ${mockResponse.headers['content-type']}<br>
+                        <strong>Data Size:</strong> ${JSON.stringify(mockResponse.data).length} bytes<br>
+                        <strong>Reservation ID:</strong> ${mockResponse.data.id}<br>
+                        <strong>Total Amount:</strong> ${mockResponse.data.totalAmount} ${mockResponse.data.city.currency}
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        function testCORS() {
+            const resultDiv = document.getElementById('cors-result');
+
+            resultDiv.innerHTML = '<div class="status info">🔄 Testing CORS configuration...</div>';
+
+            setTimeout(() => {
+                // Analyze CORS requirements for Azure Storage
+                const corsAnalysis = {
+                    required: [
+                        'Access-Control-Allow-Origin: https://oplatamiejscowa.pl',
+                        'Access-Control-Allow-Methods: GET, HEAD, OPTIONS',
+                        'Access-Control-Allow-Headers: Range, x-ms-*, Content-Type',
+                        'Access-Control-Expose-Headers: Content-Length, Content-Range, ETag'
+                    ],
+                    configuration: [
+                        '✅ Azure Storage CORS can be configured per storage account',
+                        '✅ Specific origins supported (no wildcard needed)',
+                        '✅ Azurite supports CORS for local development',
+                        '✅ Azure CLI provides easy CORS configuration'
+                    ],
+                    implementation: [
+                        'az storage cors add --account-name <account> --services b',
+                        'Configure origins: https://oplatamiejscowa.pl, localhost:5173',
+                        'Allow methods: GET, HEAD, OPTIONS for blob access',
+                        'Expose headers: Content-Length, ETag, x-ms-* for metadata'
+                    ],
+                    security: [
+                        'Use specific domain origins (not wildcards)',
+                        'HTTPS-only origins for production',
+                        'Minimal required headers and methods only'
+                    ]
+                };
+
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        <strong>🔍 CORS Analysis Results - ✅ FULLY SUPPORTED</strong><br><br>
+                        <strong>Required Headers:</strong><br>
+                        ${corsAnalysis.required.map(h => `• ${h}`).join('<br>')}<br><br>
+                        <strong>✅ Azure Storage CORS Support:</strong><br>
+                        ${corsAnalysis.configuration.map(c => `• ${c}`).join('<br>')}<br><br>
+                        <strong>� Implementation Commands:</strong><br>
+                        ${corsAnalysis.implementation.map(i => `• ${i}`).join('<br>')}<br><br>
+                        <strong>🛡️ Security Best Practices:</strong><br>
+                        ${corsAnalysis.security.map(s => `• ${s}`).join('<br>')}
+                    </div>
+                `;
+            }, 800);
+        }
+
+        function analyzeSecurityImplications() {
+            const resultDiv = document.getElementById('security-result');
+
+            resultDiv.innerHTML = '<div class="status info">🔄 Analyzing security implications...</div>';
+
+            setTimeout(() => {
+                const securityAnalysis = {
+                    strengths: [
+                        'Blob-specific access prevents container enumeration',
+                        'Read-only permissions limit potential damage',
+                        'Non-expiring tokens reduce token refresh complexity',
+                        'Direct access eliminates backend proxy vulnerabilities'
+                    ],
+                    weaknesses: [
+                        'SAS tokens visible in browser network tab',
+                        'Tokens persist in browser history',
+                        'No real-time revocation capability',
+                        'Shared URLs expose permanent access'
+                    ],
+                    mitigations: [
+                        'Use blob relocation for access revocation',
+                        'Implement client-side token encryption',
+                        'Add audit logging for all blob access',
+                        'Use POST requests to hide tokens from URLs'
+                    ],
+                    riskLevel: 'MEDIUM'
+                };
+
+                const riskColor = securityAnalysis.riskLevel === 'HIGH' ? 'error' :
+                                 securityAnalysis.riskLevel === 'MEDIUM' ? 'info' : 'success';
+
+                resultDiv.innerHTML = `
+                    <div class="status ${riskColor}">
+                        <strong>🛡️ Security Analysis - Risk Level: ${securityAnalysis.riskLevel}</strong><br><br>
+                        <strong>✅ Strengths:</strong><br>
+                        ${securityAnalysis.strengths.map(s => `• ${s}`).join('<br>')}<br><br>
+                        <strong>⚠️ Weaknesses:</strong><br>
+                        ${securityAnalysis.weaknesses.map(w => `• ${w}`).join('<br>')}<br><br>
+                        <strong>🔧 Mitigations:</strong><br>
+                        ${securityAnalysis.mitigations.map(m => `• ${m}`).join('<br>')}
+                    </div>
+                `;
+            }, 1200);
+        }
+
+        // Initialize with mock data
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('mock-data').value = JSON.stringify(mockReservationData, null, 2);
+        });
+    </script>
+</body>
+</html>

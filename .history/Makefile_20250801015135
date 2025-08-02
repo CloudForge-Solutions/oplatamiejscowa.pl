@@ -1,0 +1,763 @@
+#===================================================================================================
+#=== Makefile Configuration
+#===================================================================================================
+
+# Force specific make behavior
+.EXPORT_ALL_VARIABLES:
+MAKEFLAGS     += --always-make
+MAKEFLAGS     += --no-builtin-rules
+MAKEFLAGS     += --no-print-directory
+MAKEFLAGS     += --warn-undefined-variables
+MAKEFLAGS     += -j1
+
+# Shell configuration
+.ONESHELL:    # enable multiline shell scripts as targets
+.SHELL        := $(shell which bash)
+SHELL         := $(shell which bash)
+.SHELLFLAGS   := -eu -o pipefail -c
+SHELL_NAME    := $(notdir ${SHELL})
+SHELL_VERSION := $(shell echo $${BASH_VERSION%%[^0-9.]*})
+
+# Sudo configuration
+SUDO          ?= $(shell which sudo || true)
+___XHOST___   ?= $(shell xhost +local:docker)
+
+M             ?= $(shell which gmake)
+
+#===================================================================================================
+#=== Local / App Configuration
+#===================================================================================================
+
+-include .env
+
+AZURE_CONFIG_DIR := $(HOME)/.azure/tenant.d/$(AZ_TENANT_ID)
+AZURE_LOGIN_CONFIG := $(AZURE_CONFIG_DIR)
+
+# User/Group configuration
+UID                 := $(shell id -u)
+GID                 := $(shell id -g)
+USERNAME            := app
+
+PROJECT_NAME        ?= invoice-processor
+DOMAIN              ?= invoice-processor.app
+
+VERSION             := $(shell cat VERSION || echo "0.0.0")
+BUILD_ID            := a7f0
+# $(shell openssl rand --hex 2)
+
+#===================================================================================================
+#=== Development Configuration
+#===================================================================================================
+
+# Node configuration
+NVM_NODE_VERSION ?= lts/jod
+NVM_DIR := ${HOME}/.nvm
+
+# Development server configuration
+DEV_PORT ?= 3000
+DEV_HOST ?= localhost
+
+# Build configuration
+BUILD_MODE ?= production
+WEBPACK_MODE ?= $(BUILD_MODE)
+
+#===================================================================================================
+#=== Makefile Targets
+#===================================================================================================
+
+.PHONY: help install build dev clean test lint lint-fix format format-check serve deploy docker-build docker-run lighthouse lighthouse-local jscpd jsinspect quality-check fix-all quality e2e dev-quality dev-quality-fix dev-quality-sequential dev-quality-fast dev-console
+
+# Default target
+help: ## Show this help message
+	@echo "📋 Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+# Install dependencies
+install: ## Install npm dependencies
+	@echo "📦 Installing dependencies..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION} || nvm install ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "📋 NPM version: $$(npm --version)"
+	@echo "🔧 Installing TypeScript for gradual migration..."
+	@npm install
+	@cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/workers/
+	@echo "✅ Dependencies installed successfully!"
+
+# Install Lighthouse for testing
+install-lighthouse: ## Install Lighthouse globally
+	@echo "🚀 Installing Lighthouse..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION} || nvm install ${NVM_NODE_VERSION}
+	@npm install -g lighthouse
+	@npm install -g lighthouse-ci
+	@echo "✅ Lighthouse installed successfully!"
+
+set_version:
+	@echo '{ "version" : "$(VERSION)-$(BUILD_ID)" }' > config/VERSION.json
+	echo VERSION=$(VERSION) > .env.dc
+	echo BUILD_ID=$(BUILD_ID) >> .env.dc
+
+dc_recreate:  set_version
+	@docker volume rm -f weviate_data || true
+	@docker compose --env-file .env.dc up -d --force-recreate --remove-orphans --renew-anon-volumes
+
+# Build the application for production
+build:   ## Build for production
+	@echo "🔨 Building for production..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "📋 NPM version: $$(npm --version)"
+	@echo "📋 Application version: $(VERSION)"
+	@echo "🧹 Cleaning previous build..."
+	@rm -rf dist/
+	@mkdir -p dist
+	@echo "🎨 Building templates..."
+	@NODE_ENV=production npm run build:templates
+	@echo "🔨 Building with webpack for production..."
+	@NODE_ENV=production npm run build
+	@echo "✅ Application built successfully!"
+	@echo "📁 Built files are in the dist/ directory"
+	@echo "🔍 Verifying build output..."
+	@ls -la dist/
+	@echo "🎉 Production build complete!"
+
+# Template system commands
+templates:   ## Build templates
+	@echo "🎨 Building Handlebars templates..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run build:templates
+	@echo "✅ Templates built successfully!"
+
+templates-watch:   ## Watch templates for changes
+	@echo "👀 Watching templates for changes..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run dev:templates:watch
+
+templates-validate:   ## Validate template system
+	@echo "🔍 Validating template system..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@node scripts/validate-templates.js
+	@echo "✅ Template validation complete!"
+
+# SCSS compilation commands
+scss-build:   ## Build SCSS for production
+	@echo "🎨 Building SCSS for production..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run scss:build
+	@echo "✅ SCSS production build complete!"
+
+scss-check:   ## Check SCSS compilation
+	@echo "🔍 Checking SCSS compilation..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run scss:check
+	@echo "✅ SCSS check complete!"
+
+scss-lint:   ## Lint SCSS files
+	@echo "🔍 Linting SCSS files..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run scss:lint
+	@echo "✅ SCSS linting complete!"
+
+scss-watch:   ## Watch SCSS files for changes
+	@echo "👀 Watching SCSS files for changes..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run dev:scss
+
+# React Development Commands - SIMPLIFIED ARCHITECTURE
+dev:   ## Start React development server (TAB parameter deprecated - React handles all routes)
+	@echo "🚀 Starting React application development server..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🌐 Checking if port $(DEV_PORT) is already in use..."
+	@if lsof -iTCP:$(DEV_PORT) -sTCP:LISTEN -t >/dev/null; then \
+		echo "✅ Server already running on http://$(DEV_HOST):$(DEV_PORT). Skipping start."; \
+	else \
+		echo "🌐 Starting server on http://$(DEV_HOST):$(DEV_PORT)"; \
+		npm run dev:react; \
+	fi
+
+# React Development Shortcuts - All routes handled by React Router
+dev-records:   ## Open Records page in React app
+	@echo "📊 React app handles all routes - use http://localhost:3000/records"
+	@$(MAKE) dev
+
+dev-settings:  ## Open Settings page in React app
+	@echo "⚙️ React app handles all routes - use http://localhost:3000/settings"
+	@$(MAKE) dev
+
+dev-jpk:       ## Open JPK page in React app
+	@echo "📋 React app handles all routes - use http://localhost:3000/jpk"
+	@$(MAKE) dev
+
+dev-dashboard: ## Open Dashboard page in React app
+	@echo "📈 React app handles all routes - use http://localhost:3000/dashboard"
+	@$(MAKE) dev
+
+dev-documents: ## [DEPRECATED] Documents functionality moved to Records
+	@echo "📄 Documents functionality is now part of Records - use http://localhost:3000/records"
+	@$(MAKE) dev
+
+# Micro-App Testing Commands
+test-records:   ## Test Records micro-app
+	@echo "🧪 Testing Records micro-app..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
+	@TAB=records npm run test:records
+
+test-settings:  ## Test Settings micro-app
+	@echo "🧪 Testing Settings micro-app..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
+	@TAB=settings npm run test:settings
+
+test-jpk:       ## Test JPK micro-app
+	@echo "🧪 Testing JPK micro-app..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
+	@TAB=jpk npm run test:jpk
+
+test-dashboard: ## Test Dashboard micro-app
+	@echo "🧪 Testing Dashboard micro-app..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
+	@TAB=dashboard npm run test:dashboard
+
+test-micro-apps: ## Test all micro-apps
+	@echo "🧪 Testing all micro-apps..."
+	@$(MAKE) test-records
+	@$(MAKE) test-settings
+	@$(MAKE) test-jpk
+	@$(MAKE) test-dashboard
+
+
+dev3080re: dc_recreate  ## Start development server
+	@echo "🚀 Starting development server..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🌐 Starting server on http://$(DEV_HOST):3080"
+	@npm run dev3080
+
+dev3080:   ## Start development server
+	@echo "🚀 Starting development server..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🌐 Starting server on http://$(DEV_HOST):3080"
+	@npm run dev3080
+
+preview:
+	@echo "🚀 ..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🌐 Starting server on http://$(DEV_HOST):3080"
+	@npm run preview
+
+# Clean build artifacts
+clean: ## Clean build artifacts and node_modules
+	@echo "🧹 Cleaning build artifacts..."
+	@rm -rf dist/
+	@rm -rf node_modules/
+	@rm -rf .webpack-cache/
+	@echo "✅ Clean complete!"
+
+# Run tests
+test:  ## Run tests
+	@echo "🧪 Running tests..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run test
+	@echo "✅ Tests completed!"
+
+# Test migration services
+test-migration: ## Test migrated upload queue and processing pipeline services
+	@echo "🧪 Testing migration services..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run test -- src/services/__tests__/
+	@echo "✅ Migration tests completed!"
+
+# Test migration with browser
+test-migration-browser: dev ## Test migration in browser (requires dev server)
+	@echo "🌐 Opening migration test in browser..."
+	@echo "📋 Test page: http://localhost:3000/test-migration.html"
+	@echo "🎯 React test: http://localhost:3000/test-migration"
+	@echo "📄 Sample file: _data/samples/invoices/input/33_KOM_10_23.pdf"
+	@echo "✅ Browser test pages ready!"
+
+# Run Lighthouse performance tests locally
+lighthouse-local: install ## Run Lighthouse tests locally to verify app loading
+	@echo "🚀 Running local Lighthouse tests..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📋 Node.js version: $$(node --version)"
+	@echo "🔍 Verifying application loading and performance..."
+	@./_scripts/lighthouse-local.sh
+	@echo "✅ Lighthouse tests completed!"
+
+# Run Lighthouse tests in Docker for better performance
+lighthouse-docker: ## Run Lighthouse tests in Docker
+	@echo "🐳 Running Lighthouse tests in Docker..."
+	@./_scripts/lighthouse-docker.sh
+	@echo "✅ Docker Lighthouse tests completed!"
+
+# Run Lighthouse tests (alias for lighthouse-local)
+lighthouse: lighthouse-local ## Alias for lighthouse-local
+
+# Comprehensive Lighthouse Testing
+lighthouse-comprehensive: ## Run comprehensive Lighthouse tests on all pages
+	@echo "🚀 Running comprehensive Lighthouse tests..."
+	@mkdir -p reports/lighthouse
+	@$(MAKE) lighthouse-start-server
+	@$(MAKE) lighthouse-test-all-pages
+	@$(MAKE) lighthouse-stop-server
+	@$(MAKE) lighthouse-generate-report
+	@echo "✅ Comprehensive Lighthouse tests completed!"
+
+lighthouse-start-server: ## Start server for Lighthouse testing
+	@echo "🌐 Starting test server for Lighthouse..."
+	@python3 -m http.server 8001 > /dev/null 2>&1 &
+	@echo $$! > .lighthouse-server.pid
+	@sleep 3
+	@echo "✅ Test server started on port 8001"
+
+lighthouse-stop-server: ## Stop Lighthouse test server
+	@echo "🛑 Stopping Lighthouse test server..."
+	@if [ -f .lighthouse-server.pid ]; then \
+		kill `cat .lighthouse-server.pid` 2>/dev/null || true; \
+		rm .lighthouse-server.pid; \
+	fi
+	@echo "✅ Test server stopped"
+
+lighthouse-test-all-pages: ## Test all major pages with Lighthouse
+	@echo "📊 Testing all pages with Lighthouse..."
+	@$(MAKE) lighthouse-test-dashboard
+	@$(MAKE) lighthouse-test-documents
+	@$(MAKE) lighthouse-test-ewidencje
+	@$(MAKE) lighthouse-test-jpk
+	@$(MAKE) lighthouse-test-settings
+	@echo "✅ All pages tested"
+
+lighthouse-test-dashboard: ## Test Dashboard page (Wide Screen 2000x1100)
+	@echo "📊 Testing Dashboard page (Wide Screen)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse "http://localhost:8001#dashboard" \
+		--output=html,json \
+		--output-path=reports/lighthouse/dashboard \
+		--chrome-flags="--headless --no-sandbox --disable-gpu --window-size=2000,1100" \
+		--screenEmulation.width=2000 \
+		--screenEmulation.height=1100 \
+		--screenEmulation.deviceScaleFactor=1 \
+		--view || true
+
+lighthouse-test-documents: ## Test Dokumenty page (Wide Screen 2000x1100)
+	@echo "📊 Testing Dokumenty page (Wide Screen)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse "http://localhost:8001#documents" \
+		--output=html,json \
+		--output-path=reports/lighthouse/documents \
+		--chrome-flags="--headless --no-sandbox --disable-gpu --window-size=2000,1100" \
+		--screenEmulation.width=2000 \
+		--screenEmulation.height=1100 \
+		--screenEmulation.deviceScaleFactor=1 \
+		--view || true
+
+lighthouse-test-ewidencje: ## Test Ewidencje page (Wide Screen 2000x1100)
+	@echo "📊 Testing Ewidencje page (Wide Screen)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse "http://localhost:8001#ewidencje" \
+		--output=html,json \
+		--output-path=reports/lighthouse/ewidencje \
+		--chrome-flags="--headless --no-sandbox --disable-gpu --window-size=2000,1100" \
+		--screenEmulation.width=2000 \
+		--screenEmulation.height=1100 \
+		--screenEmulation.deviceScaleFactor=1 \
+		--view || true
+
+lighthouse-test-jpk: ## Test JPK page (Wide Screen 2000x1100)
+	@echo "📊 Testing JPK page (Wide Screen)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse "http://localhost:8001#jpk" \
+		--output=html,json \
+		--output-path=reports/lighthouse/jpk \
+		--chrome-flags="--headless --no-sandbox --disable-gpu --window-size=2000,1100" \
+		--screenEmulation.width=2000 \
+		--screenEmulation.height=1100 \
+		--screenEmulation.deviceScaleFactor=1 \
+		--view || true
+
+lighthouse-test-settings: ## Test Settings page (Wide Screen 2000x1100)
+	@echo "📊 Testing Settings page (Wide Screen)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse "http://localhost:8001#settings" \
+		--output=html,json \
+		--output-path=reports/lighthouse/settings \
+		--chrome-flags="--headless --no-sandbox --disable-gpu --window-size=2000,1100" \
+		--screenEmulation.width=2000 \
+		--screenEmulation.height=1100 \
+		--screenEmulation.deviceScaleFactor=1 \
+		--view || true
+
+lighthouse-accessibility: ## Run accessibility-focused tests
+	@echo "♿ Running accessibility tests..."
+	@mkdir -p reports/accessibility
+	@$(MAKE) lighthouse-start-server
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse http://localhost:8001 \
+		--output=html,json \
+		--output-path=reports/accessibility/main \
+		--only-categories=accessibility \
+		--chrome-flags="--headless --no-sandbox --disable-gpu" \
+		--view || true
+	@$(MAKE) lighthouse-stop-server
+	@echo "✅ Accessibility tests completed!"
+
+lighthouse-performance: ## Run performance-focused tests
+	@echo "⚡ Running performance tests..."
+	@mkdir -p reports/performance
+	@$(MAKE) lighthouse-start-server
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse http://localhost:8001 \
+		--output=html,json \
+		--output-path=reports/performance/main \
+		--only-categories=performance \
+		--chrome-flags="--headless --no-sandbox --disable-gpu" \
+		--view || true
+	@$(MAKE) lighthouse-stop-server
+	@echo "✅ Performance tests completed!"
+
+lighthouse-widescreen: ## Run wide screen tests (2000x1100) - FOCUS ON DEVELOPMENT
+	@echo "🖥️ Running wide screen tests (2000x1100)..."
+	@mkdir -p reports/widescreen
+	@$(MAKE) lighthouse-start-server
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	lighthouse http://localhost:8001 \
+		--output=html,json \
+		--output-path=reports/widescreen/main \
+		--form-factor=desktop \
+		--screenEmulation.width=2000 \
+		--screenEmulation.height=1100 \
+		--screenEmulation.deviceScaleFactor=1 \
+		--throttling-method=provided \
+		--chrome-flags="--headless --no-sandbox --disable-gpu --window-size=2000,1100" \
+		--view || true
+	@$(MAKE) lighthouse-stop-server
+	@echo "✅ Wide screen tests completed!"
+
+# REMOVED: lighthouse-mobile (focusing only on wide screens for development)
+
+lighthouse-generate-report: ## Generate comprehensive test report
+	@echo "📋 Generating comprehensive test report..."
+	@mkdir -p reports/summary
+	@echo "# mVat Lighthouse Test Report" > reports/summary/README.md
+	@echo "Generated on: $$(date)" >> reports/summary/README.md
+	@echo "" >> reports/summary/README.md
+	@echo "## Test Results" >> reports/summary/README.md
+	@find reports -name "*.html" -type f | while read file; do \
+		echo "- [$$file]($$file)" >> reports/summary/README.md; \
+	done
+	@echo "✅ Test report generated in reports/summary/README.md"
+
+lighthouse-clean: ## Clean Lighthouse reports
+	@echo "🧹 Cleaning Lighthouse reports..."
+	@rm -rf reports/
+	@echo "✅ Reports cleaned!"
+
+# Lint code
+lint: ## Run ESLint
+	@echo "🔍 Running ESLint..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run lint
+	@echo "✅ Linting completed!"
+
+# Fix lint issues automatically
+lint-fix:  ## Fix ESLint issues automatically
+	@echo "🔧 Running ESLint with auto-fix..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	npm install --save-dev @stylistic/eslint-plugin
+
+	#@npm run lint:fix ./src
+	@echo "✅ Lint fixes applied!"
+
+
+# Format code
+format: ## Format code with Prettier
+	@echo "💅 Formatting code..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run format
+	@echo "✅ Code formatted!"
+
+# Check code formatting
+format-check: ## Check code formatting with Prettier
+	@echo "🔍 Checking code formatting..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run format:check
+	@echo "✅ Format check completed!"
+
+# Run code duplication analysis
+jscpd: ## Run jscpd to detect code duplication
+	@echo "🔍 Running code duplication analysis..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run jscpd
+	@echo "✅ Code duplication analysis completed!"
+
+# Run structural similarity analysis
+jsinspect: ## Run jsinspect to detect structural similarities
+	@echo "🔍 Running structural similarity analysis..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run jsinspect
+	@echo "✅ Structural analysis completed!"
+
+# Run comprehensive quality check
+quality-check: ## Run comprehensive code quality analysis
+	@echo "🔍 Running comprehensive quality check..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run quality:check
+	@echo "✅ Quality check completed!"
+
+# Run static quality analysis (no browser tests)
+quality: ## Run static quality analysis (ESLint, Prettier, i18n-lint, tests, duplication)
+	@echo "🔍 Running static quality analysis..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@node scripts/dev-quality.js quality
+	@echo "✅ Static quality analysis completed!"
+
+# Run E2E and browser-based tests
+e2e: ## Run E2E and browser-based tests (Lighthouse, Playwright, etc.)
+	@echo "🌐 Running E2E and browser-based tests..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@node scripts/dev-quality.js e2e
+	@echo "✅ E2E tests completed!"
+
+# Run integrated development quality analysis (legacy - use 'quality' instead)
+dev-quality: ## [DEPRECATED] Use 'make quality' instead
+	@echo "⚠️  DEPRECATED: Use 'make quality' instead of 'make dev-quality'"
+	@echo "🔍 Running integrated development quality analysis..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@node scripts/dev-quality.js all
+	@echo "✅ Development quality analysis completed!"
+
+# Run quality analysis with auto-fix
+dev-quality-fix: ## Run quality analysis with automatic fixes
+	@echo "🔧 Running quality analysis with auto-fix..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run quality:dev:fix
+	@echo "✅ Quality fixes completed!"
+
+# Run quality analysis sequentially (for debugging)
+dev-quality-sequential: ## Run quality analysis sequentially for debugging
+	@echo "🔍 Running quality analysis sequentially..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run quality:dev:sequential
+	@echo "✅ Sequential quality analysis completed!"
+
+# Run quality analysis without browser tools
+dev-quality-fast: ## Run quality analysis without browser-based tools (faster)
+	@echo "🔍 Running fast quality analysis (no browser tools)..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run quality:dev:skip-browser
+	@echo "✅ Fast quality analysis completed!"
+
+# Run development console log capture
+dev-console: ## Capture and monitor app console logs with Chrome 138
+	@echo "📝 Starting development console log capture..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@node scripts/dev-console.js
+	@echo "✅ Console log capture completed!"
+
+# Fix all issues automatically
+fix-all: ## Run lint-fix and format in sequence
+	@echo "🔧 Running comprehensive fixes..."
+	@$(MAKE) lint-fix
+	@$(MAKE) format
+	@echo "✅ All fixes applied!"
+
+# Serve built application
+serve: build ## Serve production build locally
+	@echo "🌐 Serving production build..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@echo "📁 Serving from dist/ directory"
+	@npx http-server dist -p $(DEV_PORT) -o
+	@echo "🌐 Application available at http://$(DEV_HOST):$(DEV_PORT)"
+
+# Development with watch mode
+watch: ## Start development with file watching
+	@echo "👀 Starting development with file watching..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm run watch
+
+# Build for staging
+build-staging: ## Build for staging environment
+	@echo "🔨 Building for staging..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@NODE_ENV=staging npm run build
+	@echo "✅ Staging build complete!"
+
+# Security audit
+audit: ## Run npm security audit
+	@echo "🔒 Running security audit..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm audit
+	@echo "✅ Security audit completed!"
+
+# Update dependencies
+update: ## Update npm dependencies
+	@echo "📦 Updating dependencies..."
+	@source ${NVM_DIR}/nvm.sh
+	@nvm use ${NVM_NODE_VERSION}
+	@npm update
+	@echo "✅ Dependencies updated!"
+
+# Create project structure
+init-structure: ## Create initial project structure
+	@echo "📁 Creating project structure..."
+	@mkdir -p src/js/{components,services,utils,types}
+	@mkdir -p src/css/{components,themes}
+	@mkdir -p src/assets/{icons,images}
+	@mkdir -p config
+	@mkdir -p public/workers
+	@mkdir -p dist
+	@touch index.html package.json webpack.config.js
+	@touch src/js/main.js
+	@touch src/js/components/{TabManager.js,InvoiceTab.js,JpkTab.js,SettingsTab.js,PdfViewer.js,UploadModal.js,DataDisplay.js}
+	@touch src/js/services/{ConfigService.js,WeaviateService.js,DeepSeekService.js,PdfService.js,OcrService.js,JpkService.js,StorageService.js}
+	@touch src/js/utils/{constants.js,helpers.js,validators.js}
+	@touch src/js/types/{Invoice.js,Jpk.js,Entity.js}
+	@touch src/css/main.css
+	@touch src/css/components/{tabs.css,modals.css,pdf-viewer.css}
+	@touch src/css/themes/bootstrap-custom.css
+	@touch config/{default.json,tesseract-config.json}
+	@touch public/workers/{tesseract-worker.js,pdf-worker.js}
+	@echo "✅ Project structure created!"
+
+# Docker targets (if needed for containerization)
+compose-up: ## Start Docker Compose
+	@echo "🐳 Starting Docker Compose..."
+	@sudo docker compose up
+	@echo "✅ Docker Compose started!"
+
+# Show project info
+info: ## Show project information
+	@echo "📋 Project Information:"
+	@echo "  Name: $(PROJECT_NAME)"
+	@echo "  Version: $(VERSION)"
+	@echo "  Domain: $(DOMAIN)"
+	@echo "  Node Version: $(NVM_NODE_VERSION)"
+	@echo "  Build Mode: $(BUILD_MODE)"
+	@echo "  Dev Port: $(DEV_PORT)"
+
+
+# >>> jscpd --help
+# Usage: jscpd [options] <path ...>
+#
+# detector of copy/paste in files
+#
+# Options:
+#   -V, --version              output the version number
+#   -l, --min-lines [number]   min size of duplication in code lines (Default is 5)
+#   -k, --min-tokens [number]  min size of duplication in code tokens (Default is 50)
+#   -x, --max-lines [number]   max size of source in lines (Default is 1000)
+#   -z, --max-size [string]    max size of source in bytes, examples: 1kb, 1mb, 120kb (Default is 100kb)
+#   -t, --threshold [number]   threshold for duplication, in case duplications >= threshold jscpd will exit with error
+#   -c, --config [string]      path to config file (Default is .jscpd.json in <path>)
+#   -i, --ignore [string]      glob pattern for files what should be excluded from duplication detection
+#   --ignore-pattern [string]  Ignore code blocks matching the regexp patterns
+#   -r, --reporters [string]   reporters or list of reporters separated with comma to use (Default is time,console)
+#   -o, --output [string]      reporters to use (Default is ./report/)
+#   -m, --mode [string]        mode of quality of search, can be "strict", "mild" and "weak" (Default is "function mild(token) {
+#     return strict(token) && token.type !== "empty" && token.type !== "new_line";
+#   }")
+#   -f, --format [string]      format or formats separated by comma (Example php,javascript,python)
+#   -p, --pattern [string]     glob pattern to file search (Example **/*.txt)
+#   -b, --blame                blame authors of duplications (get information about authors from git)
+#   -s, --silent               do not write detection progress and result to a console
+#   --store [string]           use for define custom store (e.g. --store leveldb used for big codebase)
+#   -a, --absolute             use absolute path in reports
+#   -n, --noSymlinks           dont use symlinks for detection in files
+#   --ignoreCase               ignore case of symbols in code (experimental)
+#   -g, --gitignore            ignore all files from .gitignore file
+#   --formats-exts [string]    list of formats with file extensions (javascript:es,es6;dart:dt)
+#   -d, --debug                show debug information, not run detection process(options list and selected files)
+#   -v, --verbose              show full information during detection process
+#   --list                     show list of total supported formats
+#   --skipLocal                skip duplicates in local folders, just detect cross folders duplications
+#   --exitCode [number]        exit code to use when code duplications are detected
+#   -h, --help                 display help for command
+
+# >>> jsinspect --help
+# Usage: jsinspect [options] <paths ...>
+#
+#
+#   Detect copy-pasted and structurally similar JavaScript code
+#   Example use: jsinspect -I -L -t 20 --ignore "test" ./path/to/src
+#
+#
+# Options:
+#   -V, --version                      output the version number
+#   -t, --threshold <number>           number of nodes (default: 30)
+#   -m, --min-instances <number>       min instances for a match (default: 2)
+#   -c, --config [config]              path to config file (default: .jsinspectrc) (default: ".jsinspectrc")
+#   -r, --reporter [default|json|pmd]  specify the reporter to use
+#   -I, --no-identifiers               do not match identifiers
+#   -L, --no-literals                  do not match literals
+#   -C, --no-color                     disable colors
+#   --ignore <pattern>                 ignore paths matching a regex
+#   --truncate <number>                length to truncate lines (default: 100, off: 0)
+#   --debug                            print debug information
+#   -h, --help                         output usage information
+
+
+test-watch: ## Run tests in watch mode
+	@echo "🧪 Starting test watcher..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && npx vitest --watch
+
+find-issues: ## [DEPRECATED] Use 'make quality' instead - Run comprehensive code quality analysis
+	@echo "⚠️  DEPRECATED: Use 'make quality' instead of 'make find-issues'"
+	@echo "🔍 Running comprehensive code quality analysis..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && node scripts/dev-quality.js quality --verbose
+
+find-issues-watch: ## Run code analysis on file changes
+	@echo "🔍 Starting code analysis watcher..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && npx nodemon --watch src --ext js --exec "make find-issues"
+
+lighthouse-watch: ## Run lighthouse tests on changes
+	@echo "🚀 Starting lighthouse watcher..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && npx nodemon --watch dist --exec "make lighthouse-local"
+
+# DUPLICATE REMOVED: lighthouse-local target already defined above
+
+# REMOVED: All mobile-related lighthouse tests - focusing only on wide screens (2000px)
+
+cypress-widescreen: ## Run Cypress tests with wide screen (2000x1100)
+	@echo "🧪 Running Cypress tests (Wide Screen 2000x1100)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	npx cypress run --config viewportWidth=2000,viewportHeight=1100 --browser chrome
+
+playwright-widescreen: ## Run Playwright tests with wide screen (2000x1100)
+	@echo "🎭 Running Playwright tests (Wide Screen 2000x1100)..."
+	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} && \
+	npx playwright test --config playwright.config.js

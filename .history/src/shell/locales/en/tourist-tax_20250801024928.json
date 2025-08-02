@@ -1,0 +1,130 @@
+{
+  "title": "Tourist Tax",
+  "subtitle": "Pay tourist tax online - fast and secure",
+
+  "sections": {
+    "personalInfo": "Personal Information",
+    "destination": "Destination",
+    "stayDetails": "Stay Details",
+    "paymentSummary": "Payment Summary",
+    "receipt": "Payment Receipt"
+  },
+
+  "fields": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "phone": "Phone",
+    "city": "City",
+    "checkInDate": "Check-in Date",
+    "checkOutDate": "Check-out Date",
+    "numberOfPersons": "Number of Persons",
+    "accommodationType": "Accommodation Type",
+    "accommodationName": "Accommodation Name",
+    "accommodationAddress": "Accommodation Address"
+  },
+
+  "placeholders": {
+    "firstName": "Enter first name",
+    "lastName": "Enter last name",
+    "email": "e.g. john.doe@email.com",
+    "phone": "e.g. +48 123 456 789",
+    "accommodationName": "Hotel/apartment name",
+    "accommodationAddress": "Accommodation address"
+  },
+
+  "accommodationTypes": {
+    "hotel": "Hotel",
+    "apartment": "Apartment",
+    "hostel": "Hostel",
+    "camping": "Camping",
+    "other": "Other"
+  },
+
+  "buttons": {
+    "calculateTax": "Calculate Tax",
+    "calculating": "Calculating...",
+    "confirmPayment": "Confirm Payment",
+    "processing": "Processing...",
+    "payNow": "Pay Now",
+    "backToForm": "Back to Form",
+    "newPayment": "New Payment",
+    "downloadReceipt": "Download Receipt"
+  },
+
+  "steps": {
+    "form": "Form",
+    "summary": "Summary",
+    "payment": "Payment",
+    "receipt": "Receipt"
+  },
+
+  "validation": {
+    "required": "Field {{field}} is required",
+    "invalidEmail": "Invalid email address",
+    "pastDate": "Date cannot be in the past",
+    "checkOutAfterCheckIn": "Check-out date must be after check-in date",
+    "minPersons": "Number of persons must be greater than 0",
+    "gdprRequired": "Consent for data processing is required",
+    "formErrors": "Form contains errors:"
+  },
+
+  "summary": {
+    "stayPeriod": "Stay Period",
+    "numberOfNights": "Number of Nights",
+    "numberOfPersons": "Number of Persons",
+    "taxRatePerNight": "Rate per Night",
+    "totalAmount": "Total Amount",
+    "paymentMethod": "Payment Method",
+    "breakdown": "Calculation Details"
+  },
+
+  "payment": {
+    "redirectingToPayment": "Redirecting to payment gateway...",
+    "securePayment": "Secure payment via Tpay",
+    "acceptedMethods": "Accepted payment methods",
+    "processing": "Processing payment..."
+  },
+
+  "receipt": {
+    "paymentSuccessful": "Payment completed successfully",
+    "paymentFailed": "Payment failed",
+    "transactionId": "Transaction ID",
+    "paymentDate": "Payment Date",
+    "confirmationSent": "Confirmation has been sent to your email address",
+    "keepReceipt": "Keep this receipt for potential inspection purposes"
+  },
+
+  "gdpr": {
+    "dataProcessing": "I consent to the processing of my personal data for tourist tax payment purposes",
+    "emailMarketing": "I consent to receiving marketing information at the provided email address",
+    "required": "Required consent",
+    "optional": "Optional consent",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+
+  "cities": {
+    "selectCity": "Select City",
+    "searchPlaceholder": "Search city...",
+    "noResults": "No results",
+    "taxRate": "Tourist tax rate"
+  },
+
+  "errors": {
+    "cityNotFound": "City not found or tourist tax does not apply",
+    "calculationError": "Error calculating tax",
+    "paymentError": "Error processing payment",
+    "networkError": "Network connection error",
+    "unknownError": "An unknown error occurred"
+  },
+
+  "info": {
+    "whatIsTouristTax": "What is tourist tax?",
+    "touristTaxDescription": "Tourist tax is a local tax collected from tourists staying in a given city. The funds from the tax are used for tourism infrastructure development and city promotion.",
+    "whyPayOnline": "Why pay online?",
+    "onlinePaymentBenefits": "By paying online you avoid hotel commission (up to 10%) and ensure the tax goes directly to the municipality.",
+    "securePayment": "Secure Payment",
+    "securePaymentDescription": "All payments are processed by a licensed payment operator with the highest security standards."
+  }
+}
