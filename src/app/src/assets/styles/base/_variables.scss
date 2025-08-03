@@ -1,0 +1,194 @@
+// SCSS Variables for Tourist Tax Application
+// ARCHITECTURE: Mobile-first design system
+
+// ===== COLORS =====
+:root {
+  // Primary brand colors (tourist tax theme)
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-active: #1e40af;
+  
+  // Secondary colors
+  --secondary-color: #6b7280;
+  --secondary-hover: #4b5563;
+  
+  // Status colors
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --danger-color: #dc2626;
+  --info-color: #0891b2;
+  
+  // Neutral colors
+  --white: #ffffff;
+  --light: #f9fafb;
+  --dark: #111827;
+  --muted: #6b7280;
+  
+  // Background colors
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  
+  // Text colors
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  
+  // Border colors
+  --border-color: #e5e7eb;
+  --border-light: #f3f4f6;
+  --border-dark: #9ca3af;
+  
+  // Tourist tax specific colors
+  --payment-success: #10b981;
+  --payment-pending: #f59e0b;
+  --payment-error: #ef4444;
+}
+
+// ===== TYPOGRAPHY (Mobile-First) =====
+:root {
+  // Font families (system fonts for performance)
+  --font-family-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  
+  // Font sizes (mobile-first, larger touch targets)
+  --font-size-xs: 0.75rem;    // 12px
+  --font-size-sm: 0.875rem;   // 14px
+  --font-size-base: 1rem;     // 16px (mobile base)
+  --font-size-lg: 1.125rem;   // 18px
+  --font-size-xl: 1.25rem;    // 20px
+  --font-size-2xl: 1.5rem;    // 24px
+  --font-size-3xl: 1.875rem;  // 30px
+  --font-size-4xl: 2.25rem;   // 36px
+  
+  // Line heights (optimized for mobile reading)
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  // Font weights
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
+
+// ===== SPACING (Mobile-First) =====
+:root {
+  // Spacing scale (mobile-optimized, larger touch targets)
+  --space-1: 0.25rem;   // 4px
+  --space-2: 0.5rem;    // 8px
+  --space-3: 0.75rem;   // 12px
+  --space-4: 1rem;      // 16px
+  --space-5: 1.25rem;   // 20px
+  --space-6: 1.5rem;    // 24px
+  --space-8: 2rem;      // 32px
+  --space-10: 2.5rem;   // 40px
+  --space-12: 3rem;     // 48px
+  --space-16: 4rem;     // 64px
+  --space-20: 5rem;     // 80px
+  
+  // Component spacing
+  --component-padding: var(--space-4);
+  --component-margin: var(--space-4);
+  --section-padding: var(--space-8);
+}
+
+// ===== BREAKPOINTS =====
+:root {
+  // Mobile-first breakpoints
+  --breakpoint-sm: 576px;   // Small devices (landscape phones)
+  --breakpoint-md: 768px;   // Medium devices (tablets)
+  --breakpoint-lg: 992px;   // Large devices (desktops)
+  --breakpoint-xl: 1200px;  // Extra large devices
+}
+
+// ===== SHADOWS (Mobile-Optimized) =====
+:root {
+  // Subtle shadows for mobile
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+// ===== BORDER RADIUS =====
+:root {
+  // Border radius (mobile-friendly)
+  --radius-sm: 0.125rem;   // 2px
+  --radius-base: 0.25rem;  // 4px
+  --radius-md: 0.375rem;   // 6px
+  --radius-lg: 0.5rem;     // 8px
+  --radius-xl: 0.75rem;    // 12px
+  --radius-2xl: 1rem;      // 16px
+  --radius-full: 9999px;   // Full rounded
+}
+
+// ===== Z-INDEX SCALE =====
+:root {
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+// ===== TRANSITIONS =====
+:root {
+  // Smooth transitions for mobile
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+  
+  // Common transition properties
+  --transition-colors: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
+  --transition-transform: transform var(--transition-base);
+  --transition-opacity: opacity var(--transition-base);
+}
+
+// ===== TOUCH TARGETS (Mobile-First) =====
+:root {
+  // Minimum touch target sizes (44px recommended)
+  --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
+  --touch-target-large: 56px;
+  
+  // Button heights
+  --button-height-sm: 36px;
+  --button-height-base: var(--touch-target-min);
+  --button-height-lg: var(--touch-target-comfortable);
+  --button-height-xl: var(--touch-target-large);
+}
+
+// ===== FORM ELEMENTS =====
+:root {
+  // Form input heights (touch-friendly)
+  --input-height-sm: 36px;
+  --input-height-base: var(--touch-target-min);
+  --input-height-lg: var(--touch-target-comfortable);
+  
+  // Form spacing
+  --form-group-margin: var(--space-4);
+  --form-label-margin: var(--space-2);
+}
+
+// ===== TOURIST TAX SPECIFIC =====
+:root {
+  // Payment flow colors
+  --payment-step-active: var(--primary-color);
+  --payment-step-completed: var(--success-color);
+  --payment-step-pending: var(--muted);
+  
+  // Reservation card colors
+  --reservation-bg: var(--bg-secondary);
+  --reservation-border: var(--border-color);
+  
+  // Amount display
+  --amount-text: var(--text-primary);
+  --amount-currency: var(--text-secondary);
+}

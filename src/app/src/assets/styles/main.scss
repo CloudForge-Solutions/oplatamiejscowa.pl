@@ -1,0 +1,136 @@
+// Main SCSS file for Tourist Tax Application
+// ARCHITECTURE: Mobile-first, modular SCSS structure
+
+// ===== BASE STYLES =====
+@import 'base/variables';
+
+// ===== RESPONSIVE STYLES (Mobile-First) =====
+@import 'responsive/mobile';
+
+// ===== COMPONENT STYLES =====
+// Import component styles as they are created
+// @import 'components/buttons';
+// @import 'components/forms';
+// @import 'components/cards';
+// @import 'components/modals';
+
+// ===== LAYOUT STYLES =====
+// @import 'layout/header';
+// @import 'layout/footer';
+// @import 'layout/main';
+
+// ===== UTILITY STYLES =====
+// @import 'utilities/spacing';
+// @import 'utilities/colors';
+// @import 'utilities/display';
+
+// ===== GLOBAL STYLES =====
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; // Base font size for rem calculations
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ===== RESPONSIVE BREAKPOINTS =====
+@media (min-width: 576px) {
+  // Small devices (landscape phones)
+  .container {
+    max-width: 540px;
+  }
+  
+  .mobile-only {
+    display: none;
+  }
+  
+  .mobile-hidden {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  // Medium devices (tablets)
+  .container {
+    max-width: 720px;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+  
+  // Tablet-specific adjustments
+  .modal-mobile .modal-content {
+    max-width: 500px;
+    margin: auto;
+    border-radius: var(--radius-xl);
+    align-self: center;
+  }
+  
+  .btn-mobile.btn-block {
+    width: auto;
+    min-width: 200px;
+  }
+}
+
+@media (min-width: 992px) {
+  // Large devices (desktops)
+  .container {
+    max-width: 960px;
+  }
+  
+  // Desktop enhancements
+  .card-mobile {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  // Extra large devices
+  .container {
+    max-width: 1140px;
+  }
+}
+
+// ===== ACCESSIBILITY =====
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Focus styles for keyboard navigation
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+// ===== PRINT STYLES =====
+@media print {
+  .mobile-nav,
+  .btn-mobile,
+  .modal-mobile {
+    display: none !important;
+  }
+  
+  .card-mobile {
+    border: 1px solid #000;
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "payment": {
+    "title": "Tourist Tax Payment",
+    "subtitle": "Complete your tourist tax payment",
+    "reservation_id": "Reservation ID",
+    "guest_count": "Number of guests",
+    "check_in": "Check-in date",
+    "check_out": "Check-out date",
+    "accommodation": "Accommodation",
+    "city": "City",
+    "amount": "Amount",
+    "currency": "Currency",
+    "total": "Total amount",
+    "pay_now": "Pay Now",
+    "processing": "Processing payment...",
+    "success": "Payment successful!",
+    "failed": "Payment failed",
+    "retry": "Retry payment"
+  },
+  "reservation": {
+    "details": "Reservation Details",
+    "not_found": "Reservation not found",
+    "expired": "Reservation has expired",
+    "already_paid": "This reservation has already been paid",
+    "invalid": "Invalid reservation"
+  },
+  "receipt": {
+    "title": "Payment Receipt",
+    "transaction_id": "Transaction ID",
+    "payment_date": "Payment Date",
+    "download": "Download Receipt",
+    "email": "Email Receipt"
+  }
+}

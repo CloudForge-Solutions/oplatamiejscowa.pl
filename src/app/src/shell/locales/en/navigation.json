@@ -1,0 +1,17 @@
+{
+  "navigation": {
+    "home": "Home",
+    "payment": "Payment",
+    "confirmation": "Confirmation",
+    "help": "Help",
+    "contact": "Contact",
+    "language": "Language",
+    "menu": "Menu"
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "payment_details": "Payment Details",
+    "payment_method": "Payment Method",
+    "confirmation": "Confirmation"
+  }
+}

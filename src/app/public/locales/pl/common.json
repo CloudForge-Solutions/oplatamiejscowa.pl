@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Opłata Miejscowa Online",
+    "description": "Bezpieczna płatność online za opłatę miejscową"
+  },
+  "navigation": {
+    "help": "Pomoc",
+    "goHome": "Przejdź do płatności",
+    "goBack": "Wróć"
+  },
+  "language": {
+    "switchLanguage": "Zmień język",
+    "selectLanguage": "Wybierz język",
+    "currentLanguage": "Aktualny"
+  },
+  "footer": {
+    "securePayment": "Bezpieczne płatności obsługiwane przez imoje",
+    "copyright": "Opłata Miejscowa Online"
+  },
+  "error": {
+    "pageNotFound": "Strona nie została znaleziona",
+    "pageNotFoundDescription": "Strona, której szukasz, nie istnieje lub została przeniesiona. Sprawdź adres URL lub wróć do strony płatności.",
+    "needHelp": "Potrzebujesz pomocy z płatnością opłaty miejscowej?"
+  },
+  "fab": {
+    "help": "Pomoc i FAQ",
+    "contact": "Skontaktuj się z pomocą",
+    "paymentInfo": "Informacje o płatności",
+    "language": "Zmień język",
+    "quickActions": "Szybkie akcje"
+  },
+  "loading": {
+    "default": "Ładowanie...",
+    "payment": "Przetwarzanie płatności...",
+    "reservation": "Ładowanie rezerwacji..."
+  },
+  "buttons": {
+    "continue": "Kontynuuj",
+    "cancel": "Anuluj",
+    "retry": "Spróbuj ponownie",
+    "close": "Zamknij"
+  }
+}

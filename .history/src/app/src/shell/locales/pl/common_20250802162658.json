@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "Opłata Miejscowa",
+    "description": "Zapłać opłatę miejscową online",
+    "version": "v1.0.0"
+  },
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Błąd",
+    "success": "Sukces",
+    "warning": "Ostrzeżenie",
+    "info": "Informacja",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "view": "Zobacz",
+    "close": "Zamknij",
+    "confirm": "Potwierdź",
+    "yes": "Tak",
+    "no": "Nie",
+    "ok": "OK",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "previous": "Poprzedni",
+    "search": "Szukaj",
+    "filter": "Filtruj",
+    "clear": "Wyczyść",
+    "refresh": "Odśwież",
+    "submit": "Wyślij",
+    "continue": "Kontynuuj",
+    "finish": "Zakończ"
+  },
+  "validation": {
+    "required": "To pole jest wymagane",
+    "invalid_email": "Wprowadź prawidłowy adres email",
+    "invalid_phone": "Wprowadź prawidłowy numer telefonu",
+    "invalid_amount": "Wprowadź prawidłową kwotę",
+    "invalid_date": "Wprowadź prawidłową datę",
+    "min_length": "Wymagane minimum {{count}} znaków",
+    "max_length": "Maksymalnie {{count}} znaków"
+  },
+  "errors": {
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "network": "Błąd sieci. Sprawdź połączenie internetowe.",
+    "timeout": "Przekroczono limit czasu. Spróbuj ponownie.",
+    "not_found": "Nie znaleziono żądanego zasobu.",
+    "unauthorized": "Nie masz uprawnień do wykonania tej akcji.",
+    "server_error": "Błąd serwera. Spróbuj ponownie później."
+  }
+}

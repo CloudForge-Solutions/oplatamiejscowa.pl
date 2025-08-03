@@ -1,0 +1,35 @@
+help: ## 📋 Show this help message with all available targets
+	@echo ""
+	@echo "🏛️  $(PROJECT_TITLE) - Makefile Commands"
+	@echo "📝  $(PROJECT_DESCRIPTION)"
+	@echo ""
+	@echo "📋 Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+
+#===================================================================================================
+#=== Setup and Installation Targets
+#===================================================================================================
+
+info: ## 📋 Show project information and current configuration
+	@echo ""
+	@echo "🏛️  Project Information:"
+	@echo "  📛 Name: $(PROJECT_NAME)"
+	@echo "  📝 Title: $(PROJECT_TITLE)"
+	@echo "  📄 Description: $(PROJECT_DESCRIPTION)"
+	@echo "  🔢 Version: $(VERSION)"
+	@echo "  🆔 Build ID: $(BUILD_ID)"
+	@echo "  🌐 Domain: $(DOMAIN)"
+	@echo ""
+	@echo "🔧 Development Configuration:"
+	@echo "  📦 Node Version: $(NVM_NODE_VERSION)"
+	@echo "  🌐 Dev Port: $(DEV_PORT)"
+	@echo "  🔍 Preview Port: $(PREVIEW_PORT)"
+	@echo "  🏗️  Build Mode: $(BUILD_MODE)"
+	@echo "  🗺️  Source Maps: $(SOURCE_MAP)"
+	@echo ""
+	@echo "👤 System Information:"
+	@echo "  🐚 Shell: $(SHELL_NAME) $(SHELL_VERSION)"
+	@echo "  👤 User: $(USERNAME) ($(UID):$(GID))"
+	@echo ""
+resolve it properly without dumb patching

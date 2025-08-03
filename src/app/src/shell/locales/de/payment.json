@@ -1,0 +1,34 @@
+{
+  "payment": {
+    "title": "Kurtaxe",
+    "subtitle": "Schließen Sie Ihre Kurtaxe-Zahlung ab",
+    "reservation_id": "Reservierungs-ID",
+    "guest_count": "Anzahl der Gäste",
+    "check_in": "Anreisedatum",
+    "check_out": "Abreisedatum",
+    "accommodation": "Unterkunft",
+    "city": "Stadt",
+    "amount": "Betrag",
+    "currency": "Währung",
+    "total": "Gesamtbetrag",
+    "pay_now": "Jetzt bezahlen",
+    "processing": "Zahlung wird verarbeitet...",
+    "success": "Zahlung erfolgreich!",
+    "failed": "Zahlung fehlgeschlagen",
+    "retry": "Zahlung wiederholen"
+  },
+  "reservation": {
+    "details": "Reservierungsdetails",
+    "not_found": "Reservierung nicht gefunden",
+    "expired": "Reservierung ist abgelaufen",
+    "already_paid": "Diese Reservierung wurde bereits bezahlt",
+    "invalid": "Ungültige Reservierung"
+  },
+  "receipt": {
+    "title": "Zahlungsbeleg",
+    "transaction_id": "Transaktions-ID",
+    "payment_date": "Zahlungsdatum",
+    "download": "Beleg herunterladen",
+    "email": "Beleg per E-Mail"
+  }
+}

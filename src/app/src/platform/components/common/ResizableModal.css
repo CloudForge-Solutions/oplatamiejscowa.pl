@@ -1,0 +1,162 @@
+/* src/components/common/ResizableModal.css - Resizable Modal Bootstrap Override */
+
+/* Override Bootstrap modal dialog to support resizing */
+.resizable-modal .resizable-modal-dialog {
+  max-width: none !important;
+  margin: 0 !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1055;
+}
+
+/* Override Bootstrap modal content to support custom sizing */
+.resizable-modal .resizable-modal-content {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+  background-clip: padding-box;
+  outline: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+/* Resizable modal wrapper - replaces modal-content sizing */
+.resizable-modal-wrapper {
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  outline: 0;
+}
+
+/* Ensure modal header doesn't interfere with resizing */
+.resizable-modal .modal-header {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top-left-radius: calc(0.375rem - 1px);
+  border-top-right-radius: calc(0.375rem - 1px);
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure modal body fills available space */
+.resizable-modal .modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Resize handles styling */
+.resize-handle {
+  position: absolute;
+  background-color: transparent;
+  z-index: 1000;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.resize-handle:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.resize-handle-right {
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.resize-handle-bottom {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.resize-handle-corner {
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nw-resize;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-left: 2px solid #dee2e6;
+  border-top: 2px solid #dee2e6;
+  z-index: 1001;
+}
+
+.resize-handle-corner:hover {
+  background-color: rgba(0, 123, 255, 0.2);
+}
+
+/* Resize indicator */
+.resize-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  z-index: 1002;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Prevent text selection during resize */
+.resizing {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Ensure modal backdrop doesn't interfere */
+.resizable-modal .modal-backdrop {
+  z-index: 1050;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .resizable-modal .resizable-modal-dialog {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+  }
+
+  .resizable-modal-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .resize-handle {
+    display: none;
+  }
+}

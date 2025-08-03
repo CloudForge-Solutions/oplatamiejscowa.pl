@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "Taxe de Séjour",
+    "description": "Payez votre taxe de séjour en ligne",
+    "version": "v1.0.0"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "warning": "Avertissement",
+    "info": "Information",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "clear": "Effacer",
+    "refresh": "Actualiser",
+    "submit": "Soumettre",
+    "continue": "Continuer",
+    "finish": "Terminer"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalid_email": "Veuillez saisir une adresse e-mail valide",
+    "invalid_phone": "Veuillez saisir un numéro de téléphone valide",
+    "invalid_amount": "Veuillez saisir un montant valide",
+    "invalid_date": "Veuillez saisir une date valide",
+    "min_length": "Minimum {{count}} caractères requis",
+    "max_length": "Maximum {{count}} caractères autorisés"
+  },
+  "errors": {
+    "generic": "Quelque chose s'est mal passé. Veuillez réessayer.",
+    "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "timeout": "Délai d'attente dépassé. Veuillez réessayer.",
+    "not_found": "La ressource demandée n'a pas été trouvée.",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "server_error": "Erreur serveur. Veuillez réessayer plus tard."
+  },
+  "help": {
+    "mainInstruction": "Pour payer votre taxe de séjour, veuillez utiliser le lien de paiement fourni par votre hébergement.",
+    "noLinkInstruction": "Si vous n'avez pas de lien de paiement, veuillez contacter votre fournisseur d'hébergement.",
+    "needAssistance": "Besoin d'aide ?",
+    "contactSupport": "Pour le support technique ou des questions concernant votre paiement de taxe de séjour, veuillez contacter notre équipe de support.",
+    "contactButton": "Contacter le support",
+    "securePayment": "Tous les paiements sont traités de manière sécurisée via notre système de paiement certifié."
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Tourist Tax Online Payment",
+    "description": "Secure online payment for tourist tax"
+  },
+  "navigation": {
+    "help": "Help",
+    "goHome": "Go to Payment Page",
+    "goBack": "Go Back"
+  },
+  "language": {
+    "switchLanguage": "Switch Language",
+    "selectLanguage": "Select Language",
+    "currentLanguage": "Current"
+  },
+  "footer": {
+    "securePayment": "Secure payment powered by imoje",
+    "copyright": "Tourist Tax Online Payment"
+  },
+  "error": {
+    "pageNotFound": "Page Not Found",
+    "pageNotFoundDescription": "The page you're looking for doesn't exist or has been moved. Please check the URL or return to the payment page.",
+    "needHelp": "Need help with your tourist tax payment?"
+  },
+  "fab": {
+    "help": "Help & FAQ",
+    "contact": "Contact Support",
+    "paymentInfo": "Payment Information",
+    "language": "Change Language",
+    "quickActions": "Quick Actions"
+  },
+  "loading": {
+    "default": "Loading...",
+    "payment": "Processing payment...",
+    "reservation": "Loading reservation..."
+  },
+  "buttons": {
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "close": "Close"
+  }
+}

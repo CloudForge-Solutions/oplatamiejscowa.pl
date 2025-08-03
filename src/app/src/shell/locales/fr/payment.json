@@ -1,0 +1,34 @@
+{
+  "payment": {
+    "title": "Taxe de Séjour",
+    "subtitle": "Complétez votre paiement de taxe de séjour",
+    "reservation_id": "ID de réservation",
+    "guest_count": "Nombre d'invités",
+    "check_in": "Date d'arrivée",
+    "check_out": "Date de départ",
+    "accommodation": "Hébergement",
+    "city": "Ville",
+    "amount": "Montant",
+    "currency": "Devise",
+    "total": "Montant total",
+    "pay_now": "Payer maintenant",
+    "processing": "Traitement du paiement...",
+    "success": "Paiement réussi !",
+    "failed": "Échec du paiement",
+    "retry": "Réessayer le paiement"
+  },
+  "reservation": {
+    "details": "Détails de la réservation",
+    "not_found": "Réservation non trouvée",
+    "expired": "La réservation a expiré",
+    "already_paid": "Cette réservation a déjà été payée",
+    "invalid": "Réservation invalide"
+  },
+  "receipt": {
+    "title": "Reçu de paiement",
+    "transaction_id": "ID de transaction",
+    "payment_date": "Date de paiement",
+    "download": "Télécharger le reçu",
+    "email": "Envoyer par e-mail"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "Kurtaxe",
+    "description": "Zahlen Sie Ihre Kurtaxe online",
+    "version": "v1.0.0"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "warning": "Warnung",
+    "info": "Information",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Ansehen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "OK",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "search": "Suchen",
+    "filter": "Filter",
+    "clear": "Löschen",
+    "refresh": "Aktualisieren",
+    "submit": "Senden",
+    "continue": "Fortfahren",
+    "finish": "Beenden"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalid_email": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "invalid_phone": "Bitte geben Sie eine gültige Telefonnummer ein",
+    "invalid_amount": "Bitte geben Sie einen gültigen Betrag ein",
+    "invalid_date": "Bitte geben Sie ein gültiges Datum ein",
+    "min_length": "Mindestens {{count}} Zeichen erforderlich",
+    "max_length": "Maximal {{count}} Zeichen erlaubt"
+  },
+  "errors": {
+    "generic": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.",
+    "network": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
+    "timeout": "Zeitüberschreitung. Bitte versuchen Sie es erneut.",
+    "not_found": "Die angeforderte Ressource wurde nicht gefunden.",
+    "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
+    "server_error": "Serverfehler. Bitte versuchen Sie es später erneut."
+  }
+}

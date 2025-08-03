@@ -1,0 +1,17 @@
+{
+  "navigation": {
+    "home": "Strona główna",
+    "payment": "Płatność",
+    "confirmation": "Potwierdzenie",
+    "help": "Pomoc",
+    "contact": "Kontakt",
+    "language": "Język",
+    "menu": "Menu"
+  },
+  "breadcrumb": {
+    "home": "Strona główna",
+    "payment_details": "Szczegóły płatności",
+    "payment_method": "Metoda płatności",
+    "confirmation": "Potwierdzenie"
+  }
+}

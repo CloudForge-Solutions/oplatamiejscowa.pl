@@ -1,0 +1,87 @@
+#===================================================================================================
+#=== Tourist Tax Payment System - Makefile
+#===================================================================================================
+# Project: Opłata Miejscowa Online
+# Description: Tourist tax payment system for Polish cities
+# Tech Stack: React + TypeScript + Vite + imoje Payment Gateway
+#===================================================================================================
+
+# Force specific make behavior for reliability
+.EXPORT_ALL_VARIABLES:
+MAKEFLAGS     += --no-builtin-rules
+MAKEFLAGS     += --no-print-directory
+MAKEFLAGS     += --warn-undefined-variables
+MAKEFLAGS     += -j1
+
+# MVP Testing targets
+.PHONY: mvp-test mvp-blob mvp-queue mvp-arch mvp-imoje analyze-plans validate-tech stop-mvp
+
+# Azure Storage Emulator targets
+.PHONY: storage-emulator storage-start storage-stop storage-test storage-test-blob storage-test-queue storage-test-table storage-status
+
+# Shell configuration for robust script execution
+.ONESHELL:
+.SHELL        := $(shell which bash)
+SHELL         := $(shell which bash)
+.SHELLFLAGS   := -eu -o pipefail -c
+SHELL_NAME    := $(notdir ${SHELL})
+SHELL_VERSION := $(shell echo $${BASH_VERSION%%[^0-9.]*})
+
+#===================================================================================================
+#=== Project Configuration
+#===================================================================================================
+
+# Load environment variables
+-include .env
+-include .env.local
+
+# Project metadata
+PROJECT_NAME        := oplata-miejscowa
+PROJECT_TITLE       := "Opłata Miejscowa Online"
+PROJECT_DESCRIPTION := "Tourist tax payment system for Polish cities"
+DOMAIN              ?= oplatamiejscowa.pl
+VERSION             := $(shell cat VERSION 2>/dev/null || echo "1.0.0")
+BUILD_ID            := $(shell date +%Y%m%d-%H%M%S)
+
+# System configuration
+UID                 := $(shell id -u)
+GID                 := $(shell id -g)
+USERNAME            := $(shell whoami)
+
+#===================================================================================================
+#=== Development Environment Configuration
+#===================================================================================================
+
+# Node.js configuration
+NVM_NODE_VERSION    ?= lts/jod
+NVM_DIR             := ${HOME}/.nvm
+NODE_ENV            ?= development
+
+# Development server configuration
+DEV_PORT            ?= 3040
+DEV_HOST            ?= localhost
+PREVIEW_PORT        ?= 3041
+
+# Build configuration
+BUILD_MODE          ?= production
+VITE_MODE           ?= $(BUILD_MODE)
+SOURCE_MAP          ?= true
+
+# Testing configuration
+TEST_TIMEOUT        ?= 30000
+TEST_COVERAGE       ?= true
+
+# Azure Storage Emulator configuration
+AZURITE_PORT_BLOB   ?= 10000
+AZURITE_PORT_QUEUE  ?= 10001
+AZURITE_PORT_TABLE  ?= 10002
+AZURITE_HOST        ?= 127.0.0.1
+AZURITE_WORKSPACE   ?= ./azurite-workspace
+AZURITE_DEBUG       ?= false
+AZURITE_ACCOUNT     ?= devstoreaccount1
+AZURITE_KEY         ?= Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+
+# Quality assurance configuration
+LINT_FIX            ?= false
+FORMAT_CHECK        ?= false
+

@@ -1,0 +1,34 @@
+{
+  "payment": {
+    "title": "Opłata Miejscowa",
+    "subtitle": "Dokończ płatność opłaty miejscowej",
+    "reservation_id": "ID rezerwacji",
+    "guest_count": "Liczba gości",
+    "check_in": "Data zameldowania",
+    "check_out": "Data wymeldowania",
+    "accommodation": "Obiekt noclegowy",
+    "city": "Miasto",
+    "amount": "Kwota",
+    "currency": "Waluta",
+    "total": "Łączna kwota",
+    "pay_now": "Zapłać teraz",
+    "processing": "Przetwarzanie płatności...",
+    "success": "Płatność zakończona sukcesem!",
+    "failed": "Płatność nieudana",
+    "retry": "Ponów płatność"
+  },
+  "reservation": {
+    "details": "Szczegóły rezerwacji",
+    "not_found": "Nie znaleziono rezerwacji",
+    "expired": "Rezerwacja wygasła",
+    "already_paid": "Ta rezerwacja została już opłacona",
+    "invalid": "Nieprawidłowa rezerwacja"
+  },
+  "receipt": {
+    "title": "Potwierdzenie płatności",
+    "transaction_id": "ID transakcji",
+    "payment_date": "Data płatności",
+    "download": "Pobierz potwierdzenie",
+    "email": "Wyślij email"
+  }
+}

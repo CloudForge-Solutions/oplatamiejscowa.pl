@@ -1,0 +1,291 @@
+// Mobile-First Responsive Styles for Tourist Tax Application
+// ARCHITECTURE: Mobile-first approach, progressive enhancement
+
+// ===== BASE MOBILE STYLES =====
+// These are the default styles, optimized for mobile devices
+
+.container {
+  width: 100%;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// ===== MOBILE NAVIGATION =====
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: var(--z-fixed);
+  padding: var(--space-3) var(--space-4);
+  
+  .nav-brand {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+  }
+  
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+}
+
+// ===== MOBILE FORMS =====
+.form-mobile {
+  .form-group {
+    margin-bottom: var(--form-group-margin);
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: var(--form-label-margin);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .form-control {
+    width: 100%;
+    height: var(--input-height-base);
+    padding: var(--space-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    background: var(--bg-primary);
+    transition: var(--transition-colors);
+    
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+  
+  .form-error {
+    margin-top: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: var(--danger-color);
+  }
+}
+
+// ===== MOBILE BUTTONS =====
+.btn-mobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--button-height-base);
+  padding: var(--space-3) var(--space-6);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  user-select: none;
+  
+  // Touch feedback
+  &:active {
+    transform: translateY(1px);
+  }
+  
+  // Primary button
+  &.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+    
+    &:hover {
+      background: var(--primary-hover);
+    }
+    
+    &:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+    }
+  }
+  
+  // Secondary button
+  &.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+  }
+  
+  // Full width for mobile
+  &.btn-block {
+    width: 100%;
+  }
+  
+  // Large button for important actions
+  &.btn-lg {
+    min-height: var(--button-height-lg);
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--font-size-lg);
+  }
+}
+
+// ===== MOBILE CARDS =====
+.card-mobile {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  
+  .card-header {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-light);
+    
+    .card-title {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+    }
+    
+    .card-subtitle {
+      margin: var(--space-1) 0 0 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+  }
+  
+  .card-body {
+    .card-text {
+      margin-bottom: var(--space-3);
+      line-height: var(--line-height-normal);
+    }
+  }
+  
+  .card-footer {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-light);
+  }
+}
+
+// ===== MOBILE MODALS =====
+.modal-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: flex-end;
+  
+  .modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop);
+  }
+  
+  .modal-content {
+    position: relative;
+    width: 100%;
+    max-height: 90vh;
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    z-index: var(--z-modal);
+    overflow-y: auto;
+    
+    .modal-header {
+      padding: var(--space-6) var(--space-6) var(--space-4);
+      border-bottom: 1px solid var(--border-light);
+      
+      .modal-title {
+        margin: 0;
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+      }
+      
+      .modal-close {
+        position: absolute;
+        top: var(--space-4);
+        right: var(--space-4);
+        background: none;
+        border: none;
+        font-size: var(--font-size-xl);
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: var(--space-2);
+        border-radius: var(--radius-base);
+        
+        &:hover {
+          background: var(--bg-secondary);
+        }
+      }
+    }
+    
+    .modal-body {
+      padding: var(--space-6);
+    }
+    
+    .modal-footer {
+      padding: var(--space-4) var(--space-6) var(--space-6);
+      border-top: 1px solid var(--border-light);
+      
+      .modal-actions {
+        display: flex;
+        gap: var(--space-3);
+        
+        .btn-mobile {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// ===== MOBILE UTILITIES =====
+.mobile-only {
+  display: block;
+}
+
+.mobile-hidden {
+  display: none;
+}
+
+.text-center-mobile {
+  text-align: center;
+}
+
+.full-width-mobile {
+  width: 100%;
+}
+
+// ===== MOBILE SPACING =====
+.mt-mobile { margin-top: var(--space-4); }
+.mb-mobile { margin-bottom: var(--space-4); }
+.ml-mobile { margin-left: var(--space-4); }
+.mr-mobile { margin-right: var(--space-4); }
+.mx-mobile { margin-left: var(--space-4); margin-right: var(--space-4); }
+.my-mobile { margin-top: var(--space-4); margin-bottom: var(--space-4); }
+
+.pt-mobile { padding-top: var(--space-4); }
+.pb-mobile { padding-bottom: var(--space-4); }
+.pl-mobile { padding-left: var(--space-4); }
+.pr-mobile { padding-right: var(--space-4); }
+.px-mobile { padding-left: var(--space-4); padding-right: var(--space-4); }
+.py-mobile { padding-top: var(--space-4); padding-bottom: var(--space-4); }
