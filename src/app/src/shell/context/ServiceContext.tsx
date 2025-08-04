@@ -35,17 +35,24 @@ export const ServiceProvider: React.FC<ServiceProviderProps> = ({ children }) =>
       if (!initializedRef.current) {
         logger.info('🏗️ Initializing Service Context (Layer 1)');
         initializedRef.current = true;
+
+        // Static services - initialized once, never change
+        const serviceInstances: ServiceContextType = {
+          storageService,
+          apiService,
+          localStorageManager
+        };
+
+        logger.info('✅ Service Context initialized with platform services');
+        return serviceInstances;
       }
 
-      // Static services - initialized once, never change
-      const serviceInstances: ServiceContextType = {
+      // Return services without logging on subsequent renders
+      return {
         storageService,
         apiService,
         localStorageManager
       };
-
-      logger.info('✅ Service Context initialized with platform services');
-      return serviceInstances;
     } catch (error) {
       logger.error('❌ Failed to initialize services', { error });
 

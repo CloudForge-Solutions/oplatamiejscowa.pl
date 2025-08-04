@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
+import { cspDevInjection } from './vite-plugins/csp-dev-injection';
 
 // Fix for Node.js 22 crypto issue
 import { webcrypto } from 'node:crypto';
@@ -48,7 +49,8 @@ export default defineConfig({
 			// Modern JSX runtime (no need for fastRefresh option)
 			jsxRuntime: 'automatic'
 		}),
-		viteTsconfigPaths() // Resolve absolute paths from tsconfig.json
+		viteTsconfigPaths(), // Resolve absolute paths from tsconfig.json
+		cspDevInjection() // Inject development CSP entries only during development
 	],
 
 	resolve: {
@@ -106,7 +108,7 @@ export default defineConfig({
 		// Optimize for production
 		minify: 'terser',
 		sourcemap: true,
-		target: 'commonjs'
+		target: 'es2020' // Modern browsers target
 	},
 
 	server: {

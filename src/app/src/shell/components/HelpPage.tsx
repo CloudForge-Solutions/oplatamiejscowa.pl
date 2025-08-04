@@ -5,27 +5,15 @@
  * ARCHITECTURE: Mobile-first responsive design with proper i18n integration
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useLanguage } from '../context/LanguageContext';
-import { eventBus, PLATFORM_EVENTS } from '../../platform/EventBus';
 import { logger } from '../../platform/CentralizedLogger';
 
 const HelpPage: React.FC = () => {
   const { t, currentLanguage } = useLanguage();
-  const [forceUpdate, setForceUpdate] = useState(0);
 
-  // Subscribe to language change events to force re-render
-  useEffect(() => {
-    const unsubscribe = eventBus.on(PLATFORM_EVENTS.LANGUAGE_CHANGED, (data) => {
-      logger.info('🌐 HelpPage received language change event', data);
-      setForceUpdate(prev => prev + 1); // Force re-render
-    });
-
-    return unsubscribe;
-  }, []);
-
-  // Also react to currentLanguage changes from context
+  // React to currentLanguage changes from context (no manual EventBus subscription needed)
   useEffect(() => {
     logger.info('🌐 HelpPage language updated', { currentLanguage });
   }, [currentLanguage]);

@@ -13,7 +13,14 @@
  */
 
 
-import { BlobServiceClient } from '@azure/storage-blob';
+import {
+  BlobServiceClient,
+  generateAccountSASQueryParameters,
+  AccountSASPermissions,
+  AccountSASServices,
+  AccountSASResourceTypes,
+  StorageSharedKeyCredential
+} from '@azure/storage-blob';
 import { logger } from '../CentralizedLogger';
 
 export interface ReservationData {
@@ -49,85 +56,88 @@ export class BlobStorageService {
   private blobServiceClient: any;
   private containerClient: any;
   private config: BlobStorageConfig;
+  private isAvailable: boolean = false;
+  private initializationPromise: Promise<void> | null = null;
+  private sharedKeyCredential: StorageSharedKeyCredential | null = null;
 
   constructor(config: BlobStorageConfig) {
     this.config = config;
 
     try {
-      // For browser environments, construct the service URL directly
-      // Connection string format: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=...;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;
+      // Extract account key from connection string for SAS token generation
+      const accountKey = this.extractAccountKeyFromConnectionString(config.connectionString);
       const serviceUrl = this.extractBlobEndpointFromConnectionString(config.connectionString);
 
-      // Initialize Azure Storage SDK for browser with service URL
-      this.blobServiceClient = new BlobServiceClient(serviceUrl);
+      // Create shared key credential for SAS token generation
+      this.sharedKeyCredential = new StorageSharedKeyCredential(config.accountName, accountKey);
+
+      // Generate SAS token for browser authentication
+      const sasToken = this.generateSASToken();
+      const serviceUrlWithSAS = `${serviceUrl}?${sasToken}`;
+
+      // Initialize Azure Storage SDK for browser with SAS token
+      this.blobServiceClient = new BlobServiceClient(serviceUrlWithSAS);
       this.containerClient = this.blobServiceClient.getContainerClient(config.containerName);
 
-      logger.info('🗄️ BlobStorageService initialized for browser environment', {
+      logger.info('🗄️ BlobStorageService initialized for browser environment with SAS token', {
         accountName: config.accountName,
         containerName: config.containerName,
         serviceUrl: serviceUrl,
-        endpoint: 'Azure Storage Emulator'
+        endpoint: 'Azure Storage Emulator',
+        authMethod: 'SAS Token'
       });
 
-      // Initialize container
-      this.initializeContainer();
+      // Initialize container asynchronously with proper error handling
+      this.initializationPromise = this.initializeContainer();
     } catch (error) {
       logger.error('❌ Failed to initialize BlobStorageService', { error, config });
-      throw error;
+      // Don't throw - allow graceful degradation
+      this.isAvailable = false;
     }
   }
 
-  /**
-   * Extract blob endpoint URL from connection string for browser compatibility
-   */
-  private extractBlobEndpointFromConnectionString(connectionString: string): string {
-    try {
-      // Parse connection string to extract BlobEndpoint
-      const parts = connectionString.split(';');
-      for (const part of parts) {
-        if (part.startsWith('BlobEndpoint=')) {
-          return part.substring('BlobEndpoint='.length);
-        }
-      }
 
-      // Fallback: construct from AccountName if BlobEndpoint not found
-      const accountNameMatch = connectionString.match(/AccountName=([^;]+)/);
-      if (accountNameMatch) {
-        const accountName = accountNameMatch[1];
-        if (accountName === 'devstoreaccount1') {
-          // Azure Storage Emulator default endpoint
-          return 'http://127.0.0.1:10000/devstoreaccount1';
-        } else {
-          // Production Azure Storage endpoint
-          return `https://${accountName}.blob.core.windows.net`;
-        }
-      }
-
-      throw new Error('Could not extract blob endpoint from connection string');
-    } catch (error) {
-      logger.error('❌ Failed to parse connection string', { error, connectionString });
-      throw error;
-    }
-  }
 
   /**
    * Initialize container if it doesn't exist
    */
   private async initializeContainer(): Promise<void> {
     try {
+      if (!this.containerClient) {
+        throw new Error('Container client not initialized');
+      }
+
       await this.containerClient.createIfNotExists({
         access: 'blob'
       });
 
+      this.isAvailable = true;
       logger.info('✅ Container initialized', {
         containerName: this.config.containerName
       });
     } catch (error) {
+      this.isAvailable = false;
       logger.error('❌ Failed to initialize container', {
         error,
         containerName: this.config.containerName
       });
+
+      // In development, this is expected if Azurite is not running
+      if (this.config.accountName === 'devstoreaccount1') {
+        logger.warn('⚠️ Azure Storage Emulator (Azurite) appears to be unavailable. Some features may not work.');
+        logger.info('💡 To start Azurite: npm run azurite or make storage-start');
+      }
     }
+  }
+
+  /**
+   * Check if the service is available and wait for initialization
+   */
+  async ensureInitialized(): Promise<boolean> {
+    if (this.initializationPromise) {
+      await this.initializationPromise;
+    }
+    return this.isAvailable;
   }
 
   /**
@@ -135,6 +145,14 @@ export class BlobStorageService {
    */
   async storeReservation(reservationData: ReservationData): Promise<boolean> {
     try {
+      const isReady = await this.ensureInitialized();
+      if (!isReady) {
+        logger.warn('⚠️ Blob storage not available, cannot store reservation', {
+          reservationId: reservationData.id
+        });
+        return false;
+      }
+
       const blobName = `reservations/${reservationData.id}.json`;
       const blobClient = this.containerClient.getBlobClient(blobName);
       const blockBlobClient = blobClient.getBlockBlobClient();
@@ -268,6 +286,12 @@ export class BlobStorageService {
    */
   async getStorageStats(): Promise<{ containerExists: boolean; blobCount: number }> {
     try {
+      const isReady = await this.ensureInitialized();
+      if (!isReady) {
+        logger.warn('⚠️ Blob storage not available, returning default stats');
+        return { containerExists: false, blobCount: 0 };
+      }
+
       const containerExists = await this.containerClient.exists();
 
       if (!containerExists) {

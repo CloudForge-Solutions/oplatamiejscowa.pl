@@ -1,62 +1,82 @@
-IMPORTANT: I have pasted current console logs to README.current-logs.md, analyse and review line by line, be precise, comprehensive, detailed, systematic, semantic, critical and picky
+# DEVELOPMENT RULES AND GUIDELINES
 
+## 📋 PROJECT OVERVIEW
 NOTE: we have plan in README.plans.md, lets focus on implementing the static app in src/app, use local storage function app emulators locally
 
 IMPORTANT: all files related to static app should be placed in src/app including package.json and vite etc
 
+## 🔍 ANALYSIS AND REVIEW REQUIREMENTS
+IMPORTANT: I have pasted current console logs to README.current-logs.md, analyse and review line by line, be precise, comprehensive, detailed, systematic, semantic, critical and picky
+
 TASK: implement the fixes and robust solutions, but before and after making any changes, verify and analyse comprehensively each change, be critical and picky, comprehensive and precise, if we are not adding any antipatterns like god objects or improperly mixing our architecture, fighting with bootstrap, so beware any antipatterns, keep code DRY and agnostic, stick to Single Responsibility Principle, when fixing issues or adding a feature review and analyse line by line related code and patterns
 
-IMPORTANT: before reinwhenting the wheel or makine custom solutions to common problems make sure that the features/functionalities needed are not available in our current libs or a mature external libs we can use
+IMPORTANT: each time logs/code are provided, analyse and review line by line, find warnings, errors, hidden issues, semantic/logic inconsistencies, be precise, critical, comprehensive, detailed and picky
 
-IMPORTANT: changing js to ts file require stopping `make dev` process and starting it again to cleanup vite cache
-
-IMPORTANT: we are eventbus driven
-
-IMPORTANT: azure storage single blob SAS token we set as 24-hour expiring for security and store in local storage once received if token is not in local storage or expired then generate new one
-
-IMPORTANT: any currently modified file that is not yet ts/tsx in src do migrate to typescript along current task changes, also when importing do not use extensions of files
+IMPORTANT: never assume that something is completed or production ready before you will see all related logs from user tested application
 
 IMPORTANT: instead of dummy patching find if its not an architectural issue, be precise, comprehensive, detailed, systematic, semantic, critical and picky
 
-IMPORTANT: to start the development vite server run `make dev` and to install packages look at Makefile, update install target and run `make install`, never change production src code to accommodate tests special requirements, do other way around and make sure tests can work with vite, also run the tests via Makefile targets
+IMPORTANT: before reinventing the wheel or makine custom solutions to common problems make sure that the features/functionalities needed are not available in our current libs or a mature external libs we can use
 
-IMPORTANT: **MOBILE-FIRST DESIGN MANDATORY** - our static app will be used primarily on mobile devices by tourists, with desktop as secondary. Most booking tourists only have mobile devices while traveling. All UI components must be mobile-optimized with touch-friendly interfaces, proper viewport handling, and responsive design patterns
+IMPORTANT: make sure to use Makefile, npm in console is forbidden
+IMPORTANT: to start the development vite server run `make dev`
+IMPORTANT: to install packages look at Makefile, update install target and run `make install`
 
+IMPORTANT: changing js to ts file require stopping `make dev` process and starting it again to cleanup vite cache
+
+IMPORTANT: never change production src code to accommodate tests special requirements, do other way around and make sure tests can work with vite, also run the tests via Makefile targets
+
+
+## 📦 PACKAGE MANAGEMENT RULES
+IMPORTANT: **PACKAGE MANAGEMENT RULES:**
+- **FORBIDDEN**: Manual editing of package.json, requirements.txt, Cargo.toml, go.mod or similar package files
+- **REQUIRED**: Always use appropriate package managers (npm install, pip install, cargo add, etc. all via Makefile)
+- **REQUIRED**: Use Makefile targets for dependency management (`make install`, `make dev`)
+- **RATIONALE**: Package managers handle version resolution, dependency conflicts, lock files, and environment consistency automatically
+- **EXCEPTION**: Only edit package files for complex configuration that cannot be done via package manager commands
+
+## 🌐 BROWSER COMPATIBILITY AND POLYFILL RULES
+IMPORTANT: **BROWSER COMPATIBILITY AND POLYFILL RULES:**
+- **FORBIDDEN**: Manual polyfill files or global window object modifications
+- **FORBIDDEN**: localStorage-based fallbacks for Node.js APIs instead of proper polyfills
+- **REQUIRED**: Use professional bundler plugins for Node.js polyfills (`@esbuild-plugins/node-globals-polyfill`)
+- **REQUIRED**: Configure polyfills at build time via Vite esbuildOptions, not runtime patches
+- **FORBIDDEN**: CDN scripts for packages that have module system conflicts
+- **REQUIRED**: Resolve "Buffer is not defined" and similar errors with proper build configuration, not runtime workarounds
+
+## 🚫 FORBIDDEN PRACTICES
 IMPORTANT: making any changes or directly using code from .deprecated1 and .deprecated2 is forbidden, as those deprecated code was left only for reference
 
 IMPORTANT: using dumb patches like `cleanupMalformedKeys` is forbidden as root cause of malformed keys should be resolved, so use `assertMalformedKeys` with error throwing. Migration/fallback services like OrphanedDataCleanupService are FORBIDDEN - use strict validation to prevent issues instead of cleanup patches
 
 IMPORTANT: each time logs/code are provided, analyse and review line by line, find warnings, errors, hidden issues, semantic/logic inconsistencies, be precise, critical, comprehensive, detailed and picky
 
-IMPORTANT: never assume that something is completed or production ready before you will see all related logs from user tested application
+## 📚 CONSTANTS ARCHITECTURE
+IMPORTANT: **CONSTANTS ARCHITECTURE RULES:**
+- All constants MUST be imported via barrel export from `src/constants/index.ts`
+- Magic strings and numbers (including TTL values) are FORBIDDEN - use named constants
+- Constants should be modular but barrel-exported during development phase
+- No duplicate constant definitions across modules
+- Use TypeScript `as const` assertions for immutable constants
+- Constants should be grouped by domain (Storage, Events, TouristTax, UI, API, Validation)
 
-IMPORTANT: Storage keys and events must NOT be hardcoded magic strings, but references to variables in constants. Always use barrel imports via `src/constants/index.ts`. We have strict rules for global and context-entity-aware storage/indexeddb keys. All pages/services/components must follow these import patterns:
+IMPORTANT: Storage keys and events must NOT be hardcoded magic strings, but references to variables in constants. Always use barrel imports via `src/constants/index.ts`. We have strict rules for global and context-entity-aware storage/indexeddb keys. All pages/services/components must follow these import patterns.
 
-```javascript
-// ✅ ALLOWED - Barrel import only
-import { JPK_STATUS, ENTITY_TYPES, UI_STATES } from '@/constants';
+IMPORTANT: `src/constants` should contain only one file `index.ts` that acts as a centralized constants export hub and duplicates validator. During development phase, it contains both direct constants and barrel exports.
 
-// ❌ FORBIDDEN - Direct domain imports (for now)
-import { JPK_STATUS } from '@/apps/jpk/constants';
-import { ENTITY_TYPES } from '@/core/constants/EntityConstants';
-```
 
-IMPORTANT: `src/constants` should contain only one file `index.ts` that acts as a centralized constants export hub and duplicates validator. During development phase, it contains both direct constants and barrel exports:
 
-```typescript
-// Barrel exports (when modular files are created)
-export * from '@/platform/constants';
-export * from '@/shell/constants';
-export * from '@/apps/tourist-tax/constants';
-```
-
-IMPORTANT: if there are any changes in our architecture, make sure to reflect it in related @README.mini*.md files without prepending/appending it or adding new docs files
-
+## 🔄 ROUTING AND SYNCHRONIZATION
 IMPORTANT: route and language and context should be in two way sync via use-query-params lib, if a reservation is being viewed it should also be in route parameter, if payment status is being tracked it should also be in route parameter, but hard requirement is not to fight with bootstrap, react, and router to avoid any kind of hellish bugs
 
+## 📖 DOCUMENTATION UPDATES
+IMPORTANT: if there are any changes in our architecture, make sure to reflect it in related @README.mini*.md files without prepending/appending it or adding new docs files
 
 
-IMPORTANT: ARCHITECTURE: SIMPLE CONTEXT APPROACH (NO ENTITY/CITY SWITCHING) with ```
+## 🏗️ ARCHITECTURE: SIMPLE CONTEXT APPROACH
+IMPORTANT: we are eventbus driven
+
+IMPORTANT: ARCHITECTURE: SIMPLE CONTEXT APPROACH (NO ENTITY/CITY SWITCHING) with
 Layer 1: Service Context (Static) - Services never change during app lifecycle
   - Provides access to core application services (StorageService, ApiService)
   - Static layer that remains constant throughout app lifecycle
@@ -89,9 +109,11 @@ Architecture Principles:
 5. Performance Optimization - Fast payment status updates with smart caching
 6. Two-Way URL Sync - All contexts synchronized with URL parameters via use-query-params
 7. Mobile-First Design - All contexts optimized for mobile device performance
-```
 
-IMPORTANT: 💳 Payment Status Update Flow (Simple Polling Pattern) ```
+
+## 🔄 DATA FLOW PATTERNS
+
+### 💳 Payment Status Update Flow (Simple Polling Pattern)
 1. Payment status changes in backend (imoje webhook updates backend state)
 2. Frontend polls payment status via ApiService.getPaymentStatus() (user-initiated or periodic)
 3. Current payment state validated and updated immediately
@@ -109,9 +131,8 @@ IMPORTANT: 💳 Payment Status Update Flow (Simple Polling Pattern) ```
 12. Error handling for invalid payment states and storage failures
 13. Cache invalidation and refresh mechanisms for optimal performance
 14. Mobile-optimized loading states and error feedback for touch interfaces
-```
 
-IMPORTANT: 🌐 Language Switching Flow ```
+### 🌐 Language Switching Flow
 1. User selects new language in LanguageSwitcher (navbar)
 2. LanguageContext.switchLanguage() called with validation
 3. i18next language changed via i18n.changeLanguage()
@@ -123,9 +144,8 @@ IMPORTANT: 🌐 Language Switching Flow ```
 9. Event emitted via EventBus for services to react (if needed)
 10. No page reload required - all operations are synchronous
 11. Error handling for unsupported languages and storage failures
-```
 
-IMPORTANT: 🌐💳 Combined TouristTax + Language Flow (Independent Operation) ```
+### 🌐💳 Combined TouristTax + Language Flow (Independent Operation)
 1. Payment status updates → TouristTax context updates via polling/caching → Components reload payment data (polling-based)
 2. User switches language → Language context updates via i18next → Same components show translated labels
 3. Both contexts work independently and simultaneously with separate caching strategies:
@@ -137,10 +157,8 @@ IMPORTANT: 🌐💳 Combined TouristTax + Language Flow (Independent Operation) 
 7. Components receive updates from both contexts simultaneously without interference
 8. Error handling is isolated per context to prevent cascading failures
 9. Mobile-optimized context switching with touch-friendly feedback
-```
 
-IMPORTANT: forbidden is any fallback to legacy and any form of data migration as we are in development phase before production, also absurd timeouts instead of proper fixes are forbidden, also absurdly long timeouts are forbidden when we are having all data inside the browser localStorage with instant synchronous access. Follows "fail fast" principle for better reliability. No OrphanedDataCleanupService or similar migration patterns allowed
-
+## 💾 STORAGE ARCHITECTURE
 IMPORTANT: our static app uses SIMPLE STORAGE ARCHITECTURE with minimal data sources:
 - **Blob Storage**: Reservation data via SAS tokens from backend (BlobStorageService)
 - **localStorage**: Form cache, preferences, session data, payment status (LocalStorageManager)
@@ -157,23 +175,13 @@ IMPORTANT: payment status updates use SIMPLE POLLING PATTERN (no WebSocket compl
 - **EventBus coordination**: Fire-and-forget pattern with proper error handling
 - **Mobile optimization**: Touch-friendly polling controls and loading states
 
-IMPORTANT: data storage follows SIMPLE ARCHITECTURE patterns:
-- **localStorage**: Form cache, user preferences, session data, payment status cache (all data, synchronous)
-- **Blob Storage**: Reservation data accessed via SAS tokens (external, cached locally after first fetch)
-- **API Polling**: Payment status updates via periodic or user-initiated API calls (no WebSocket complexity)
-- **NO IndexedDB**: Keep it simple for this focused payment app
 StorageService should implement smart caching with TTL and proper fallback strategies
 
 IMPORTANT: NEVER use dual storage systems for context and metadata (localStorage + sessionStorage) - use single localStorage + in-memory caching for optimal performance and data integrity
 
-IMPORTANT: **CONSTANTS ARCHITECTURE RULES:**
-- All constants MUST be imported via barrel export from `src/constants/index.ts`
-- Magic strings and numbers (including TTL values) are FORBIDDEN - use named constants
-- Constants should be modular but barrel-exported during development phase
-- No duplicate constant definitions across modules
-- Use TypeScript `as const` assertions for immutable constants
-- Constants should be grouped by domain (Storage, Events, TouristTax, UI, API, Validation)
+IMPORTANT: azure storage single blob SAS token we set as 24-hour expiring for security and store in local storage once received if token is not in local storage or expired then generate new one
 
+## ✅ VALIDATION AND ERROR HANDLING
 IMPORTANT: **VALIDATION AND ERROR HANDLING:**
 - Use strict validation with immediate error throwing instead of cleanup patches
 - No migration services or fallback mechanisms during development phase
@@ -181,6 +189,9 @@ IMPORTANT: **VALIDATION AND ERROR HANDLING:**
 - All validation rules must be defined in ValidationConstants with proper TypeScript types
 - Error messages should be user-friendly and internationalized
 
+IMPORTANT: forbidden is any fallback to legacy and any form of data migration as we are in development phase before production, also absurd timeouts instead of proper fixes are forbidden, also absurdly long timeouts are forbidden when we are having all data inside the browser localStorage with instant synchronous access. Follows "fail fast" principle for better reliability. No OrphanedDataCleanupService or similar migration patterns allowed
+
+## ⚡ PERFORMANCE REQUIREMENTS
 IMPORTANT: **PERFORMANCE REQUIREMENTS:**
 - Keep the app simple and focused - no city/entity switching complexity needed
 - City context determined from reservation UUID, no switching UI required
@@ -190,8 +201,7 @@ IMPORTANT: **PERFORMANCE REQUIREMENTS:**
 - No blocking operations in UI thread - all localStorage operations are synchronous
 - Touch-friendly interfaces with 44px minimum touch targets
 
-
-IMPORTANT: **STORAGE SYNCHRONIZATION RULES:**
+### 📊 STORAGE SYNCHRONIZATION RULES
 
 **SYNCHRONOUS DATA (localStorage + in-memory cache via LocalStorageManager):**
 - User preferences (language, theme, form auto-save settings)
@@ -216,8 +226,6 @@ IMPORTANT: **STORAGE SYNCHRONIZATION RULES:**
 
 **ARCHITECTURAL PRINCIPLE:** All UI operations use synchronous localStorage for instant feedback and simplicity. External data accessed via SAS tokens with local caching. Payment status updates via simple polling (no WebSocket complexity). Mobile-optimized with touch-friendly loading states.
 
-IMPORTANT: forbidden is any fallback to legacy and any form of data migration as we are in development phase before production, also absurd timeouts instead of proper fixes are forbidden, also absurdly long timeouts are forbidden when we are having all data inside the browser localStorage with instant synchronous access. Follows "fail fast" principle for better reliability.
-
 IMPORTANT: local storage should follow simple storage structure architecture with localStorage in flat structured format, and NO IndexedDB needed - only localStorage with flat structure for this simple payment app
 
 **SIMPLE STORAGE STRUCTURE:**
@@ -241,55 +249,33 @@ https://storage.blob.core.windows.net/reservations/{uuid}.json?{sasToken}
 Payment status checks via periodic or user-initiated API calls
 ```
 
+## 🔧 TYPESCRIPT AND LOGGING
+IMPORTANT: any currently modified file that is not yet ts/tsx in src do migrate to typescript along current task changes, also when importing do not use extensions of files
+
 IMPORTANT: using console.log is forbidden, make sure to use logger with standard verbosity level methods without custom methods like platform/shell etc. Logger should be imported from constants barrel export and use structured logging with proper context
+
+## ☁️ AZURE STORAGE SDK BROWSER INTEGRATION
+IMPORTANT: **AZURE STORAGE SDK BROWSER INTEGRATION RULES:**
+- **FORBIDDEN**: Using `BlobServiceClient.fromConnectionString()` in browser environments (Node.js only)
+- **REQUIRED**: Use direct `new BlobServiceClient(serviceUrl)` with extracted service URL from connection string
+- **FORBIDDEN**: Manual polyfills or global window modifications for Node.js APIs
+- **REQUIRED**: Use `@esbuild-plugins/node-globals-polyfill` with Vite esbuildOptions configuration
+- **FORBIDDEN**: CDN imports for Azure Storage SDK (module system conflicts)
+- **REQUIRED**: Use npm package with proper Vite bundling and esbuild polyfills
+- **REQUIRED**: Connection string parsing for browser compatibility with fallback to account-based URLs
+- **REQUIRED**: Azurite emulator integration via Makefile with parallel npm scripts using concurrently
+
+## 📱 MOBILE-FIRST DESIGN MANDATORY
+IMPORTANT: **MOBILE-FIRST DESIGN MANDATORY** - our static app will be used primarily on mobile devices by tourists, with desktop as secondary. Most booking tourists only have mobile devices while traveling. All UI components must be mobile-optimized with touch-friendly interfaces, proper viewport handling, and responsive design patterns
 
 IMPORTANT: all modals should be mobile-responsive and reusing src/platform/components/common
 
-IMPORTANT: **MOBILE-FIRST DEVELOPMENT REQUIREMENTS:**
-
-**Responsive Design Patterns:**
-- **Mobile-first CSS**: Start with mobile styles, use min-width media queries for desktop
-- **Touch-friendly UI**: Minimum 44px touch targets, proper spacing between interactive elements
-- **Viewport handling**: Proper meta viewport tag, prevent zoom on form inputs
-- **Bootstrap responsive utilities**: Use Bootstrap's responsive classes (d-sm-none, col-md-6, etc.)
-
-**Mobile-Specific Considerations:**
-- **Payment flow**: Optimize for mobile payment apps (Apple Pay, Google Pay integration via imoje)
-- **Form inputs**: Use appropriate input types (tel, email, date) for better mobile keyboards
-- **Loading states**: Clear loading indicators for slower mobile connections and API polling
-- **Error handling**: Mobile-friendly error messages and validation feedback
-- **Offline support**: Handle network interruptions gracefully with localStorage caching and proper fallbacks
-
-**Performance for Mobile:**
-- **Bundle size**: Keep JavaScript bundles small for mobile data connections
-- **Image optimization**: Use responsive images and proper formats (WebP, AVIF)
-- **Critical CSS**: Inline critical CSS for faster mobile rendering
-- **Lazy loading**: Implement lazy loading for non-critical resources
-
-**Testing Requirements:**
-- **Device testing**: Test on actual mobile devices, not just browser dev tools
-- **Network conditions**: Test on slow 3G connections, API polling behavior, and offline scenarios
-- **Touch interactions**: Verify all touch gestures work properly with 44px minimum targets
-- **Orientation changes**: Handle portrait/landscape orientation changes
-- **Payment flow testing**: Test mobile payment integrations (Apple Pay, Google Pay) with imoje gateway
-
+## 🏗️ INFRASTRUCTURE COMPONENTS
 IMPORTANT: **INFRASTRUCTURE COMPONENTS USED IN OUR STATIC APP:**
 
-**Core Services (src/platform/storage/):**
-- `StorageService.ts` - Main orchestrator for all storage operations
-- `LocalStorageManager.ts` - Handles preferences, form cache, session data, transactions (synchronous)
-- `BlobStorageService.ts` - Handles reservation data via SAS tokens (external)
-
-**API Communication (src/platform/api/):**
-- `ApiService.ts` - Centralized Azure Functions communication with polling support
-- `PaymentApiService.ts` - Payment gateway integration
-- `PollingService.ts` - Status polling service
-
-**Data Flow Hooks (src/apps/tourist-tax/hooks/):**
-- `useLocalStorage.ts` - Form caching and preferences management
-- `usePaymentProcessing.ts` - Payment flow orchestration with localStorage storage
-- `useApiData.ts` - Dynamic data fetching with localStorage caching
-- `useTaxCalculation.ts` - Tax calculation with city configuration caching
+- **Core Services (src/platform/storage/)**
+- **API Communication (src/platform/api/)**
+- **Data Flow Hooks (src/apps/tourist-tax/hooks/)**
 
 **Key Architecture Patterns:**
 - **Simple Storage**: localStorage (fast, all data) + Blob (external) + API Polling (simple)

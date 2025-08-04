@@ -27,13 +27,40 @@ export const STORAGE_KEYS = {
   TOURIST_TAX_FORM_CACHE: 'tourist-tax-form-cache',
   TOURIST_TAX_SESSION: 'tourist-tax-session',
   TOURIST_TAX_GDPR_CONSENTS: 'tourist-tax-gdpr-consents',
-  TOURIST_TAX_APP_VERSION: 'tourist-tax-app-version'
+  TOURIST_TAX_APP_VERSION: 'tourist-tax-app-version',
+
+  // Payment-related storage
+  PAYMENT_RESERVATION_ID: 'payment-reservation-id',
+  PAYMENT_SESSION: 'payment-session',
+  PAYMENT_FORM_DATA: 'payment-form-data',
+  PAYMENT_STATUS_CACHE: 'payment-status-cache'
 } as const;
 
 export const API_ENDPOINTS = {
+  // Payment Service Endpoints
   PAYMENT_STATUS: '/api/payment/status',
-  GENERATE_SAS: '/api/reservation/generate-sas',
-  INITIATE_PAYMENT: '/api/payment/initiate'
+  INITIATE_PAYMENT: '/api/payment/initiate',
+  PAYMENT_WEBHOOK: '/api/payment/webhook',
+
+  // Reservation Management
+  CREATE_RESERVATION: '/api/payment/reservations',
+  GET_RESERVATIONS: '/api/payment/reservations',
+  GET_RESERVATION: '/api/payment/reservations',
+  DELETE_RESERVATION: '/api/payment/reservations',
+
+  // Payment Status Tracking
+  GET_PAYMENT_STATUS: '/api/payment',
+  GET_ALL_PAYMENTS: '/api/payment/payments',
+
+  // Storage & Validation (existing)
+  GENERATE_SAS: '/api/storage/generate-sas',
+  VALIDATE_UUID: '/api/validation/uuid',
+
+  // Health & System
+  HEALTH_CHECK: '/api/health',
+
+  // Development/Testing
+  CLEAR_PAYMENT_DATA: '/api/payment/clear-all'
 } as const;
 
 export const MOBILE_CONSTANTS = {
@@ -43,6 +70,53 @@ export const MOBILE_CONSTANTS = {
     TABLET: 1024,
     DESKTOP: 1200
   }
+} as const;
+
+// Payment-related constants
+export const PAYMENT_CONSTANTS = {
+  STATUSES: {
+    PENDING: 'pending',
+    PROCESSING: 'processing',
+    COMPLETED: 'completed',
+    FAILED: 'failed',
+    CANCELLED: 'cancelled'
+  },
+  RESERVATION_STATUSES: {
+    PENDING: 'pending',
+    PAID: 'paid',
+    FAILED: 'failed',
+    CANCELLED: 'cancelled'
+  },
+  CURRENCIES: {
+    PLN: 'PLN',
+    EUR: 'EUR',
+    USD: 'USD'
+  },
+  POLLING: {
+    INTERVAL_MS: 2000, // 2 seconds
+    MAX_ATTEMPTS: 150, // 5 minutes total (150 * 2s)
+    TIMEOUT_MS: 300000 // 5 minutes
+  },
+  VALIDATION: {
+    MIN_GUESTS: 1,
+    MAX_GUESTS: 20,
+    MIN_NIGHTS: 1,
+    MAX_NIGHTS: 365,
+    MIN_TAX_AMOUNT: 0.01,
+    MAX_TAX_AMOUNT: 100.00,
+    MIN_TOTAL_AMOUNT: 0.01,
+    MAX_TOTAL_AMOUNT: 10000.00
+  }
+} as const;
+
+// API Configuration
+export const API_CONFIG = {
+  BASE_URL: process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3044'
+    : window.location.origin,
+  TIMEOUT_MS: 10000,
+  RETRY_ATTEMPTS: 3,
+  RETRY_DELAY_MS: 1000
 } as const;
 
 export const TOURIST_TAX_EVENTS = {

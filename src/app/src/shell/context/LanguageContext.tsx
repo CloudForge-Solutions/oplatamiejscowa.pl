@@ -66,7 +66,7 @@ export const LanguageProvider: React.FC<ProviderProps> = ({children}) => {
     const {i18n, t} = useTranslation();
     const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
 
-    // Initialize language from localStorage or browser
+    // Initialize language from localStorage or browser (run only once)
     useEffect(() => {
         const initializeLanguage = () => {
             // Try to get language from localStorage first
@@ -90,7 +90,7 @@ export const LanguageProvider: React.FC<ProviderProps> = ({children}) => {
         };
 
         initializeLanguage();
-    }, [i18n]);
+    }, []); // Empty dependency array - run only once on mount
 
     // ARCHITECTURE COMPLIANCE: Language switching without page reload
     const switchLanguage = useCallback(async (newLanguage: SupportedLanguage): Promise<void> => {

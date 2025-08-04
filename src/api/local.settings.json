@@ -1,0 +1,21 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "~18",
+    "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;",
+    "AZURE_STORAGE_ACCOUNT_NAME": "devstoreaccount1",
+    "AZURE_STORAGE_ACCOUNT_KEY": "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
+    "BLOB_CONTAINER_NAME": "reservations",
+    "SAS_TOKEN_EXPIRY_HOURS": "24",
+    "CORS_ALLOWED_ORIGINS": "http://localhost:3040,http://localhost:3041,http://localhost:3042,http://localhost:3043,http://localhost:3044,http://localhost:3045,http://127.0.0.1:3040,http://127.0.0.1:3041,http://127.0.0.1:3042,http://127.0.0.1:3043,http://127.0.0.1:3044,http://127.0.0.1:3045",
+    "RATE_LIMIT_REQUESTS_PER_MINUTE": "60",
+    "LOG_LEVEL": "Information"
+  },
+  "Host": {
+    "LocalHttpPort": 3042,
+    "CORS": "*",
+    "CORSCredentials": false
+  }
+}

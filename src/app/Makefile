@@ -1,4 +1,7 @@
-help: ## 📋 Show this help message with all available targets
+
+
+app@help: ## 📋 Show this help message with all available targets
+	cd src/app
 	@echo ""
 	@echo "🏛️  $(PROJECT_TITLE) - Makefile Commands"
 	@echo "📝  $(PROJECT_DESCRIPTION)"
@@ -11,7 +14,8 @@ help: ## 📋 Show this help message with all available targets
 #=== Setup and Installation Targets
 #===================================================================================================
 
-info: ## 📋 Show project information and current configuration
+app@info: ## 📋 Show project information and current configuration
+	cd src/app
 	@echo ""
 	@echo "🏛️  Project Information:"
 	@echo "  📛 Name: $(PROJECT_NAME)"
@@ -23,8 +27,8 @@ info: ## 📋 Show project information and current configuration
 	@echo ""
 	@echo "🔧 Development Configuration:"
 	@echo "  📦 Node Version: $(NVM_NODE_VERSION)"
-	@echo "  🌐 Dev Port: $(DEV_PORT)"
-	@echo "  🔍 Preview Port: $(PREVIEW_PORT)"
+	@echo "  🌐 Dev Port: $(APP_DEV_PORT)"
+	@echo "  🔍 Preview Port: $(APP_PREVIEW_PORT)"
 	@echo "  🏗️  Build Mode: $(BUILD_MODE)"
 	@echo "  🗺️  Source Maps: $(SOURCE_MAP)"
 	@echo ""
@@ -33,7 +37,7 @@ info: ## 📋 Show project information and current configuration
 	@echo "  👤 User: $(USERNAME) ($(UID):$(GID))"
 	@echo ""
 
-install: ## 📦 Install all project dependencies
+app@install: ## 📦 Install all project dependencies
 	cd src/app
 	@echo "📦 Installing dependencies for $(PROJECT_TITLE)..."
 	@source ${NVM_DIR}/nvm.sh
@@ -45,7 +49,7 @@ install: ## 📦 Install all project dependencies
 	@npm i
 	@echo "✅ Dependencies installed successfully!"
 
-setup: install ## 🚀 Complete project setup (install + environment check)
+app@setup: app@install ## 🚀 Complete project setup (install + environment check)
 	@echo "🚀 Setting up $(PROJECT_TITLE) development environment..."
 	@$(MAKE) deps-check
 	@$(MAKE) type-check
@@ -55,7 +59,7 @@ setup: install ## 🚀 Complete project setup (install + environment check)
 #=== Build Targets
 #===================================================================================================
 
-build: ## 🔨 Build application for production
+app@build: ## 🔨 Build application for production
 	cd src/app
 	@echo "🔨 Building $(PROJECT_TITLE) for production..."
 	@source ${NVM_DIR}/nvm.sh
@@ -74,7 +78,7 @@ build: ## 🔨 Build application for production
 	@du -sh dist/
 	@echo "🎉 Production build complete!"
 
-build-staging: ## 🔨 Build application for staging environment
+app@build-staging: ## 🔨 Build application for staging environment
 	cd src/app
 	@echo "🔨 Building $(PROJECT_TITLE) for staging..."
 	@source ${NVM_DIR}/nvm.sh
@@ -82,7 +86,7 @@ build-staging: ## 🔨 Build application for staging environment
 	@NODE_ENV=staging VITE_APP_VERSION=$(VERSION)-staging VITE_BUILD_ID=$(BUILD_ID) npm run build
 	@echo "✅ Staging build complete!"
 
-build-analyze: build ## 📊 Build and analyze bundle size
+app@build-analyze: build ## 📊 Build and analyze bundle size
 	cd src/app
 	@echo "📊 Analyzing bundle size..."
 	@npx vite-bundle-analyzer dist/
@@ -92,20 +96,20 @@ build-analyze: build ## 📊 Build and analyze bundle size
 #=== Development Targets
 #===================================================================================================
 
-dev-check: ## 🔍 Run pre-development checks (types, lint, format)
+app@dev-check: ## 🔍 Run pre-development checks (types, lint, format)
 	cd src/app
 	@echo "🔍 Running pre-development checks..."
 	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
 	@npm run dev:check
 	@echo "✅ Pre-development checks passed!"
 
-dev: ## 🚀 Start development server with hot reload + Azure Storage Emulator (Azurite)
+app@dev: ## 🚀 Start development server with hot reload + Azure Storage Emulator (Azurite)
 	cd src/app
 	@echo "🚀 Starting $(PROJECT_TITLE) development server with Azure Storage Emulator..."
 	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
 	@echo "📋 Node.js version: $$(node --version)"
 	@echo "🌐 Starting parallel services:"
-	@echo "   • Vite Dev Server: http://$(DEV_HOST):$(DEV_PORT)"
+	@echo "   • Vite Dev Server: http://$(DEV_HOST):$(APP_DEV_PORT)"
 	@echo "   • Azure Blob Storage: http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB)"
 	@echo "   • Azure Queue Storage: http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE)"
 	@echo "   • Azure Table Storage: http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE)"
@@ -115,13 +119,13 @@ dev: ## 🚀 Start development server with hot reload + Azure Storage Emulator (
 	@echo ""
 	npm run dev
 
-dev-react: ## 🚀 Start React development server (without pre-checks)
+app@dev-react: ## 🚀 Start React development server (without pre-checks)
 	cd src/app
 	@echo "🚀 Starting React development server directly..."
 	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
 	@npm run dev:react
 
-dev-strict: ## 🚀 Start development server with strict pre-checks + Azure Storage Emulator
+app@dev-strict: ## 🚀 Start development server with strict pre-checks + Azure Storage Emulator
 	cd src/app
 	@echo "🚀 Starting $(PROJECT_TITLE) development server with strict checks..."
 	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
@@ -132,142 +136,38 @@ dev-strict: ## 🚀 Start development server with strict pre-checks + Azure Stor
 	@echo "🌐 Starting parallel services with Azure Storage Emulator..."
 	npm run dev:strict
 
-preview: build ## 🔍 Preview production build locally
+app@preview: app@build ## 🔍 Preview production build locally
 	cd src/app
 	@echo "� Starting preview server for production build..."
 	@source ${NVM_DIR}/nvm.sh
 	@nvm use ${NVM_NODE_VERSION}
 	@echo "📋 Node.js version: $$(node --version)"
-	@echo "🌐 Starting preview server on http://$(DEV_HOST):$(PREVIEW_PORT)"
+	@echo "🌐 Starting preview server on http://$(DEV_HOST):$(APP_PREVIEW_PORT)"
 	@npm run preview
 
-#===================================================================================================
-#=== Maintenance Targets
-#===================================================================================================
-
-clean: ## 🧹 Clean build artifacts and temporary files
-	cd src/app
-	@echo "🧹 Cleaning build artifacts and temporary files..."
-	@rm -rf dist/
-	@rm -rf .vite/
-	@rm -rf coverage/
-	@rm -rf .nyc_output/
-	@echo "✅ Clean complete!"
-
-clean-all: clean ## 🧹 Deep clean including node_modules
-	cd src/app
-	@echo "🧹 Deep cleaning including node_modules..."
-	@rm -rf node_modules/
-	@rm -rf package-lock.json
-	@echo "✅ Deep clean complete! Run 'make install' to reinstall dependencies."
-
-#===================================================================================================
-#=== Testing Targets
-#===================================================================================================
-
-test: ## 🧪 Run all tests
-	cd src/app
-	@echo "🧪 Running tests for $(PROJECT_TITLE)..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run test
-	@echo "✅ Tests completed!"
-
-test-watch: ## 🧪 Run tests in watch mode
-	cd src/app
-	@echo "🧪 Running tests in watch mode..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run test:watch
-
-test-coverage: ## 📊 Run tests with coverage report
-	cd src/app
-	@echo "📊 Running tests with coverage..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run test:coverage
-	@echo "📊 Coverage report generated in coverage/ directory"
-
-#===================================================================================================
-#=== Code Quality Targets
-#===================================================================================================
-
-lint: ## 🔍 Run ESLint to check code quality
-	cd src/app
-	@echo "🔍 Running ESLint..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run lint
-	@echo "✅ Linting completed!"
-
-lint-fix: ## 🔧 Fix ESLint issues automatically
-	cd src/app
-	@echo "🔧 Running ESLint with auto-fix..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run lint -- --fix
-	@echo "✅ Lint fixes applied!"
-
-format: ## 💅 Format code with Prettier
-	cd src/app
-	@echo "💅 Formatting code with Prettier..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run format
-	@echo "✅ Code formatted!"
-
-format-check: ## 🔍 Check code formatting with Prettier
-	cd src/app
-	@echo "🔍 Checking code formatting..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npm run format:check
-	@echo "✅ Format check completed!"
-
-type-check: ## 🔍 Run TypeScript type checking
-	cd src/app
-	@echo "🔍 Running TypeScript type checking..."
-	@source ${NVM_DIR}/nvm.sh
-	@nvm use ${NVM_NODE_VERSION}
-	@npx tsc --noEmit
-	@echo "✅ Type checking completed!"
-
-quality: ## 🎯 Run all quality checks (lint, format, types)
-	cd src/app
-	@echo "🎯 Running comprehensive quality checks..."
-	@$(MAKE) lint
-	@$(MAKE) format-check
-	@$(MAKE) type-check
-	@echo "✅ All quality checks passed!"
-
-quality-fix: ## 🔧 Fix all quality issues automatically
-	cd src/app
-	@echo "🔧 Running comprehensive quality fixes..."
-	@$(MAKE) lint-fix
-	@$(MAKE) format
-	@echo "✅ All quality fixes applied!"
-
-serve: build ## 🌐 Serve production build locally
+app@serve: app@build ## 🌐 Serve production build locally
 	cd src/app
 	@echo "🌐 Serving production build..."
 	@source ${NVM_DIR}/nvm.sh
 	@nvm use ${NVM_NODE_VERSION}
 	@echo "📁 Serving from dist/ directory"
-	@npx serve dist -p $(DEV_PORT) -s
-	@echo "🌐 Application available at http://$(DEV_HOST):$(DEV_PORT)"
+	@npx serve dist -p $(APP_DEV_PORT) -s
+	@echo "🌐 Application available at http://$(DEV_HOST):$(APP_DEV_PORT)"
 
 #===================================================================================================
 #=== Security and Maintenance Targets
 #===================================================================================================
 
-audit: ## 🔒 Run npm security audit
+app@audit: ## 🔒 Run npm security audit
+	cd src/app
 	@echo "� Running security audit..."
 	@source ${NVM_DIR}/nvm.sh
 	@nvm use ${NVM_NODE_VERSION}
 	@npm audit --audit-level=moderate
 	@echo "✅ Security audit completed!"
 
-security-audit: ## 🔒 Run comprehensive security audit with fix suggestions
+app@security-audit: ## 🔒 Run comprehensive security audit with fix suggestions
+	cd src/app
 	@echo "� Running comprehensive security audit..."
 	@source ${NVM_DIR}/nvm.sh
 	@nvm use ${NVM_NODE_VERSION}
@@ -275,261 +175,20 @@ security-audit: ## 🔒 Run comprehensive security audit with fix suggestions
 	@echo "💡 To fix issues automatically, run: npm audit fix"
 	@echo "✅ Security audit completed!"
 
-update: ## 📦 Update npm dependencies (interactive)
+app@update: ## 📦 Update npm dependencies (interactive)
+	cd src/app
 	@echo "� Updating dependencies..."
 	@source ${NVM_DIR}/nvm.sh
 	@nvm use ${NVM_NODE_VERSION}
 	@npx npm-check-updates --interactive
 	@echo "✅ Dependencies updated!"
 
-deps-check: ## 🔍 Check for outdated dependencies
+app@deps-check: ## 🔍 Check for outdated dependencies
+	cd src/app
 	@echo "� Checking for outdated dependencies..."
 	@source ${NVM_DIR}/nvm.sh
 	@nvm use ${NVM_NODE_VERSION}
 	@npm outdated || true
 	@echo "✅ Dependency check completed!"
 
-#===================================================================================================
-#=== CI/CD and Deployment Targets
-#===================================================================================================
-
-ci-check: ## 🤖 Run all CI checks (quality, tests, build)
-	@echo "🤖 Running CI checks for $(PROJECT_TITLE)..."
-	@$(MAKE) quality
-	@$(MAKE) test
-	@$(MAKE) build
-	@echo "✅ All CI checks passed!"
-
-deploy-staging: build-staging ## 🚀 Deploy to staging environment
-	@echo "🚀 Deploying to staging..."
-	@echo "⚠️  Staging deployment not configured yet"
-	@echo "💡 Configure your staging deployment process here"
-
-deploy-production: build ## 🚀 Deploy to production environment
-	@echo "🚀 Deploying to production..."
-	@echo "⚠️  Production deployment not configured yet"
-	@echo "� Configure your production deployment process here"
-
-#===================================================================================================
-#=== Docker Targets (Optional)
-#===================================================================================================
-
-docker-build: ## 🐳 Build Docker image
-	@echo "🐳 Building Docker image..."
-	@docker build -t $(PROJECT_NAME):$(VERSION) .
-	@echo "✅ Docker image built!"
-
-docker-run: docker-build ## 🐳 Run Docker container
-	@echo "🐳 Running Docker container..."
-	@docker run -p $(DEV_PORT):80 $(PROJECT_NAME):$(VERSION)
-
-#===================================================================================================
-#=== Debug and Utility Targets
-#===================================================================================================
-
-debug: ## 🐛 Show debug information
-	@echo "� Debug Information:"
-	@echo "  📁 Current directory: $$(pwd)"
-	@echo "  📦 Package.json exists: $$(test -f package.json && echo 'Yes' || echo 'No')"
-	@echo "  📦 Node modules exists: $$(test -d node_modules && echo 'Yes' || echo 'No')"
-	@echo "  🔧 NVM directory: $(NVM_DIR)"
-	@echo "  📋 Current Node version: $$(node --version 2>/dev/null || echo 'Not available')"
-	@echo "  📋 Current NPM version: $$(npm --version 2>/dev/null || echo 'Not available')"
-	@echo "  🌐 Port $(DEV_PORT) status: $$(lsof -iTCP:$(DEV_PORT) -sTCP:LISTEN -t >/dev/null 2>&1 && echo 'In use' || echo 'Available')"
-
-logs: ## 📋 Show recent development logs (if available)
-	@echo "📋 Recent development logs:"
-	@echo "💡 No log aggregation configured yet"
-
-backup: ## 💾 Backup project configuration
-	@echo "💾 Creating backup of project configuration..."
-	@mkdir -p backups/
-	@tar -czf backups/config-backup-$(shell date +%Y%m%d-%H%M%S).tar.gz
-		package.json package-lock.json
-		vite.config.ts tsconfig.json
-		.eslintrc.cjs .prettierrc
-		.env.example Makefile
-		2>/dev/null || true
-	@echo "✅ Configuration backup created in backups/ directory"
-
-restore: ## 🔄 Restore from backup (interactive)
-	@echo "🔄 Available backups:"
-	@ls -la backups/ 2>/dev/null || echo "No backups found"
-	@echo "💡 To restore, extract the desired backup manually"
-
-
-#===================================================================================================
-#=== Tourist Tax Payment System - Development Workflow
-#===================================================================================================
-#
-# 🚀 Quick Start:
-#   make setup          # Complete project setup
-#   make dev            # Start development server (bypassing checks temporarily)
-#   make dev-react      # Start React server directly
-#
-# 🔧 Development:
-#   make dev-strict     # Start with strict pre-checks (after fixing ESLint)
-#   make test-watch     # Run tests in watch mode
-#   make quality-fix    # Fix code quality issues (ESLint config needs fixing)
-#
-# 🏗️  Production:
-#   make ci-check       # Run all CI checks
-#   make build          # Build for production
-#   make serve          # Serve production build
-#
-# 🔍 Quality Assurance:
-#   make quality        # Run all quality checks
-#   make test-coverage  # Generate test coverage
-#   make security-audit # Check for security issues
-#
-# 🗄️ Azure Storage Emulator:
-#   make dev            # Start development server (includes Azurite automatically)
-#   make storage-test   # Test all storage services with curl
-#   make storage-status # Check emulator status
-#   make storage-stop   # Stop storage emulator manually
-#
-# 💡 Tips:
-#   - Use 'make help' to see all available targets
-#   - All targets use the correct Node.js version via NVM
-#   - Quality checks are integrated into the development workflow
-#   - CI/CD targets are ready for automation
-#   - Storage emulator uses default Azure Storage Emulator credentials
-#
-#===================================================================================================
-#=== Azure Storage Emulator (Azurite) Targets
-#===================================================================================================
-
-storage-emulator: storage-start ## 🗄️ Start Azure Storage Emulator (Azurite) with all services
-	@echo "✅ Azure Storage Emulator started successfully!"
-	@echo "🌐 Blob Service: http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB)"
-	@echo "📬 Queue Service: http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE)"
-	@echo "📊 Table Service: http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE)"
-	@echo "💡 Use 'make storage-test' to run curl tests"
-	@echo "💡 Use 'make storage-stop' to stop the emulator"
-
-storage-start: ## 🚀 Start Azurite storage emulator in background
-	@echo "🚀 Starting Azure Storage Emulator (Azurite)..."
-	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
-	@echo "📋 Node.js version: $$(node --version)"
-	@echo "📋 NPM version: $$(npm --version)"
-	@mkdir -p $(AZURITE_WORKSPACE)
-	@echo "📁 Workspace: $(AZURITE_WORKSPACE)"
-
-	echo "🗄️ Starting Azurite with all services..."
-	if [ "$(AZURITE_DEBUG)" = "true" ]; then
-		source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} &&
-		npx azurite --silent --location $(AZURITE_WORKSPACE)
-			--blobHost $(AZURITE_HOST) --blobPort $(AZURITE_PORT_BLOB)
-			--queueHost $(AZURITE_HOST) --queuePort $(AZURITE_PORT_QUEUE)
-			--tableHost $(AZURITE_HOST) --tablePort $(AZURITE_PORT_TABLE)
-			--debug $(AZURITE_WORKSPACE)/debug.log &
-	else
-		source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION} &&
-		npx azurite --silent --location $(AZURITE_WORKSPACE)
-			--blobHost $(AZURITE_HOST) --blobPort $(AZURITE_PORT_BLOB)
-			--queueHost $(AZURITE_HOST) --queuePort $(AZURITE_PORT_QUEUE)
-			--tableHost $(AZURITE_HOST) --tablePort $(AZURITE_PORT_TABLE) &
-	fi
-	echo "⏳ Waiting for Azurite to start..."
-	sleep 3
-	if pgrep -f "azurite" > /dev/null; then
-		echo "✅ Azurite started successfully!"
-	else
-		echo "❌ Failed to start Azurite. Check if npx and azurite are installed."
-		echo "💡 Install with: npm install -g azurite"
-		exit 1
-	fi
-
-storage-stop: ## ⏹️ Stop Azure Storage Emulator
-	@echo "⏹️  Stopping Azure Storage Emulator..."
-	@if pgrep -f "azurite" > /dev/null; then
-		pkill -f "azurite"
-		echo "✅ Azurite stopped successfully!"
-	else
-		echo "ℹ️  Azurite is not running."
-	fi
-
-storage-status: ## 📊 Check Azure Storage Emulator status
-	@echo "📊 Azure Storage Emulator Status:"
-	@if pgrep -f "azurite" > /dev/null; then
-		echo "✅ Status: RUNNING"
-		echo "🔍 Process: $$(pgrep -f azurite)"
-		echo "🌐 Blob Service: http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB) $$(curl -s -o /dev/null -w '%{http_code}' http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB) 2>/dev/null | grep -q 400 && echo '(✅ Available)' || echo '(❌ Not responding)')"
-		echo "📬 Queue Service: http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE) $$(curl -s -o /dev/null -w '%{http_code}' http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE) 2>/dev/null | grep -q 400 && echo '(✅ Available)' || echo '(❌ Not responding)')"
-		echo "📊 Table Service: http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE) $$(curl -s -o /dev/null -w '%{http_code}' http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE) 2>/dev/null | grep -q 400 && echo '(✅ Available)' || echo '(❌ Not responding)')"
-	else
-		echo "❌ Status: NOT RUNNING"
-		echo "💡 Start with: make storage-start"
-	fi
-
-storage-test: storage-test-blob storage-test-queue storage-test-table ## 🧪 Run comprehensive curl tests for all storage services
-	@echo ""
-	@echo "✅ All Azure Storage Emulator tests completed!"
-	@echo "💡 Check the output above for any failures"
-
-storage-test-blob: ## 🧪 Test Blob Storage service with curl
-	@echo ""
-	@echo "🧪 Testing Blob Storage Service..."
-	@echo "=================================="
-	@if ! pgrep -f "azurite" > /dev/null; then
-		echo "❌ Azurite is not running. Start it with 'make storage-start'"
-		exit 1
-	fi
-	@echo "📋 Testing Blob Service endpoints:"
-	@echo ""
-	@echo "1️⃣  Basic connectivity test:"
-	@curl -s -w "Status: %{http_code}\n" -o /dev/null "http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB)/$(AZURITE_ACCOUNT)"
-	@echo ""
-	@echo "2️⃣  Connection string for your app:"
-	@echo "AccountName=$(AZURITE_ACCOUNT);AccountKey=$(AZURITE_KEY);DefaultEndpointsProtocol=http;BlobEndpoint=http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB)/$(AZURITE_ACCOUNT);QueueEndpoint=http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE)/$(AZURITE_ACCOUNT);TableEndpoint=http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE)/$(AZURITE_ACCOUNT);"
-	@echo ""
-	@echo "3️⃣  Test with Azure CLI (if installed):"
-	@echo "az storage container list --connection-string 'AccountName=$(AZURITE_ACCOUNT);AccountKey=$(AZURITE_KEY);DefaultEndpointsProtocol=http;BlobEndpoint=http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB)/$(AZURITE_ACCOUNT);'"
-	@echo ""
-	@echo "4️⃣  Test blob endpoint directly:"
-	@curl -s -I "http://$(AZURITE_HOST):$(AZURITE_PORT_BLOB)/$(AZURITE_ACCOUNT)" | head -3
-	@echo ""
-	@echo "✅ Blob Storage tests completed!"
-
-storage-test-queue: ## 🧪 Test Queue Storage service with curl
-	@echo ""
-	@echo "🧪 Testing Queue Storage Service..."
-	@echo "==================================="
-	@if ! pgrep -f "azurite" > /dev/null; then
-		echo "❌ Azurite is not running. Start it with 'make storage-start'"
-		exit 1
-	fi
-	@echo "📋 Testing Queue Service endpoints:"
-	@echo ""
-	@echo "1️⃣  Basic connectivity test:"
-	@curl -s -w "Status: %{http_code}\n" -o /dev/null "http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE)/$(AZURITE_ACCOUNT)"
-	@echo ""
-	@echo "2️⃣  Queue endpoint test:"
-	@curl -s -I "http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE)/$(AZURITE_ACCOUNT)" | head -3
-	@echo ""
-	@echo "3️⃣  Test with Azure CLI (if installed):"
-	@echo "az storage queue list --connection-string 'AccountName=$(AZURITE_ACCOUNT);AccountKey=$(AZURITE_KEY);DefaultEndpointsProtocol=http;QueueEndpoint=http://$(AZURITE_HOST):$(AZURITE_PORT_QUEUE)/$(AZURITE_ACCOUNT);'"
-	@echo ""
-	@echo "✅ Queue Storage tests completed!"
-
-storage-test-table: ## 🧪 Test Table Storage service with curl
-	@echo ""
-	@echo "🧪 Testing Table Storage Service..."
-	@echo "==================================="
-	@if ! pgrep -f "azurite" > /dev/null; then
-		echo "❌ Azurite is not running. Start it with 'make storage-start'"
-		exit 1
-	fi
-	@echo "📋 Testing Table Service endpoints:"
-	@echo ""
-	@echo "1️⃣  Basic connectivity test:"
-	@curl -s -w "Status: %{http_code}\n" -o /dev/null "http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE)/$(AZURITE_ACCOUNT)"
-	@echo ""
-	@echo "2️⃣  Table endpoint test:"
-	@curl -s -I "http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE)/$(AZURITE_ACCOUNT)" | head -3
-	@echo ""
-	@echo "3️⃣  Test with Azure CLI (if installed):"
-	@echo "az storage table list --connection-string 'AccountName=$(AZURITE_ACCOUNT);AccountKey=$(AZURITE_KEY);DefaultEndpointsProtocol=http;TableEndpoint=http://$(AZURITE_HOST):$(AZURITE_PORT_TABLE)/$(AZURITE_ACCOUNT);'"
-	@echo ""
-	@echo "✅ Table Storage tests completed!"
 
