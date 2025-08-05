@@ -1,8 +1,9 @@
 /**
- * Payment Controller
+ * Payment Controller (Legacy)
  *
- * RESPONSIBILITY: Handle payment-related HTTP requests
- * ARCHITECTURE: NestJS controller for tourist tax payment management
+ * RESPONSIBILITY: Legacy payment endpoints for backward compatibility
+ * ARCHITECTURE: NestJS controller - will be deprecated in favor of resource-based endpoints
+ * NOTE: New endpoints are available at /api/reservations and /api/payments
  */
 
 import {
@@ -35,7 +36,7 @@ import {
   PaymentStatusResponseDto
 } from './dto/payment.dto';
 
-@ApiTags('payment')
+@ApiTags('payment-legacy')
 @Controller('payment')
 export class PaymentController {
   private readonly logger = new Logger(PaymentController.name);
@@ -46,8 +47,8 @@ export class PaymentController {
 
   @Get('status')
   @ApiOperation({
-    summary: 'Payment Service Status',
-    description: 'Check if payment service is available',
+    summary: 'Payment Service Status (Legacy)',
+    description: 'Check if payment service is available. DEPRECATED: Use /api/dev/status instead',
   })
   @ApiResponse({
     status: 200,
@@ -61,10 +62,10 @@ export class PaymentController {
       },
     },
   })
-  getServiceStatus(): { status: string; message: string; timestamp: string } {
+  async getServiceStatus(): Promise<{ status: string; message: string; timestamp: string }> {
     this.logger.log('📊 Payment service status check requested');
 
-    const isAvailable = this.paymentService.isAvailable();
+    const isAvailable = await this.paymentService.isAvailable();
 
     return {
       status: isAvailable ? 'available' : 'unavailable',
@@ -79,8 +80,8 @@ export class PaymentController {
 
   @Post('reservations')
   @ApiOperation({
-    summary: 'Create New Reservation',
-    description: 'Create a new tourist tax reservation for payment processing',
+    summary: 'Create New Reservation (Legacy)',
+    description: 'Create a new tourist tax reservation. DEPRECATED: Use POST /api/reservations instead',
   })
   @ApiBody({ type: CreateReservationDto })
   @ApiResponse({

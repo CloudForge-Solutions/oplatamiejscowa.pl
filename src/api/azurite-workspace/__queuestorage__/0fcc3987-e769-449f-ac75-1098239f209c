@@ -1,0 +1,1 @@
+{"type":"reservation-created","reservationId":"a79683bb-908b-4552-95bd-6c355e2a172b","guestEmail":"test@example.com","totalAmount":10,"currency":"PLN","timestamp":"2025-08-04T18:20:43.365Z"}{"type":"reservation-created","reservationId":"3c1b6d2c-dba6-4df3-8344-ef1f40995661","guestEmail":"test@example.com","totalAmount":10,"currency":"PLN","timestamp":"2025-08-04T18:23:52.692Z"}

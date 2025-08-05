@@ -11,6 +11,9 @@ import { StorageModule } from '../apps/storage/storage.module';
 import { PaymentModule } from '../apps/payment/payment.module';
 import { ValidationModule } from '../apps/validation/validation.module';
 import { HealthModule } from '../apps/health/health.module';
+import { ReservationsModule } from '../apps/reservations/reservations.module';
+import { PaymentsModule } from '../apps/payments/payments.module';
+import { DevModule } from '../apps/dev/dev.module';
 
 /**
  * Configuration factory for environment variables
@@ -74,11 +77,18 @@ const configFactory = () => ({
       },
     }),
 
-    // Feature modules
+    // Core modules
     StorageModule,
-    PaymentModule,
     ValidationModule,
     HealthModule,
+
+    // Business logic modules
+    ReservationsModule,
+    PaymentsModule,
+    PaymentModule, // Keep for shared services
+
+    // Development modules (only in non-production)
+    ...(process.env.NODE_ENV !== 'production' ? [DevModule] : []),
   ],
   controllers: [],
   providers: [],

@@ -1,10 +1,11 @@
 /**
  * Reservation Entity
- * 
+ *
  * RESPONSIBILITY: Reservation data model for tourist tax payments
  * ARCHITECTURE: TypeScript interface for reservation data structure
  */
 
+import { randomUUID } from 'crypto';
 import { PaymentStatus, ReservationStatus, Currency } from '../dto/payment.dto';
 
 export interface Reservation {
@@ -84,7 +85,7 @@ export function calculateTotalTaxAmount(
 }
 
 export function generateReservationId(): string {
-  return crypto.randomUUID();
+  return randomUUID();
 }
 
 export function generatePaymentId(): string {
@@ -118,17 +119,17 @@ export function validateReservationDates(checkInDate: string, checkOutDate: stri
   const checkIn = new Date(checkInDate);
   const checkOut = new Date(checkOutDate);
   const now = new Date();
-  
+
   // Check-in must be today or in the future
   if (checkIn < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
     return false;
   }
-  
+
   // Check-out must be after check-in
   if (checkOut <= checkIn) {
     return false;
   }
-  
+
   return true;
 }
 
@@ -160,9 +161,9 @@ export function isValidStatusTransition(
   newStatus: ReservationStatus | PaymentStatus,
   type: 'reservation' | 'payment'
 ): boolean {
-  const transitions = type === 'reservation' 
-    ? VALID_RESERVATION_STATUS_TRANSITIONS 
+  const transitions = type === 'reservation'
+    ? VALID_RESERVATION_STATUS_TRANSITIONS
     : VALID_PAYMENT_STATUS_TRANSITIONS;
-  
+
   return transitions[currentStatus as any]?.includes(newStatus as any) || false;
 }

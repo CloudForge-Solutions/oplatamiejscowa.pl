@@ -1,6 +1,6 @@
 /**
  * Storage Controller
- * 
+ *
  * RESPONSIBILITY: Handle SAS token generation requests
  * ARCHITECTURE: NestJS controller with validation and error handling
  */
@@ -29,7 +29,7 @@ export class StorageController {
 
   constructor(private readonly sasTokenService: SasTokenService) {}
 
-  @Post('generate-sas')
+  @Post('sas-tokens')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Generate SAS Token',

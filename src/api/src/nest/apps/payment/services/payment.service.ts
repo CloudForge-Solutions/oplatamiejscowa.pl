@@ -23,41 +23,92 @@ import {
   Payment,
   generateReservationId,
   generatePaymentId,
-  calculateTotalTaxAmount,
   validateReservationDates,
   calculateNumberOfNights,
   isValidStatusTransition,
   formatCurrency
 } from '../entities/reservation.entity';
+import { ImojeService } from './imoje.service';
+import { AzureStorageService } from './azure-storage.service';
+import { DataSeedingService } from './data-seeding.service';
+import { TaxRateService } from './tax-rate.service';
 
 @Injectable()
 export class PaymentService {
   private readonly logger = new Logger(PaymentService.name);
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly imojeService: ImojeService,
+    private readonly azureStorageService: AzureStorageService,
+    private readonly dataSeedingService: DataSeedingService,
+    private readonly taxRateService: TaxRateService
+  ) {
+    this.logger.log('Payment service initialized with Azure Storage and imoje integration', {
+      imojeConfigured: this.imojeService.isConfigured(),
+      storageType: 'azure-storage',
+      environment: this.configService.get<string>('NODE_ENV', 'development'),
+    });
 
-  // In-memory storage for development (replace with database in production)
-  private reservations = new Map<string, Reservation>();
-  private payments = new Map<string, Payment>();
+    // Seed mock data for development environments
+    this.initializeDevelopmentData();
+  }
 
-  constructor(private readonly configService: ConfigService) {
-    this.seedMockData();
+  /**
+   * Initialize development data if needed
+   */
+  private async initializeDevelopmentData(): Promise<void> {
+    try {
+      await this.dataSeedingService.seedMockData();
+    } catch (error) {
+      this.logger.warn('Failed to seed development data', { error: error.message });
+      // Don't throw - seeding failure shouldn't break the service
+    }
   }
 
   /**
    * Check payment service availability
    */
-  isAvailable(): boolean {
+  async isAvailable(): Promise<boolean> {
     this.logger.log('🔍 Checking payment service availability');
-    return true;
+
+    try {
+      // Check imoje configuration
+      const imojeConfigured = this.imojeService.isConfigured();
+
+      // Check storage health
+      const storageHealth = await this.azureStorageService.getHealthStatus();
+      const storageHealthy = storageHealth.blob && storageHealth.tables && storageHealth.queue;
+
+      const isAvailable = imojeConfigured && storageHealthy;
+
+      this.logger.log('Payment service availability check completed', {
+        imojeConfigured,
+        storageHealthy,
+        storageDetails: storageHealth.details,
+        isAvailable,
+      });
+
+      return isAvailable;
+    } catch (error) {
+      this.logger.error('Payment service availability check failed', { error: error.message });
+      return false;
+    }
   }
 
   /**
-   * Create a new reservation
+   * Create a new reservation with auto-calculated tax amounts
+   *
+   * BUSINESS LOGIC:
+   * - Auto-calculates numberOfNights from check-in/check-out dates
+   * - Auto-determines taxAmountPerNight based on city
+   * - Auto-calculates totalTaxAmount = numberOfGuests × numberOfNights × cityTaxRate
    */
   async createReservation(createReservationDto: CreateReservationDto): Promise<ReservationResponseDto> {
-    this.logger.log('📝 Creating new reservation', {
+    this.logger.log('📝 Creating new reservation with auto-calculation', {
       guestName: createReservationDto.guestName,
       accommodationName: createReservationDto.accommodationName,
-      totalAmount: createReservationDto.totalTaxAmount,
+      cityName: createReservationDto.cityName,
+      numberOfGuests: createReservationDto.numberOfGuests,
     });
 
     // Validate dates
@@ -65,21 +116,26 @@ export class PaymentService {
       throw new BadRequestException('Invalid check-in or check-out dates');
     }
 
-    // Validate calculated nights
-    const calculatedNights = calculateNumberOfNights(createReservationDto.checkInDate, createReservationDto.checkOutDate);
-    if (calculatedNights !== createReservationDto.numberOfNights) {
-      throw new BadRequestException(`Number of nights mismatch. Expected: ${calculatedNights}, provided: ${createReservationDto.numberOfNights}`);
-    }
+    // AUTO-CALCULATE: Number of nights from dates
+    const numberOfNights = calculateNumberOfNights(createReservationDto.checkInDate, createReservationDto.checkOutDate);
 
-    // Validate total amount calculation
-    const calculatedTotal = calculateTotalTaxAmount(
+    // AUTO-CALCULATE: Tax rate per night per person based on city
+    const taxAmountPerNight = this.taxRateService.getTaxRateForCity(createReservationDto.cityName);
+
+    // AUTO-CALCULATE: Total tax amount
+    const totalTaxAmount = this.taxRateService.calculateTotalTaxAmount(
+      createReservationDto.cityName,
       createReservationDto.numberOfGuests,
-      createReservationDto.numberOfNights,
-      createReservationDto.taxAmountPerNight
+      numberOfNights
     );
-    if (Math.abs(calculatedTotal - createReservationDto.totalTaxAmount) > 0.01) {
-      throw new BadRequestException(`Total amount mismatch. Expected: ${calculatedTotal}, provided: ${createReservationDto.totalTaxAmount}`);
-    }
+
+    this.logger.log('💰 Auto-calculated tax amounts', {
+      cityName: createReservationDto.cityName,
+      numberOfGuests: createReservationDto.numberOfGuests,
+      numberOfNights,
+      taxAmountPerNight,
+      totalTaxAmount,
+    });
 
     const reservationId = generateReservationId();
     const now = new Date().toISOString();
@@ -93,9 +149,9 @@ export class PaymentService {
       checkInDate: createReservationDto.checkInDate,
       checkOutDate: createReservationDto.checkOutDate,
       numberOfGuests: createReservationDto.numberOfGuests,
-      numberOfNights: createReservationDto.numberOfNights,
-      taxAmountPerNight: createReservationDto.taxAmountPerNight,
-      totalTaxAmount: createReservationDto.totalTaxAmount,
+      numberOfNights: numberOfNights, // AUTO-CALCULATED
+      taxAmountPerNight: taxAmountPerNight, // AUTO-CALCULATED from city
+      totalTaxAmount: totalTaxAmount, // AUTO-CALCULATED
       currency: createReservationDto.currency,
       status: ReservationStatus.PENDING,
       createdAt: now,
@@ -103,7 +159,8 @@ export class PaymentService {
       cityName: createReservationDto.cityName,
     };
 
-    this.reservations.set(reservationId, reservation);
+    // Save to storage
+    await this.azureStorageService.saveReservation(reservation);
 
     this.logger.log('✅ Reservation created successfully', {
       reservationId,
@@ -119,7 +176,7 @@ export class PaymentService {
   async getReservation(reservationId: string): Promise<ReservationResponseDto> {
     this.logger.log('🔍 Fetching reservation', { reservationId });
 
-    const reservation = this.reservations.get(reservationId);
+    const reservation = await this.azureStorageService.getReservation(reservationId);
     if (!reservation) {
       throw new NotFoundException(`Reservation with ID ${reservationId} not found`);
     }
@@ -133,8 +190,7 @@ export class PaymentService {
   async getAllReservations(): Promise<ReservationResponseDto[]> {
     this.logger.log('📋 Fetching all reservations');
 
-    const reservations = Array.from(this.reservations.values())
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const reservations = await this.azureStorageService.getAllReservations();
 
     return reservations.map(reservation => this.mapReservationToResponse(reservation));
   }
@@ -147,7 +203,7 @@ export class PaymentService {
       reservationId: initiatePaymentDto.reservationId,
     });
 
-    const reservation = this.reservations.get(initiatePaymentDto.reservationId);
+    const reservation = await this.azureStorageService.getReservation(initiatePaymentDto.reservationId);
     if (!reservation) {
       throw new NotFoundException(`Reservation with ID ${initiatePaymentDto.reservationId} not found`);
     }
@@ -160,47 +216,71 @@ export class PaymentService {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes expiry
 
-    // Mock imoje payment URL (in production, this would be from imoje API)
-    const mockImojeUrl = this.configService.get<string>('payment.imojeApiUrl') || 'http://localhost:3042';
-    const paymentUrl = `${mockImojeUrl}/payment/${paymentId}`;
+    try {
+      // Create payment with imoje
+      const orderId = this.imojeService.generateOrderId('TAX');
+      const [firstName, ...lastNameParts] = reservation.guestName.split(' ');
+      const lastName = lastNameParts.join(' ') || firstName;
 
-    const payment: Payment = {
-      paymentId,
-      reservationId: initiatePaymentDto.reservationId,
-      status: PaymentStatus.PENDING,
-      amount: reservation.totalTaxAmount,
-      currency: reservation.currency,
-      paymentUrl,
-      createdAt: now.toISOString(),
-      updatedAt: now.toISOString(),
-      expiresAt: expiresAt.toISOString(),
-    };
+      const imojePayment = await this.imojeService.createPayment({
+        amount: this.imojeService.formatAmount(reservation.totalTaxAmount, reservation.currency),
+        currency: reservation.currency,
+        orderId,
+        customerFirstName: firstName,
+        customerLastName: lastName,
+        customerEmail: reservation.guestEmail,
+        title: `Tourist Tax - ${reservation.accommodationName}`,
+        successReturnUrl: initiatePaymentDto.successUrl,
+        failureReturnUrl: initiatePaymentDto.failureUrl,
+      });
 
-    this.payments.set(paymentId, payment);
+      const payment: Payment = {
+        paymentId,
+        reservationId: initiatePaymentDto.reservationId,
+        status: PaymentStatus.PENDING,
+        amount: reservation.totalTaxAmount,
+        currency: reservation.currency,
+        paymentUrl: imojePayment.payment.url,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        providerPaymentId: imojePayment.payment.id,
+      };
 
-    // Update reservation with payment info
-    reservation.paymentId = paymentId;
-    reservation.paymentUrl = paymentUrl;
-    reservation.updatedAt = now.toISOString();
-    this.reservations.set(reservation.id, reservation);
+      // Save payment to storage
+      await this.azureStorageService.savePayment(payment);
 
-    this.logger.log('✅ Payment initialized successfully', {
-      paymentId,
-      reservationId: reservation.id,
-      amount: formatCurrency(payment.amount, payment.currency),
-      expiresAt: payment.expiresAt,
-    });
+      // Update reservation with payment info
+      reservation.paymentId = paymentId;
+      reservation.paymentUrl = imojePayment.payment.url;
+      reservation.updatedAt = now.toISOString();
+      await this.azureStorageService.saveReservation(reservation);
 
-    return {
-      paymentId: payment.paymentId,
-      reservationId: payment.reservationId,
-      status: payment.status,
-      paymentUrl: payment.paymentUrl,
-      amount: payment.amount,
-      currency: payment.currency,
-      createdAt: payment.createdAt,
-      expiresAt: payment.expiresAt,
-    };
+      this.logger.log('✅ Payment initialized successfully with imoje', {
+        paymentId,
+        reservationId: reservation.id,
+        imojePaymentId: imojePayment.payment.id,
+        amount: formatCurrency(payment.amount, payment.currency),
+        expiresAt: payment.expiresAt,
+      });
+
+      return {
+        paymentId: payment.paymentId,
+        reservationId: payment.reservationId,
+        status: payment.status,
+        paymentUrl: payment.paymentUrl,
+        amount: payment.amount,
+        currency: payment.currency,
+        createdAt: payment.createdAt,
+        expiresAt: payment.expiresAt,
+      };
+    } catch (error) {
+      this.logger.error('Failed to initialize payment with imoje', {
+        error: error.message,
+        reservationId: reservation.id,
+      });
+      throw new BadRequestException(`Payment initialization failed: ${error.message}`);
+    }
   }
 
   /**
@@ -209,9 +289,50 @@ export class PaymentService {
   async getPaymentStatus(paymentId: string): Promise<PaymentStatusResponseDto> {
     this.logger.log('📊 Fetching payment status', { paymentId });
 
-    const payment = this.payments.get(paymentId);
+    const payment = await this.azureStorageService.getPayment(paymentId);
     if (!payment) {
       throw new NotFoundException(`Payment with ID ${paymentId} not found`);
+    }
+
+    // Optionally sync with imoje for real-time status
+    try {
+      if (payment.providerPaymentId && payment.status === PaymentStatus.PENDING) {
+        const imojeStatus = await this.imojeService.getPaymentStatus(payment.providerPaymentId);
+        const mappedStatus = this.imojeService.mapPaymentStatus(imojeStatus.payment.status) as PaymentStatus;
+
+        if (mappedStatus !== payment.status) {
+          this.logger.log('Payment status updated from imoje', {
+            paymentId,
+            oldStatus: payment.status,
+            newStatus: mappedStatus,
+          });
+
+          // Update payment status
+          payment.status = mappedStatus;
+          payment.updatedAt = new Date().toISOString();
+
+          if (mappedStatus === PaymentStatus.COMPLETED) {
+            payment.transactionId = imojeStatus.transaction.id;
+            payment.receiptUrl = `${this.configService.get<string>('app.baseUrl', 'http://localhost:3044')}/api/payment/${paymentId}/receipt`;
+          }
+
+          await this.azureStorageService.savePayment(payment);
+
+          // Send status change event
+          await this.azureStorageService.sendPaymentStatusEvent(
+            paymentId,
+            payment.reservationId,
+            payment.status,
+            mappedStatus
+          );
+        }
+      }
+    } catch (error) {
+      this.logger.warn('Failed to sync payment status with imoje', {
+        error: error.message,
+        paymentId,
+      });
+      // Continue with stored status
     }
 
     const response: PaymentStatusResponseDto = {
@@ -239,7 +360,7 @@ export class PaymentService {
       status: webhookDto.status,
     });
 
-    const payment = this.payments.get(webhookDto.paymentId);
+    const payment = await this.azureStorageService.getPayment(webhookDto.paymentId);
     if (!payment) {
       this.logger.warn('⚠️ Webhook received for unknown payment', { paymentId: webhookDto.paymentId });
       throw new NotFoundException(`Payment with ID ${webhookDto.paymentId} not found`);
@@ -249,6 +370,8 @@ export class PaymentService {
     if (!isValidStatusTransition(payment.status, webhookDto.status, 'payment')) {
       throw new BadRequestException(`Invalid status transition from ${payment.status} to ${webhookDto.status}`);
     }
+
+    const oldStatus = payment.status;
 
     // Update payment status
     payment.status = webhookDto.status;
@@ -262,10 +385,11 @@ export class PaymentService {
       payment.failureReason = 'Payment failed at provider level';
     }
 
-    this.payments.set(payment.paymentId, payment);
+    // Save updated payment
+    await this.azureStorageService.savePayment(payment);
 
     // Update reservation status
-    const reservation = this.reservations.get(payment.reservationId);
+    const reservation = await this.azureStorageService.getReservation(payment.reservationId);
     if (reservation) {
       if (webhookDto.status === PaymentStatus.COMPLETED) {
         reservation.status = ReservationStatus.PAID;
@@ -273,11 +397,20 @@ export class PaymentService {
         reservation.status = ReservationStatus.FAILED;
       }
       reservation.updatedAt = new Date().toISOString();
-      this.reservations.set(reservation.id, reservation);
+      await this.azureStorageService.saveReservation(reservation);
     }
+
+    // Send status change event to queue
+    await this.azureStorageService.sendPaymentStatusEvent(
+      payment.paymentId,
+      payment.reservationId,
+      oldStatus,
+      payment.status
+    );
 
     this.logger.log('✅ Webhook processed successfully', {
       paymentId: payment.paymentId,
+      oldStatus,
       newStatus: payment.status,
       reservationStatus: reservation?.status,
     });
@@ -294,8 +427,7 @@ export class PaymentService {
   async getAllPayments(): Promise<Payment[]> {
     this.logger.log('📋 Fetching all payments');
 
-    return Array.from(this.payments.values())
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return await this.azureStorageService.getAllPayments();
   }
 
   /**
@@ -304,17 +436,21 @@ export class PaymentService {
   async deleteReservation(reservationId: string): Promise<{ success: boolean; message: string }> {
     this.logger.log('🗑️ Deleting reservation', { reservationId });
 
-    const reservation = this.reservations.get(reservationId);
+    const reservation = await this.azureStorageService.getReservation(reservationId);
     if (!reservation) {
       throw new NotFoundException(`Reservation with ID ${reservationId} not found`);
     }
 
     // Delete associated payment if exists
     if (reservation.paymentId) {
-      this.payments.delete(reservation.paymentId);
+      const payment = await this.azureStorageService.getPayment(reservation.paymentId);
+      if (payment) {
+        // Note: In production, you might want to cancel the payment with imoje first
+        this.logger.log('Deleting associated payment', { paymentId: reservation.paymentId });
+      }
     }
 
-    this.reservations.delete(reservationId);
+    await this.azureStorageService.deleteReservation(reservationId);
 
     this.logger.log('✅ Reservation deleted successfully', { reservationId });
 
@@ -330,15 +466,13 @@ export class PaymentService {
   async clearAllData(): Promise<{ success: boolean; message: string }> {
     this.logger.log('🧹 Clearing all payment data');
 
-    this.reservations.clear();
-    this.payments.clear();
-    this.seedMockData();
+    await this.dataSeedingService.clearAllData();
 
-    this.logger.log('✅ All data cleared and reseeded');
+    this.logger.log('✅ All data cleared successfully');
 
     return {
       success: true,
-      message: 'All payment data cleared and reseeded with mock data',
+      message: 'All payment data cleared successfully',
     };
   }
 
@@ -384,56 +518,5 @@ export class PaymentService {
     }
   }
 
-  private seedMockData(): void {
-    this.logger.log('🌱 Seeding mock payment data');
 
-    // Create sample reservations
-    const mockReservations: Omit<Reservation, 'id' | 'createdAt' | 'updatedAt'>[] = [
-      {
-        guestName: 'Jan Kowalski',
-        guestEmail: 'jan.kowalski@example.com',
-        accommodationName: 'Hotel Kraków',
-        accommodationAddress: 'ul. Floriańska 1, 31-019 Kraków',
-        checkInDate: '2024-08-15',
-        checkOutDate: '2024-08-18',
-        numberOfGuests: 2,
-        numberOfNights: 3,
-        taxAmountPerNight: 2.50,
-        totalTaxAmount: 15.00,
-        currency: Currency.PLN,
-        status: ReservationStatus.PENDING,
-        cityName: 'Kraków',
-      },
-      {
-        guestName: 'Anna Nowak',
-        guestEmail: 'anna.nowak@example.com',
-        accommodationName: 'Apartamenty Centrum',
-        accommodationAddress: 'ul. Grodzka 15, 31-006 Kraków',
-        checkInDate: '2024-08-20',
-        checkOutDate: '2024-08-22',
-        numberOfGuests: 1,
-        numberOfNights: 2,
-        taxAmountPerNight: 2.50,
-        totalTaxAmount: 5.00,
-        currency: Currency.PLN,
-        status: ReservationStatus.PAID,
-        cityName: 'Kraków',
-      },
-    ];
-
-    const now = new Date().toISOString();
-    mockReservations.forEach((mockReservation) => {
-      const reservationId = generateReservationId();
-      const reservation: Reservation = {
-        ...mockReservation,
-        id: reservationId,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      this.reservations.set(reservationId, reservation);
-    });
-
-    this.logger.log(`✅ Seeded ${mockReservations.length} mock reservations`);
-  }
 }

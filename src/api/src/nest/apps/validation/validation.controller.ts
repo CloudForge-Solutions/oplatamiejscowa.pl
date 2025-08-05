@@ -1,6 +1,6 @@
 /**
  * Validation Controller
- * 
+ *
  * RESPONSIBILITY: Handle validation requests
  * ARCHITECTURE: NestJS controller with validation endpoints
  */
@@ -17,7 +17,7 @@ export class ValidationController {
 
   constructor(private readonly validationService: ValidationService) {}
 
-  @Post('uuid')
+  @Post('uuids')
   @ApiOperation({
     summary: 'Validate UUID',
     description: 'Validate if a string is a properly formatted UUID',

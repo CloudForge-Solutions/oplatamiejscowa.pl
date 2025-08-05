@@ -1,6 +1,6 @@
 /**
  * Payment DTOs
- * 
+ *
  * RESPONSIBILITY: Data Transfer Objects for payment operations
  * ARCHITECTURE: NestJS DTOs with validation decorators
  */
@@ -62,27 +62,78 @@ export class CreateReservationDto {
   @Max(20)
   numberOfGuests: number;
 
-  @ApiProperty({ description: 'Number of nights', example: 3, minimum: 1, maximum: 365 })
-  @IsNumber()
-  @Min(1)
-  @Max(365)
-  numberOfNights: number;
-
-  @ApiProperty({ description: 'Tax amount per night per person', example: 2.50, minimum: 0.01, maximum: 100 })
-  @IsNumber()
-  @Min(0.01)
-  @Max(100)
-  taxAmountPerNight: number;
-
-  @ApiProperty({ description: 'Total tax amount', example: 15.00, minimum: 0.01, maximum: 10000 })
-  @IsNumber()
-  @Min(0.01)
-  @Max(10000)
-  totalTaxAmount: number;
+  @ApiProperty({ description: 'City name (used to determine tax rate)', example: 'Kraków' })
+  @IsString()
+  cityName: string;
 
   @ApiProperty({ description: 'Currency code', enum: Currency, example: Currency.PLN })
   @IsEnum(Currency)
   currency: Currency;
+}
+
+export class UpdateReservationDto {
+  @ApiProperty({ description: 'Guest full name', example: 'Jan Kowalski', required: false })
+  @IsOptional()
+  @IsString()
+  guestName?: string;
+
+  @ApiProperty({ description: 'Guest email address', example: 'jan.kowalski@example.com', required: false })
+  @IsOptional()
+  @IsEmail()
+  guestEmail?: string;
+
+  @ApiProperty({ description: 'Accommodation name', example: 'Hotel Kraków', required: false })
+  @IsOptional()
+  @IsString()
+  accommodationName?: string;
+
+  @ApiProperty({ description: 'Accommodation address', example: 'ul. Floriańska 1, 31-019 Kraków', required: false })
+  @IsOptional()
+  @IsString()
+  accommodationAddress?: string;
+
+  @ApiProperty({ description: 'Check-in date', example: '2025-08-15', required: false })
+  @IsOptional()
+  @IsDateString()
+  checkInDate?: string;
+
+  @ApiProperty({ description: 'Check-out date', example: '2025-08-18', required: false })
+  @IsOptional()
+  @IsDateString()
+  checkOutDate?: string;
+
+  @ApiProperty({ description: 'Number of guests', example: 2, minimum: 1, maximum: 20, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(20)
+  numberOfGuests?: number;
+
+  @ApiProperty({ description: 'Number of nights', example: 3, minimum: 1, maximum: 365, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(365)
+  numberOfNights?: number;
+
+  @ApiProperty({ description: 'Tax amount per night', example: 2.50, minimum: 0.01, maximum: 1000, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0.01)
+  @Max(1000)
+  taxAmountPerNight?: number;
+
+  @ApiProperty({ description: 'Total tax amount', example: 15.00, minimum: 0.01, maximum: 10000, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0.01)
+  @Max(10000)
+  totalTaxAmount?: number;
+
+  @ApiProperty({ description: 'Currency code', enum: Currency, example: Currency.PLN, required: false })
+  @IsOptional()
+  @IsEnum(Currency)
+  currency?: Currency;
 
   @ApiProperty({ description: 'City name', example: 'Kraków', required: false })
   @IsOptional()

@@ -37,30 +37,44 @@ export const STORAGE_KEYS = {
 } as const;
 
 export const API_ENDPOINTS = {
-  // Payment Service Endpoints
-  PAYMENT_STATUS: '/api/payment/status',
-  INITIATE_PAYMENT: '/api/payment/initiate',
-  PAYMENT_WEBHOOK: '/api/payment/webhook',
-
-  // Reservation Management
-  CREATE_RESERVATION: '/api/payment/reservations',
-  GET_RESERVATIONS: '/api/payment/reservations',
-  GET_RESERVATION: '/api/payment/reservations',
-  DELETE_RESERVATION: '/api/payment/reservations',
-
-  // Payment Status Tracking
-  GET_PAYMENT_STATUS: '/api/payment',
-  GET_ALL_PAYMENTS: '/api/payment/payments',
-
-  // Storage & Validation (existing)
-  GENERATE_SAS: '/api/storage/generate-sas',
-  VALIDATE_UUID: '/api/validation/uuid',
-
   // Health & System
   HEALTH_CHECK: '/api/health',
+  HEALTH_READY: '/api/health/ready',
+  HEALTH_LIVE: '/api/health/live',
+
+  // Storage & Validation Services
+  GENERATE_SAS: '/api/storage/sas-tokens',
+  VALIDATE_UUID: '/api/validation/uuids',
+
+  // Reservations Resource
+  RESERVATIONS: '/api/reservations',
+  CREATE_RESERVATION: '/api/reservations',
+  GET_RESERVATIONS: '/api/reservations',
+  GET_RESERVATION: '/api/reservations', // + /:id
+  UPDATE_RESERVATION: '/api/reservations', // + /:id
+  DELETE_RESERVATION: '/api/reservations', // + /:id
+
+  // Payments Resource
+  PAYMENTS: '/api/payments',
+  CREATE_PAYMENT: '/api/payments',
+  GET_PAYMENTS: '/api/payments',
+  GET_PAYMENT: '/api/payments', // + /:id
+  GET_PAYMENT_STATUS: '/api/payments', // + /:id/status
+  UPDATE_PAYMENT_STATUS: '/api/payments', // + /:id/status
+  PAYMENT_WEBHOOKS: '/api/payments/webhooks',
 
   // Development/Testing
-  CLEAR_PAYMENT_DATA: '/api/payment/clear-all'
+  DEV_STATUS: '/api/dev/status',
+  DEV_STATS: '/api/dev/stats',
+  DEV_CLEAR_DATA: '/api/dev/data',
+  DEV_SEED_DATA: '/api/dev/seed',
+  DEV_RESET_DATA: '/api/dev/reset',
+
+  // Legacy Endpoints (for backward compatibility - will be deprecated)
+  LEGACY_INITIATE_PAYMENT: '/api/payment/initiate',
+  LEGACY_PAYMENT_WEBHOOK: '/api/payment/webhook',
+  LEGACY_PAYMENT_STATUS: '/api/payment/status',
+  LEGACY_CLEAR_ALL: '/api/payment/clear-all'
 } as const;
 
 export const MOBILE_CONSTANTS = {

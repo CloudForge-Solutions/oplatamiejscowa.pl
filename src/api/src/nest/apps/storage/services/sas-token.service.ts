@@ -5,13 +5,11 @@
  * ARCHITECTURE: NestJS service with dependency injection and configuration
  */
 
-import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, Logger, InternalServerErrorException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
-  generateAccountSASQueryParameters,
-  AccountSASPermissions,
-  AccountSASServices,
-  AccountSASResourceTypes,
+  generateBlobSASQueryParameters,
+  BlobSASPermissions,
   StorageSharedKeyCredential,
   BlobServiceClient,
 } from '@azure/storage-blob';
@@ -25,16 +23,23 @@ export class SasTokenService {
   constructor(private readonly configService: ConfigService) {}
 
   /**
-   * Generate SAS Token for Blob Storage Access
+   * Generate Blob-Specific SAS Token with Reservation Validation
+   * SECURITY: Validates reservation exists and generates blob-specific token
+   * COST-OPTIMIZED: Minimal permissions for specific blob only
    */
   async generateSasToken(dto: GenerateSasTokenDto): Promise<SasTokenResponseDto> {
     try {
-      this.logger.log('🔐 Generating SAS token', {
+      this.logger.log('🔐 Generating blob-specific SAS token', {
         containerName: dto.containerName,
         permissions: dto.permissions,
         expiryHours: dto.expiryHours,
         reservationId: dto.reservationId,
       });
+
+      // SECURITY: Require reservation ID for blob-specific access
+      if (!dto.reservationId) {
+        throw new BadRequestException('Reservation ID is required for secure blob access');
+      }
 
       // Get configuration values
       const accountName = this.configService.get<string>('storage.accountName');
@@ -42,7 +47,6 @@ export class SasTokenService {
       const connectionString = this.configService.get<string>('storage.connectionString');
       const defaultContainer = this.configService.get<string>('storage.containerName');
       const defaultExpiryHours = this.configService.get<number>('sas.expiryHours');
-      const defaultPermissions = this.configService.get<string>('sas.defaultPermissions');
 
       if (!accountName || !accountKey) {
         this.logger.error('❌ Missing Azure Storage credentials', {
@@ -54,31 +58,30 @@ export class SasTokenService {
         throw new InternalServerErrorException('Azure Storage credentials not configured');
       }
 
-      // Use provided values or defaults
-      const containerName = dto.containerName || defaultContainer;
-      const permissions = dto.permissions || defaultPermissions;
+      // Use provided values or defaults with proper type safety
+      const containerName = dto.containerName || defaultContainer || 'reservations';
       const expiryHours = dto.expiryHours || defaultExpiryHours;
+      const blobName = `${dto.reservationId}.json`;
+      const safeConnectionString = connectionString || '';
+
+      // SECURITY: Validate reservation exists before generating SAS token
+      await this.validateReservationExists(accountName, accountKey, safeConnectionString, containerName, blobName);
 
       // Create shared key credential
       const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
 
-      // Set expiry time
+      // Set expiry time (24h max for security)
       const expiresOn = new Date();
-      expiresOn.setHours(expiresOn.getHours() + (expiryHours || 24));
+      expiresOn.setHours(expiresOn.getHours() + Math.min(expiryHours || 24, 24));
 
-      // Configure SAS permissions
-      const sasPermissions = new AccountSASPermissions();
-      const permStr = permissions || 'rw';
-      if (permStr.includes('r')) sasPermissions.read = true;
-      if (permStr.includes('w')) sasPermissions.write = true;
-      if (permStr.includes('d')) sasPermissions.delete = true;
-      if (permStr.includes('l')) sasPermissions.list = true;
+      // SECURITY: Configure minimal blob-specific permissions (read-only by default)
+      const sasPermissions = BlobSASPermissions.parse(dto.permissions || 'r');
 
-      // Generate SAS token
-      const sasToken = generateAccountSASQueryParameters(
+      // Generate blob-specific SAS token
+      const sasToken = generateBlobSASQueryParameters(
         {
-          services: 'b', // Blob service only
-          resourceTypes: 'sco', // Service, Container, Object
+          containerName: containerName,
+          blobName: blobName,
           permissions: sasPermissions,
           startsOn: new Date(),
           expiresOn: expiresOn,
@@ -87,12 +90,14 @@ export class SasTokenService {
       ).toString();
 
       // Extract service URL from connection string
-      const serviceUrl = this.extractBlobEndpointFromConnectionString(connectionString || '');
+      const serviceUrl = this.extractBlobEndpointFromConnectionString(safeConnectionString);
 
-      this.logger.log('✅ SAS token generated successfully', {
+      this.logger.log('✅ Blob-specific SAS token generated successfully', {
         expiresAt: expiresOn.toISOString(),
-        permissions: permissions,
+        permissions: dto.permissions || 'r',
         containerName: containerName,
+        blobName: blobName,
+        reservationId: dto.reservationId,
       });
 
       return new SasTokenResponseDto({
@@ -102,17 +107,59 @@ export class SasTokenService {
         expiresAt: expiresOn.toISOString(),
       });
     } catch (error) {
-      this.logger.error('❌ Failed to generate SAS token', {
+      this.logger.error('❌ Failed to generate blob-specific SAS token', {
         error: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
         dto: dto,
       });
 
-      if (error instanceof InternalServerErrorException) {
+      if (error instanceof BadRequestException || error instanceof NotFoundException || error instanceof InternalServerErrorException) {
         throw error;
       }
 
       throw new InternalServerErrorException('Failed to generate SAS token');
+    }
+  }
+
+  /**
+   * Validate that reservation blob exists before generating SAS token
+   * SECURITY: Prevents SAS token generation for non-existent reservations
+   */
+  private async validateReservationExists(
+    accountName: string,
+    accountKey: string,
+    connectionString: string,
+    containerName: string,
+    blobName: string
+  ): Promise<void> {
+    try {
+      this.logger.debug('🔍 Validating reservation exists', { blobName });
+
+      const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+      const serviceUrl = this.extractBlobEndpointFromConnectionString(connectionString);
+      const blobServiceClient = new BlobServiceClient(serviceUrl, sharedKeyCredential);
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+      const blobClient = containerClient.getBlobClient(blobName);
+
+      const exists = await blobClient.exists();
+
+      if (!exists) {
+        this.logger.warn('🚫 Reservation not found', { blobName });
+        throw new NotFoundException(`Reservation not found or has been archived`);
+      }
+
+      this.logger.debug('✅ Reservation exists', { blobName });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      this.logger.error('❌ Failed to validate reservation existence', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        blobName,
+      });
+
+      throw new InternalServerErrorException('Failed to validate reservation');
     }
   }
 

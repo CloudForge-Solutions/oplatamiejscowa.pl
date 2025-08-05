@@ -1,6 +1,6 @@
 /**
  * MockupApiService - Replace Azure Functions with direct Azure Storage access
- * 
+ *
  * RESPONSIBILITY: Provide API-like interface for tourist tax operations using Azure Storage
  * ARCHITECTURE: Direct storage access with API-compatible responses
  */
@@ -42,8 +42,16 @@ export class MockupApiService {
   private isInitialized: boolean = false;
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3040/api';
-    this.initialize();
+    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3044';
+
+    // Only initialize if mock data is enabled
+    const enableMockData = import.meta.env.VITE_ENABLE_MOCK_DATA === 'true';
+    if (enableMockData) {
+      this.initialize();
+    } else {
+      logger.info('🚫 MockupApiService disabled - using real API');
+      this.isInitialized = true;
+    }
   }
 
   /**
@@ -55,7 +63,7 @@ export class MockupApiService {
 
       // Check if we need to seed data
       const stats = await dataSeedingService.getSeedingStats();
-      
+
       if (!stats.storageConnected) {
         logger.warn('⚠️ Azure Storage Emulator not connected - some features may not work');
         return;
@@ -85,7 +93,7 @@ export class MockupApiService {
       logger.info('📋 Fetching reservation', { reservationId });
 
       const reservation = await blobStorageService.getReservation(reservationId);
-      
+
       if (!reservation) {
         return {
           success: false,
@@ -110,7 +118,7 @@ export class MockupApiService {
 
     } catch (error) {
       logger.error('❌ Failed to fetch reservation', { error, reservationId });
-      
+
       return {
         success: false,
         error: 'FETCH_ERROR',
@@ -125,14 +133,14 @@ export class MockupApiService {
    */
   async createPayment(paymentRequest: PaymentRequest): Promise<ApiResponse<PaymentResponse>> {
     try {
-      logger.info('💳 Creating payment', { 
+      logger.info('💳 Creating payment', {
         reservationId: paymentRequest.reservationId,
-        amount: paymentRequest.amount 
+        amount: paymentRequest.amount
       });
 
       // Get reservation to validate
       const reservation = await blobStorageService.getReservation(paymentRequest.reservationId);
-      
+
       if (!reservation) {
         return {
           success: false,
@@ -200,7 +208,7 @@ export class MockupApiService {
 
     } catch (error) {
       logger.error('❌ Failed to create payment', { error, paymentRequest });
-      
+
       return {
         success: false,
         error: 'PAYMENT_CREATION_ERROR',
@@ -240,20 +248,20 @@ export class MockupApiService {
 
       // Simulate payment processing (for demo purposes)
       let status = foundReservation.status;
-      
+
       // Randomly complete pending payments (simulating real payment processing)
       if (status === 'pending' && Math.random() > 0.7) {
         status = 'paid';
-        
+
         // Update reservation status
         const updatedReservation: ReservationData = {
           ...foundReservation,
           status: 'paid',
           updatedAt: new Date().toISOString()
         };
-        
+
         await blobStorageService.storeReservation(updatedReservation);
-        
+
         // Emit payment completed event
         eventBus.emit(PLATFORM_EVENTS.PAYMENT_COMPLETED, {
           reservationId: foundReservation.id,
@@ -273,7 +281,7 @@ export class MockupApiService {
 
     } catch (error) {
       logger.error('❌ Failed to check payment status', { error, paymentId });
-      
+
       return {
         success: false,
         error: 'STATUS_CHECK_ERROR',
@@ -311,7 +319,7 @@ export class MockupApiService {
 
     } catch (error) {
       logger.error('❌ Failed to list reservations', { error });
-      
+
       return {
         success: false,
         error: 'LIST_ERROR',
@@ -326,17 +334,32 @@ export class MockupApiService {
    */
   async healthCheck(): Promise<ApiResponse<{ status: string; storage: boolean; timestamp: string }>> {
     try {
-      const stats = await dataSeedingService.getSeedingStats();
-      
-      return {
-        success: true,
-        data: {
-          status: 'healthy',
-          storage: stats.storageConnected,
+      const enableMockData = import.meta.env.VITE_ENABLE_MOCK_DATA === 'true';
+
+      if (enableMockData) {
+        const stats = await dataSeedingService.getSeedingStats();
+
+        return {
+          success: true,
+          data: {
+            status: 'healthy',
+            storage: stats.storageConnected,
+            timestamp: new Date().toISOString()
+          },
           timestamp: new Date().toISOString()
-        },
-        timestamp: new Date().toISOString()
-      };
+        };
+      } else {
+        // When using real API, just return basic health status
+        return {
+          success: true,
+          data: {
+            status: 'healthy',
+            storage: true, // Assume storage is available when using real API
+            timestamp: new Date().toISOString()
+          },
+          timestamp: new Date().toISOString()
+        };
+      }
 
     } catch (error) {
       return {
@@ -354,9 +377,9 @@ export class MockupApiService {
   async reseedData(count: number = 15): Promise<ApiResponse<{ message: string; count: number }>> {
     try {
       logger.info('🌱 Reseeding data', { count });
-      
+
       await dataSeedingService.reseed(count);
-      
+
       return {
         success: true,
         data: {
@@ -368,7 +391,7 @@ export class MockupApiService {
 
     } catch (error) {
       logger.error('❌ Failed to reseed data', { error });
-      
+
       return {
         success: false,
         error: 'RESEED_ERROR',

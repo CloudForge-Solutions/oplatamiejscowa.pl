@@ -1,19 +1,23 @@
 /**
  * Health Service
- * 
+ *
  * RESPONSIBILITY: System health monitoring and checks
  * ARCHITECTURE: NestJS service with health status logic
  */
 
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PaymentService } from '../../payment/services/payment.service';
 
 @Injectable()
 export class HealthService {
   private readonly logger = new Logger(HealthService.name);
   private readonly startTime = Date.now();
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly paymentService: PaymentService
+  ) {}
 
   /**
    * Get overall health status
@@ -71,14 +75,16 @@ export class HealthService {
       const configCheck = this.checkConfiguration();
       const storageCheck = await this.checkStorageConfiguration();
       const dependencyCheck = this.checkDependencies();
+      const paymentCheck = await this.paymentService.isAvailable();
 
-      const allChecks = [configCheck, storageCheck, dependencyCheck];
+      const allChecks = [configCheck, storageCheck, dependencyCheck, paymentCheck];
       const isHealthy = allChecks.every(check => check === true);
 
       this.logger.log('🏥 Health checks completed', {
         configuration: configCheck,
         storage: storageCheck,
         dependencies: dependencyCheck,
+        payment: paymentCheck,
         overall: isHealthy,
       });
 

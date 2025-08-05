@@ -115,6 +115,7 @@ api@dev: ## 🚀 Start Azure Functions backend in hybrid mode
 	@echo "  • Queue: queue-processor (task-queue)"
 	@source ${NVM_DIR}/nvm.sh && nvm use ${NVM_NODE_VERSION}
 	@echo "� Node.js version: $$(node --version)"
+	@echo NODE_ENV=$(NODE_ENV)
 	npm run dev
 
 api@dev-nestjs: ## 🚀 Start NestJS HTTP development server (without pre-checks)
@@ -242,9 +243,9 @@ api@logs: ## 📋 Show backend logs
 api@health: ## 🏥 Check backend health
 	cd src/api
 	@echo "🏥 Checking backend health..."
-	@if curl -s -f http://localhost:$(API_FAPP_DEV_PORT)/api/health > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "✅ Backend is healthy"; \
-		curl -s http://localhost:$(API_FAPP_DEV_PORT)/api/health | jq . || curl -s http://localhost:$(API_FAPP_DEV_PORT)/api/health; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health | jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health; \
 	else \
 		echo "❌ Backend is not responding"; \
 		echo "💡 Start it with: make api@dev"; \
@@ -253,11 +254,11 @@ api@health: ## 🏥 Check backend health
 api@test-sas: ## 🔐 Test SAS token generation
 	cd src/api
 	@echo "🔐 Testing SAS token generation..."
-	@if curl -s -f http://localhost:$(API_FAPP_DEV_PORT)/api/health > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Sending SAS token request..."; \
-		curl -X POST http://localhost:$(API_FAPP_DEV_PORT)/api/storage/generate-sas \
+		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/storage/sas-tokens \
 			-H "Content-Type: application/json" \
-			-d '{"containerName": "reservations", "permissions": "rw", "expiryHours": 24}' \
+			-d '{"fileName": "test-document.pdf", "contentType": "application/pdf"}' \
 			| jq . || echo "Response received (jq not available)"; \
 	else \
 		echo "❌ Backend is not running. Start it with: make api@dev"; \
@@ -266,9 +267,9 @@ api@test-sas: ## 🔐 Test SAS token generation
 api@test-validation: ## ✅ Test validation endpoints
 	cd src/api
 	@echo "✅ Testing validation endpoints..."
-	@if curl -s -f http://localhost:$(API_FAPP_DEV_PORT)/api/health > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Testing UUID validation..."; \
-		curl -X POST http://localhost:$(API_FAPP_DEV_PORT)/api/validation/uuid \
+		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/validation/uuids \
 			-H "Content-Type: application/json" \
 			-d '{"uuid": "123e4567-e89b-12d3-a456-426614174000"}' \
 			| jq . || echo "Response received (jq not available)"; \
@@ -302,39 +303,39 @@ api@docs-nestjs: ## 📖 Open NestJS API documentation
 #=== Payment API Testing Targets
 #===================================================================================================
 
-api@test-payment-status: ## 🏥 Test payment service status
+api@test-payment-status: ## 🏥 Test development service status (legacy)
 	cd src/api
-	@echo "🏥 Testing payment service status..."
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
-		echo "✅ Payment service is running"; \
-		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/status | jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/status; \
+	@echo "🏥 Testing development service status..."
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
+		echo "✅ Development service is running"; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/status | jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/status; \
 	else \
-		echo "❌ Payment service is not responding"; \
-		echo "💡 Start it with: make api@dev-nestjs"; \
+		echo "❌ Development service is not responding"; \
+		echo "💡 Start it with: make api@dev"; \
 	fi
 
 api@create-reservation: ## 📝 Create a sample tourist tax reservation
 	cd src/api
 	@echo "📝 Creating sample tourist tax reservation..."
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Sending reservation creation request..."; \
-		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations \
+		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/reservations \
 			-H "Content-Type: application/json" \
 			-d '{"guestName":"Jan Kowalski","guestEmail":"jan.kowalski@example.com","accommodationName":"Hotel Test","accommodationAddress":"ul. Testowa 1, 31-000 Kraków","checkInDate":"2025-08-15","checkOutDate":"2025-08-18","numberOfGuests":2,"numberOfNights":3,"taxAmountPerNight":2.50,"totalTaxAmount":15.00,"currency":"PLN","cityName":"Kraków"}' \
 			| jq . || echo "Response received (jq not available)"; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@list-reservations: ## 📋 List all reservations
 	cd src/api
 	@echo "📋 Fetching all reservations..."
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Fetching reservations..."; \
-		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations \
-			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations \
+			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@initiate-payment: ## 💳 Initiate payment for a reservation (requires RESERVATION_ID)
@@ -345,14 +346,14 @@ api@initiate-payment: ## 💳 Initiate payment for a reservation (requires RESER
 		echo "💡 Get reservation IDs with: make api@list-reservations"; \
 		exit 1; \
 	fi
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Initiating payment for reservation $(RESERVATION_ID)..."; \
-		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/initiate \
+		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payments \
 			-H "Content-Type: application/json" \
 			-d '{"reservationId":"$(RESERVATION_ID)","successUrl":"http://localhost:3040/payment/success","failureUrl":"http://localhost:3040/payment/failure"}' \
 			| jq . || echo "Response received (jq not available)"; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@payment-status: ## 📊 Check payment status (requires PAYMENT_ID)
@@ -363,23 +364,23 @@ api@payment-status: ## 📊 Check payment status (requires PAYMENT_ID)
 		echo "💡 Get payment IDs with: make api@list-payments"; \
 		exit 1; \
 	fi
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Fetching payment status for $(PAYMENT_ID)..."; \
-		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/$(PAYMENT_ID)/status \
-			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/$(PAYMENT_ID)/status; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments/$(PAYMENT_ID)/status \
+			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments/$(PAYMENT_ID)/status; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@list-payments: ## 💰 List all payments
 	cd src/api
 	@echo "💰 Fetching all payments..."
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Fetching payments..."; \
-		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/payments \
-			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/payments; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments \
+			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@simulate-webhook: ## 🔔 Simulate payment webhook (requires PAYMENT_ID and STATUS)
@@ -395,14 +396,14 @@ api@simulate-webhook: ## 🔔 Simulate payment webhook (requires PAYMENT_ID and 
 		echo "💡 Valid statuses: pending, processing, completed, failed, cancelled"; \
 		exit 1; \
 	fi
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Sending webhook for payment $(PAYMENT_ID) with status $(STATUS)..."; \
-		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/webhook \
+		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payments/webhooks \
 			-H "Content-Type: application/json" \
 			-d "{\"paymentId\":\"$(PAYMENT_ID)\",\"status\":\"$(STATUS)\",\"amount\":15.00,\"currency\":\"PLN\",\"transactionId\":\"txn_$$(date +%s)_test\",\"timestamp\":\"$$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
 			| jq . || echo "Response received (jq not available)"; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@get-reservation: ## 🔍 Get specific reservation (requires RESERVATION_ID)
@@ -413,12 +414,12 @@ api@get-reservation: ## 🔍 Get specific reservation (requires RESERVATION_ID)
 		echo "💡 Get reservation IDs with: make api@list-reservations"; \
 		exit 1; \
 	fi
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Fetching reservation $(RESERVATION_ID)..."; \
-		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations/$(RESERVATION_ID) \
-			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations/$(RESERVATION_ID); \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations/$(RESERVATION_ID) \
+			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations/$(RESERVATION_ID); \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@delete-reservation: ## 🗑️ Delete specific reservation (requires RESERVATION_ID)
@@ -429,32 +430,32 @@ api@delete-reservation: ## 🗑️ Delete specific reservation (requires RESERVA
 		echo "💡 Get reservation IDs with: make api@list-reservations"; \
 		exit 1; \
 	fi
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Deleting reservation $(RESERVATION_ID)..."; \
-		curl -X DELETE http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations/$(RESERVATION_ID) \
+		curl -X DELETE http://localhost:$(API_NEST_DEV_PORT)/api/reservations/$(RESERVATION_ID) \
 			| jq . || echo "Response received (jq not available)"; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@clear-payment-data: ## 🧹 Clear all payment data and reseed with mock data
 	cd src/api
 	@echo "🧹 Clearing all payment data..."
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo "📡 Clearing all data..."; \
-		curl -X DELETE http://localhost:$(API_NEST_DEV_PORT)/api/payment/clear-all \
+		curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/reset \
 			| jq . || echo "Response received (jq not available)"; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
 
 api@demo-payment-flow: ## 🎬 Run complete payment flow demo
 	cd src/api
 	@echo "🎬 Running complete payment flow demo..."
-	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/payment/status > /dev/null 2>&1; then \
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
 		echo ""; \
 		echo "🎯 Step 1: Creating reservation..."; \
-		RESERVATION_RESPONSE=$$(curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/reservations \
+		RESERVATION_RESPONSE=$$(curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/reservations \
 			-H "Content-Type: application/json" \
 			-d '{"guestName":"Demo User","guestEmail":"demo@example.com","accommodationName":"Demo Hotel","accommodationAddress":"ul. Demo 1, 31-000 Kraków","checkInDate":"2025-08-15","checkOutDate":"2025-08-17","numberOfGuests":1,"numberOfNights":2,"taxAmountPerNight":2.50,"totalTaxAmount":5.00,"currency":"PLN","cityName":"Kraków"}'); \
 		RESERVATION_ID=$$(echo $$RESERVATION_RESPONSE | jq -r '.id' 2>/dev/null || echo ""); \
@@ -462,7 +463,7 @@ api@demo-payment-flow: ## 🎬 Run complete payment flow demo
 			echo "✅ Reservation created: $$RESERVATION_ID"; \
 			echo ""; \
 			echo "🎯 Step 2: Initiating payment..."; \
-			PAYMENT_RESPONSE=$$(curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/initiate \
+			PAYMENT_RESPONSE=$$(curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payments \
 				-H "Content-Type: application/json" \
 				-d "{ \
 					\"reservationId\": \"$$RESERVATION_ID\", \
@@ -475,17 +476,17 @@ api@demo-payment-flow: ## 🎬 Run complete payment flow demo
 				echo ""; \
 				echo "🎯 Step 3: Simulating payment completion..."; \
 				sleep 2; \
-				curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/webhook \
+				curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payments/webhooks \
 					-H "Content-Type: application/json" \
 					-d "{\"paymentId\":\"$$PAYMENT_ID\",\"status\":\"processing\",\"amount\":5.00,\"currency\":\"PLN\",\"transactionId\":\"txn_demo_$$(date +%s)\",\"timestamp\":\"$$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > /dev/null; \
 				sleep 1; \
-				curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payment/webhook \
+				curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/payments/webhooks \
 					-H "Content-Type: application/json" \
 					-d "{\"paymentId\":\"$$PAYMENT_ID\",\"status\":\"completed\",\"amount\":5.00,\"currency\":\"PLN\",\"transactionId\":\"txn_demo_$$(date +%s)\",\"timestamp\":\"$$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > /dev/null; \
 				echo "✅ Payment completed via webhook"; \
 				echo ""; \
 				echo "🎯 Step 4: Checking final status..."; \
-				curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payment/$$PAYMENT_ID/status | jq . || echo "Final status check completed"; \
+				curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments/$$PAYMENT_ID/status | jq . || echo "Final status check completed"; \
 				echo ""; \
 				echo "🎉 Demo completed successfully!"; \
 				echo "📍 Reservation ID: $$RESERVATION_ID"; \
@@ -497,5 +498,175 @@ api@demo-payment-flow: ## 🎬 Run complete payment flow demo
 			echo "❌ Failed to create reservation"; \
 		fi; \
 	else \
-		echo "❌ Payment service is not running. Start it with: make api@dev-nestjs"; \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
 	fi
+
+# === Development Utilities ===
+
+api@dev-status: ## 🔧 Check development environment status
+	cd src/api
+	@echo "🔧 Checking development environment status..."
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
+		echo "📡 Fetching development status..."; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/status \
+			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/status; \
+	else \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
+	fi
+
+api@dev-stats: ## 📊 Get development statistics
+	cd src/api
+	@echo "📊 Fetching development statistics..."
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
+		echo "📡 Fetching development stats..."; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/stats \
+			| jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/stats; \
+	else \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
+	fi
+
+api@dev-seed: ## 🌱 Seed test data
+	cd src/api
+	@echo "🌱 Seeding test data..."
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
+		echo "📡 Seeding test data..."; \
+		curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/seed \
+			| jq . || curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/seed; \
+	else \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
+	fi
+
+api@dev-clear: ## 🧹 Clear all development data
+	cd src/api
+	@echo "🧹 Clearing all development data..."
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
+		echo "📡 Clearing all data..."; \
+		curl -s -X DELETE http://localhost:$(API_NEST_DEV_PORT)/api/dev/data \
+			| jq . || curl -s -X DELETE http://localhost:$(API_NEST_DEV_PORT)/api/dev/data; \
+	else \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
+	fi
+
+api@dev-reset: ## 🔄 Reset all data (clear + seed)
+	cd src/api
+	@echo "🔄 Resetting all development data..."
+	@if curl -s -f http://localhost:$(API_NEST_DEV_PORT)/api/health > /dev/null 2>&1; then \
+		echo "📡 Resetting all data..."; \
+		curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/reset \
+			| jq . || curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/reset; \
+	else \
+		echo "❌ Backend is not running. Start it with: make api@dev"; \
+	fi
+
+
+api@test: ## 🧪 Run comprehensive API tests with real data
+	cd src/api
+	@echo "🧪 Running comprehensive API tests..."
+	@echo ""
+	@echo "=== 🏥 Health Checks ==="
+	@echo "# Basic health check"
+	@curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health | jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health
+	@echo ""
+	@echo "# Readiness check (checks Azure Storage connectivity)"
+	@curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health/ready | jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health/ready
+	@echo ""
+	@echo "# Liveness check"
+	@curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health/live | jq . || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/health/live
+	@echo ""
+	@echo ""
+	@echo "=== 🗄️ Storage & Validation ==="
+	@echo "# Generate SAS token for blob storage"
+	@curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/storage/sas-tokens \
+		-H "Content-Type: application/json" \
+		-d '{"fileName": "test-document.pdf", "contentType": "application/pdf"}' \
+		| jq . || curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/storage/sas-tokens \
+		-H "Content-Type: application/json" \
+		-d '{"fileName": "test-document.pdf", "contentType": "application/pdf"}'
+	@echo ""
+	@echo "# Validate UUID"
+	@curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/validation/uuids \
+		-H "Content-Type: application/json" \
+		-d '{"uuid": "123e4567-e89b-12d3-a456-426614174000"}' \
+		| jq . || curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/validation/uuids \
+		-H "Content-Type: application/json" \
+		-d '{"uuid": "123e4567-e89b-12d3-a456-426614174000"}'
+	@echo ""
+	@echo ""
+	@echo "=== 📋 Reservations Resource ==="
+	@echo "# Get all reservations"
+	@RESERVATIONS_RESPONSE=$$(curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations); \
+	echo "$$RESERVATIONS_RESPONSE" | jq . 2>/dev/null || echo "$$RESERVATIONS_RESPONSE"; \
+	FIRST_RESERVATION_ID=$$(echo "$$RESERVATIONS_RESPONSE" | jq -r '.[0].id' 2>/dev/null || echo ""); \
+	echo ""; \
+	if [ -n "$$FIRST_RESERVATION_ID" ] && [ "$$FIRST_RESERVATION_ID" != "null" ]; then \
+		echo "# Get specific reservation (using first reservation: $$FIRST_RESERVATION_ID)"; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations/$$FIRST_RESERVATION_ID | jq . 2>/dev/null || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/reservations/$$FIRST_RESERVATION_ID; \
+		echo ""; \
+	else \
+		echo "# No reservations found to test specific reservation endpoint"; \
+		echo ""; \
+	fi
+	@echo "# Create new reservation"
+	@NEW_RESERVATION_RESPONSE=$$(curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/reservations \
+		-H "Content-Type: application/json" \
+		-d '{"guestName": "API Test User", "guestEmail": "apitest@example.com", "accommodationName": "API Test Hotel", "accommodationAddress": "ul. Test API 1, 31-000 Kraków", "checkInDate": "2025-08-15", "checkOutDate": "2025-08-18", "numberOfGuests": 2, "numberOfNights": 3, "taxAmountPerNight": 2.50, "totalTaxAmount": 15.00, "currency": "PLN", "cityName": "Kraków"}'); \
+	echo "$$NEW_RESERVATION_RESPONSE" | jq . 2>/dev/null || echo "$$NEW_RESERVATION_RESPONSE"; \
+	NEW_RESERVATION_ID=$$(echo "$$NEW_RESERVATION_RESPONSE" | jq -r '.id' 2>/dev/null || echo ""); \
+	echo ""
+	@echo ""
+	@echo "=== 💳 Payments Resource ==="
+	@echo "# Get all payments"
+	@PAYMENTS_RESPONSE=$$(curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments); \
+	echo "$$PAYMENTS_RESPONSE" | jq . 2>/dev/null || echo "$$PAYMENTS_RESPONSE"; \
+	FIRST_PAYMENT_ID=$$(echo "$$PAYMENTS_RESPONSE" | jq -r '.[0].paymentId' 2>/dev/null || echo ""); \
+	echo ""; \
+	if [ -n "$$FIRST_PAYMENT_ID" ] && [ "$$FIRST_PAYMENT_ID" != "null" ]; then \
+		echo "# Get payment status (using first payment: $$FIRST_PAYMENT_ID)"; \
+		curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments/$$FIRST_PAYMENT_ID/status | jq . 2>/dev/null || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/payments/$$FIRST_PAYMENT_ID/status; \
+		echo ""; \
+	else \
+		echo "# No payments found to test payment status endpoint"; \
+		echo ""; \
+	fi
+	@echo ""
+	@echo "=== 🔧 Development Endpoints ==="
+	@echo "# Get development status"
+	@curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/status | jq . 2>/dev/null || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/status
+	@echo ""
+	@echo "# Get development statistics"
+	@curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/stats | jq . 2>/dev/null || curl -s http://localhost:$(API_NEST_DEV_PORT)/api/dev/stats
+	@echo ""
+	@echo "# Reset all data (clear and reseed)"
+	@curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/reset | jq . 2>/dev/null || curl -s -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/reset
+	@echo ""
+	@echo "✅ API tests completed!"
+
+api@test-simple: ## 🧪 Run simple API tests (updated endpoints)
+	echo '# Basic health check'
+	curl http://localhost:$(API_NEST_DEV_PORT)/api/health
+	echo
+	echo '# Readiness check (checks Azure Storage connectivity)'
+	curl http://localhost:$(API_NEST_DEV_PORT)/api/health/ready
+	echo
+	echo '# Liveness check'
+	curl http://localhost:$(API_NEST_DEV_PORT)/api/health/live
+	echo
+	echo '# Generate SAS token for blob storage'
+	curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/storage/sas-tokens \
+	-H "Content-Type: application/json" \
+	-d '{"fileName": "test-document.pdf", "contentType": "application/pdf"}'
+	echo
+	echo '# Validate UUID'
+	curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/validation/uuids \
+	-H "Content-Type: application/json" \
+	-d '{"uuid": "123e4567-e89b-12d3-a456-426614174000"}'
+	echo
+	echo '# Get all reservations'
+	curl http://localhost:$(API_NEST_DEV_PORT)/api/reservations
+	echo
+	echo '# Get all payments'
+	curl http://localhost:$(API_NEST_DEV_PORT)/api/payments
+	echo
+	echo '# Reset all data'
+	curl -X POST http://localhost:$(API_NEST_DEV_PORT)/api/dev/reset
+	echo
