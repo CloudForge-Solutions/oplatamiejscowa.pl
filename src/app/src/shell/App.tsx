@@ -45,7 +45,13 @@ if (import.meta.env.DEV) {
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
-            {/* Payment route with reservation ID */}
+            {/* Payment route with city/year/reservation ID */}
+            <Route
+                path="/p/:city/:year/:reservationId"
+                element={<PaymentPage />}
+            />
+
+            {/* Legacy payment route (backward compatibility) */}
             <Route
                 path="/p/:reservationId"
                 element={<PaymentPage />}
